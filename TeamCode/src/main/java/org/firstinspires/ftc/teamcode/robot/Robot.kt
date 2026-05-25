@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.robot
 
+import com.pedropathing.follower.Follower
+import com.pedropathing.geometry.Pose
 import com.qualcomm.hardware.limelightvision.Limelight3A
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
@@ -10,14 +13,24 @@ import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants
 
 class Robot(
-    val drive : Drive,
-    val intake : Intake,
-    val shooter: Shooter,
-    val transfer: Spindexer
+    hardwareMap: HardwareMap,
+    pose: Pose = Pose(0.0, 0.0, Math.toRadians(0.0))
 ) {
+    val follower : Follower
+    val drive : Drive
+    val intake : Intake
+    val shooter: Shooter
+    val transfer: Spindexer
+
     init {
+        follower = Constants.createFollower(hardwareMap)
+        follower.setStartingPose(pose)
+        follower.update()
+
+        // Shooter
         val motorShooterTop = hardwareMap.get(DcMotorEx::class.java, "motorShooterTop")
         val motorShooterBottom = hardwareMap.get(DcMotorEx::class.java, "motorShooterBottom")
         val motorTurret = hardwareMap.get(DcMotorEx::class.java, "motorTurret")
@@ -34,5 +47,33 @@ class Robot(
         motorTurret.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         motorTurret.direction = DcMotorSimple.Direction.REVERSE
         motorTurret.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+
+        // Intake
+        val motorIntake = hardwareMap.get(DcMotorEx::class.java, "motorIntake")
+
+        // Transfer
+        val servoTransferFront = hardwareMap.get(Servo::class.java, "servoTransferFront")
+        val servoTransferBack = hardwareMap.get(Servo::class.java, "servoTransferBack")
+        val finger = hardwareMap.get(Servo::class.java, "finger")
+
+        val colorSensor = hardwareMap.get(NormalizedColorSensor::class.java, "colorSensor")
+        colorSensor.gain = 1.6f
+
+        val voltageSensor = hardwareMap.get(VoltageSensor::class.java, "Control Hub")
+
+        drive = Drive(follower)
+        shooter = Shooter(
+            motorTop = motorShooterTop,
+            motorBottom = motorShooterBottom,
+        )
+        transfer = Spindexer(
+            servoTransfer1 = servoTransferFront,
+            servoTransfer2 = servoTransferBack,
+            finger = finger,
+            colorSensor = colorSensor
+        )
+        intake = Intake(
+            motor = motorIntake
+        )
     }
 }

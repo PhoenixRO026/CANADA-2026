@@ -19,14 +19,13 @@ class Robot(
     hardwareMap: HardwareMap,
     pose: Pose = Pose(0.0, 0.0, Math.toRadians(0.0))
 ) {
-    val follower : Follower
+    val follower : Follower = Constants.createFollower(hardwareMap)
     val drive : Drive
     val intake : Intake
     val shooter: Shooter
     val transfer: Spindexer
 
     init {
-        follower = Constants.createFollower(hardwareMap)
         follower.setStartingPose(pose)
         follower.update()
 

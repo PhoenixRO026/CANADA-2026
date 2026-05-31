@@ -15,8 +15,9 @@ class SummerDrive : LinearOpMode() {
     override fun runOpMode() {
         val robot = Robot(hardwareMap)
 
-        val intake = ButtonReader {gamepad1.dpad_right}
-        val buttons = listOf(intake)
+        val intakeStart = ButtonReader {gamepad1.dpad_right}
+        val intakeStop = ButtonReader {gamepad1.dpad_right}
+        val buttons = listOf(intakeStart, intakeStop)
 
         waitForStart()
         robot.follower.startTeleopDrive()
@@ -38,7 +39,12 @@ class SummerDrive : LinearOpMode() {
                 -gamepad1.right_stick_x.toDouble()
             )
 
-            if (gamepad1.dpad_right.wasJustPressed())
+            if (intakeStart.wasJustPressed()) {
+                robot.intake.startIntakeAction()
+            }
+            if (intakeStop.wasJustPressed()) {
+                robot.intake.stopIntakeAction()
+            }
         }
     }
 }

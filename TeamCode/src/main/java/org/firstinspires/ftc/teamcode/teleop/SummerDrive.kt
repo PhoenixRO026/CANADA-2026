@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop
 
 import com.pedropathing.follower.Follower
+import com.pedropathing.ivy.Scheduler
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants
@@ -14,9 +15,10 @@ import org.firstinspires.ftc.teamcode.library.buttons.ToggleButtonReader
 class SummerDrive : LinearOpMode() {
     override fun runOpMode() {
         val robot = Robot(hardwareMap)
+        Scheduler.reset()
 
         val intakeStart = ButtonReader {gamepad1.dpad_right}
-        val intakeStop = ButtonReader {gamepad1.dpad_right}
+        val intakeStop = ButtonReader {gamepad1.dpad_left}
         val buttons = listOf(intakeStart, intakeStop)
 
         waitForStart()
@@ -24,7 +26,9 @@ class SummerDrive : LinearOpMode() {
 
         while (opModeIsActive()) {
             buttons.forEach { it.readValue() }
+
             robot.follower.update()
+            Scheduler.execute()
 
             if(gamepad1.left_trigger >= 0.2) {
                 robot.drive.isSlowMode = true
@@ -40,11 +44,13 @@ class SummerDrive : LinearOpMode() {
             )
 
             if (intakeStart.wasJustPressed()) {
-                robot.intake.startIntakeAction()
+                robot.intake.startIntakeCommand.schedule()
             }
+
             if (intakeStop.wasJustPressed()) {
-                robot.intake.stopIntakeAction()
+                robot.intake.stopIntakeCommand.schedule()
             }
+            Scheduler.reset()
         }
     }
 }

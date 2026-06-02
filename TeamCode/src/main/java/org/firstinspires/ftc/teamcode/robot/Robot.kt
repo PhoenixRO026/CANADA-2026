@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants
+import com.pedropathing.ftc.drivetrains.Mecanum
+import com.pedropathing.ftc.localization.Encoder
 
 class Robot(
     hardwareMap: HardwareMap,
@@ -47,6 +49,13 @@ class Robot(
         motorTurret.direction = DcMotorSimple.Direction.REVERSE
         motorTurret.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
+        // Shooter
+        val encoderOuttake = Encoder(hardwareMap.get(DcMotorEx::class.java, "motorLF"))
+        val encoderTurret = Encoder(hardwareMap.get(DcMotorEx::class.java, "motorRB"))
+
+        encoderOuttake.setDirection(Encoder.REVERSE)
+        encoderTurret.setDirection(Encoder.REVERSE)
+
         // Intake
         val motorIntake = hardwareMap.get(DcMotorEx::class.java, "motorIntake")
 
@@ -64,7 +73,11 @@ class Robot(
         shooter = Shooter(
             motorTop = motorShooterTop,
             motorBottom = motorShooterBottom,
-        )
+            motorTurret = motorTurret,
+            encoderTurret = encoderTurret,
+            encoderOuttake = encoderOuttake,
+            voltageSensor = voltageSensor
+            )
         transfer = Spindexer(
             servoTransfer1 = servoTransferFront,
             servoTransfer2 = servoTransferBack,

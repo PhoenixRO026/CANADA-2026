@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot
 
+import com.pedropathing.ivy.Command
+import com.pedropathing.ivy.commands.Commands
 import com.pedropathing.ivy.commands.Commands.instant
 import com.qualcomm.robotcore.hardware.DcMotorEx
 
@@ -15,6 +17,6 @@ class Intake(
     fun startIntake() { power = 1.0}
     fun stopIntake() {power = 0.0}
 
-    fun startIntakeAction() = instant { startIntake() }
-    fun stopIntakeAction() = instant { stopIntake() }
+    val startIntakeCommand : Command = instant { startIntake() }
+    val stopIntakeCommand : Command = instant { stopIntake() }
 }

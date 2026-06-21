@@ -64,12 +64,7 @@ class Robot(
 
         drive = Drive(follower)
         shooter = Shooter(
-//            motorTop = motorShooterTop,
-//            motorBottom = motorShooterBottom,
-//            motorTurret = motorTurret,
-//            encoderTurret = encoderTurret,
-//            encoderOuttake = encoderOuttake,
-//            voltageSensor = voltageSensor
+
             )
         transfer = Transfer(
             motor = motorTransfer,

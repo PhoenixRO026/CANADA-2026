@@ -15,19 +15,20 @@ import com.qualcomm.robotcore.util.ElapsedTime
 class OuttakeTest : LinearOpMode() {
     @Configurable
     object OuttakeConfig {
-        @JvmField var motorPower = 0.5
+        @JvmField var motorPower = 0.0
         @JvmField var hoodStep = 0.01
     }
 
     override fun runOpMode() {
-        val joinedTelemetry = JoinedTelemetry(PanelsTelemetry.ftcTelemetry, telemetry)
+        val panelsTelemetry = PanelsTelemetry.telemetry
 
         val motorLeft = hardwareMap.get(DcMotorEx::class.java, "motorShooterLeft")
         val motorRight = hardwareMap.get(DcMotorEx::class.java, "motorShooterRight")
         val encoder = Encoder(motorLeft)
-        val servoHood = hardwareMap.get(Servo::class.java, "servoHood")
-        val motorTransfer = hardwareMap.get(DcMotorEx::class.java, "MTransfer")
         encoder.setDirection(Encoder.REVERSE)
+
+        val servoHood = hardwareMap.get(Servo::class.java, "servoHood")
+        val motorTransfer = hardwareMap.get(DcMotorEx::class.java, "motorTransfer")
         motorRight.direction = DcMotorSimple.Direction.REVERSE
         servoHood.position = 0.0
 
@@ -36,10 +37,8 @@ class OuttakeTest : LinearOpMode() {
         encoder.reset()
 
         while (opModeIsActive()) {
-
             motorLeft.power = OuttakeConfig.motorPower
             motorRight.power = OuttakeConfig.motorPower
-
 
             val rpm = motorLeft.velocity * 60.0 / 28
 
@@ -53,12 +52,15 @@ class OuttakeTest : LinearOpMode() {
                 motorTransfer.power = 1.0
             }
             if (gamepad1.b){
-                motorTransfer.power = - 1.0
+                motorTransfer.power = -1.0
             }
-            joinedTelemetry.addData("power", motorLeft.power)
-            joinedTelemetry.addData("hood position", servoHood.position)
-            joinedTelemetry.addData("rpm", rpm)
-            joinedTelemetry.update()
+            if (gamepad1.x) {
+                motorTransfer.power = 0.0
+            }
+            panelsTelemetry.addData("rpm", rpm)
+            panelsTelemetry.addData("power", motorLeft.power)
+            panelsTelemetry.addData("hood position", servoHood.position)
+            panelsTelemetry.update(telemetry)
         }
     }
 }

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo
 @TeleOp
 class TurretTest : LinearOpMode() {
     @Configurable
-    object OuttakeConfig {
+    object TurretConfig {
         @JvmField var turretStep = 0.01
     }
 
@@ -26,13 +26,13 @@ class TurretTest : LinearOpMode() {
 
         while (opModeIsActive()) {
             if (gamepad1.right_bumper) {
-                servo1.position = (servo1.position + OuttakeConfig.turretStep).coerceIn(0.0, 1.0)
-                servo2.position = (servo2.position + OuttakeConfig.turretStep).coerceIn(0.0, 1.0)
+                servo1.position = (servo1.position + TurretConfig.turretStep).coerceIn(0.0, 1.0)
+                servo2.position = (servo2.position + TurretConfig.turretStep).coerceIn(0.0, 1.0)
             }
 
             if (gamepad1.left_bumper) {
-                servo1.position = (servo1.position - OuttakeConfig.turretStep).coerceIn(0.0, 1.0)
-                servo2.position = (servo2.position - OuttakeConfig.turretStep).coerceIn(0.0, 1.0)
+                servo1.position = (servo1.position - TurretConfig.turretStep).coerceIn(0.0, 1.0)
+                servo2.position = (servo2.position - TurretConfig.turretStep).coerceIn(0.0, 1.0)
             }
         }
     }

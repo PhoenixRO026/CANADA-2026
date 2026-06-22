@@ -30,6 +30,8 @@ class FullOuttakeTest : LinearOpMode() {
         val servoHood = hardwareMap.get(Servo::class.java, "servoHood")
         val motorTransfer = hardwareMap.get(DcMotorEx::class.java, "motorTransfer")
         motorRight.direction = DcMotorSimple.Direction.REVERSE
+
+        servoHood.scaleRange(0.0838, 0.6388)
         servoHood.position = 0.0
 
         val servo1 = hardwareMap.get(Servo::class.java, "turretServo1")

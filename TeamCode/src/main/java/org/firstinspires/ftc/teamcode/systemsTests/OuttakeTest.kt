@@ -26,7 +26,7 @@ class OuttakeTest : LinearOpMode() {
         val motorRight = hardwareMap.get(DcMotorEx::class.java, "motorShooterRight")
         val encoder = Encoder(motorLeft)
         val servoHood = hardwareMap.get(Servo::class.java, "servoHood")
-
+        val motorTransfer = hardwareMap.get(DcMotorEx::class.java, "MTransfer")
         encoder.setDirection(Encoder.REVERSE)
         motorRight.direction = DcMotorSimple.Direction.REVERSE
         servoHood.position = 0.0
@@ -40,6 +40,7 @@ class OuttakeTest : LinearOpMode() {
             motorLeft.power = OuttakeConfig.motorPower
             motorRight.power = OuttakeConfig.motorPower
 
+
             val rpm = motorLeft.velocity * 60.0 / 28
 
             if (gamepad1.dpad_up) {
@@ -47,6 +48,12 @@ class OuttakeTest : LinearOpMode() {
             }
             if (gamepad1.dpad_down) {
                 servoHood.position = (servoHood.position - OuttakeConfig.hoodStep).coerceIn(0.0, 1.0)
+            }
+            if (gamepad1.a) {
+                motorTransfer.power = 1.0
+            }
+            if (gamepad1.b){
+                motorTransfer.power = - 1.0
             }
             joinedTelemetry.addData("power", motorLeft.power)
             joinedTelemetry.addData("hood position", servoHood.position)

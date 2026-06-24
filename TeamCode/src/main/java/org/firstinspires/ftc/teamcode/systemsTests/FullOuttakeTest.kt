@@ -36,7 +36,6 @@ class FullOuttakeTest : LinearOpMode() {
 
         val servo1 = hardwareMap.get(Servo::class.java, "turretServo1")
         val servo2 = hardwareMap.get(Servo::class.java, "turretServo2")
-        servo1.direction = Servo.Direction.REVERSE
 
         servo1.position = 0.0
         servo2.position = 0.0
@@ -67,18 +66,19 @@ class FullOuttakeTest : LinearOpMode() {
                 motorTransfer.power = 0.0
             }
 
-            if (gamepad1.right_bumper) {
+            if (gamepad1.dpad_right) {
                 servo1.position = (servo1.position + FullOuttakeConfig.turretStep).coerceIn(0.0, 1.0)
                 servo2.position = (servo2.position + FullOuttakeConfig.turretStep).coerceIn(0.0, 1.0)
             }
 
-            if (gamepad1.left_bumper) {
+            if (gamepad1.dpad_left) {
                 servo1.position = (servo1.position - FullOuttakeConfig.turretStep).coerceIn(0.0, 1.0)
                 servo2.position = (servo2.position - FullOuttakeConfig.turretStep).coerceIn(0.0, 1.0)
             }
             panelsTelemetry.addData("rpm", rpm)
             panelsTelemetry.addData("power", motorLeft.power)
             panelsTelemetry.addData("hood position", servoHood.position)
+            panelsTelemetry.addData("turret position", servo1.position)
             panelsTelemetry.addData("turret position", servo1.position)
             panelsTelemetry.update(telemetry)
         }

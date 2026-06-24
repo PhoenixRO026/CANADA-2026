@@ -12,12 +12,14 @@ class TurretTest : LinearOpMode() {
     @Configurable
     object TurretConfig {
         @JvmField var turretStep = 0.01
+        @JvmField var servo1Direction = 1
+        @JvmField var servo2Direction = 1
     }
 
     override fun runOpMode() {
         val servo1 = hardwareMap.get(Servo::class.java, "turretServo1")
         val servo2 = hardwareMap.get(Servo::class.java, "turretServo2")
-        servo1.direction = Servo.Direction.REVERSE
+//        servo1.direction = Servo.Direction.REVERSE
 
         servo1.position = 0.0
         servo2.position = 0.0

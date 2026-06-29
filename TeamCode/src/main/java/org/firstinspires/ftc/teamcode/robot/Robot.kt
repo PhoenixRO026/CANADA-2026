@@ -42,7 +42,6 @@ class Robot(
         val servoTurret1 = hardwareMap.get(Servo::class.java, "turretServo1")
         val servoTurret2 = hardwareMap.get(Servo::class.java, "turretServo2")
 
-        // Shooter
         val encoderOuttake = Encoder(hardwareMap.get(DcMotorEx::class.java, "motorLF"))
         encoderOuttake.setDirection(Encoder.REVERSE)
 
@@ -51,7 +50,7 @@ class Robot(
 
         // Transfer
         val motorTransfer = hardwareMap.get(DcMotorEx::class.java, "motorTransfer")
-//        val finger = hardwareMap.get(Servo::class.java, "finger
+        val finger = hardwareMap.get(Servo::class.java, "finger")
 
 
         drive = Drive(follower)

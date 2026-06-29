@@ -18,11 +18,17 @@ class Shooter(
     data object ShooterConfig {
 
     }
-//    var motorPower
-//        get() = motorTop.power
-//        set(value) {
-//            motorTop.power = value
-//            motorBottom.power = value
-//        }
+    var motorPower
+        get() = motorRight.power
+        set(value) {
+            motorRight.power = value
+            motorLeft.power = value
+        }
 
+    var turretPosition
+        get() = servo1.position
+        set(value) {
+            servo1.position = value
+            servo2.position = value
+        }
 }

@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.library.controller.PIDController
 
 class Shooter(
-//    val motorTop : DcMotorEx,
-//    val motorBottom : DcMotorEx,
-//    val servo1 : Servo,
-//    val servo2 : Servo
+    val motorLeft : DcMotorEx,
+    val motorRight: DcMotorEx,
+    val servo1 : Servo,
+    val servo2 : Servo
 ) {
     @Config
     data object ShooterConfig {

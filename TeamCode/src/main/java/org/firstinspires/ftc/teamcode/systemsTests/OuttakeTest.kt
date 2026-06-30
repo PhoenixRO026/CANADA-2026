@@ -24,8 +24,8 @@ class OuttakeTest : LinearOpMode() {
 
         val motorLeft = hardwareMap.get(DcMotorEx::class.java, "motorShooterLeft")
         val motorRight = hardwareMap.get(DcMotorEx::class.java, "motorShooterRight")
-        val encoder = Encoder(motorLeft)
-        encoder.setDirection(Encoder.REVERSE)
+//        val encoder = Encoder(motorLeft)
+//        encoder.setDirection(Encoder.REVERSE)
 
         val servoHood = hardwareMap.get(Servo::class.java, "servoHood")
         val motorTransfer = hardwareMap.get(DcMotorEx::class.java, "motorTransfer")
@@ -34,7 +34,7 @@ class OuttakeTest : LinearOpMode() {
 
         waitForStart()
 
-        encoder.reset()
+//        encoder.reset()
 
         while (opModeIsActive()) {
             motorLeft.power = OuttakeConfig.motorPower

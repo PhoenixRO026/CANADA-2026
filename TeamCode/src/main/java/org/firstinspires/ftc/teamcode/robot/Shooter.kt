@@ -20,6 +20,7 @@ class Shooter(
     val motorRight: DcMotorEx,
     val servo1 : Servo,
     val servo2 : Servo,
+    val finger : Servo,
     val voltageSensor : VoltageSensor,
 ) {
     @Configurable
@@ -37,6 +38,13 @@ class Shooter(
         @JvmField var gearRatio = 9.0 / 10.0
         @JvmField var maxFinalDegrees = servoRange * gearRatio
         @JvmField var targetRpmTolerance = 50.0
+
+        @JvmField var fingerOpen = 1.0
+        @JvmField var fingerClose = 0.0
+
+        @JvmField var rpmFar = 3400.0
+        @JvmField var rpmNear = 3000.0
+        @JvmField var rpmRest = 1000.0
     }
 
     fun servoToDeg(servoPos: Double): Double {
@@ -71,6 +79,12 @@ class Shooter(
             turretPosition = degToServo(value)
         }
 
+    var openFingerCommand : Command = instant { openFinger() }
+    var closeFingerCommand : Command = instant { closeFinger() }
+
+    fun openFinger() { finger.position = ShooterConfig.fingerOpen }
+    fun closeFinger() { finger.position = ShooterConfig.fingerClose }
+
     fun updateHeading(headingError : Double) {
         turretPosition += degToServo(headingError)
     }
@@ -96,4 +110,6 @@ class Shooter(
             instant { goToRpm(rpm) },
             waitUntil { !shooterBusy() }
         )
+
+
 }

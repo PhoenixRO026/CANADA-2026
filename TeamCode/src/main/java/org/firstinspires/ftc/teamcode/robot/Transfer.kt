@@ -22,9 +22,11 @@ class Transfer(
     var distance= voltageToDistanceMm(distanceSensor.voltage)
 
     fun voltageToDistanceMm(voltage: Double): Double {
-
-        // Cross-multiplication formula
         return (voltage / TransferConfig.maxVoltage) * TransferConfig.maxDistanceMm
+    }
+
+    fun isBallPresent(): Boolean {
+        return distance in 30.0 .. 50.0
     }
 
     var power

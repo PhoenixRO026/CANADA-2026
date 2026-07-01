@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants
 import com.pedropathing.ftc.localization.Encoder
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.commands.Commands.waitMs
+import com.pedropathing.ivy.commands.Commands.waitUntil
 import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.AnalogInput
@@ -68,6 +69,7 @@ class Robot(
             motorRight = motorShooterRight,
             servo1 = servoTurret1,
             servo2 = servoTurret2,
+            finger = finger,
             voltageSensor = voltageSensor
             )
         transfer = Transfer(
@@ -82,18 +84,29 @@ class Robot(
         )
     }
 
-    val intakeStartCommand : Command = sequential(
+    val allStartCommand : Command = sequential(
         intake.startIntakeCommand,
         transfer.startTransferCommand
     )
 
-
-    val intakeBalls : Command = sequential(
-        intakeStartCommand,
-        waitMs(1000.0), // wait for sensor
+    fun intakeBalls(time : Double = 50.0) : Command = sequential(
+        allStartCommand,
+        waitUntil { transfer.isBallPresent() }, // wait for sensor
         transfer.stopTransferCommand,
-        waitMs(1000.0),
+        waitMs(time),
         intake.stopIntakeCommand
+    )
+
+    fun shootBalls(rpm : Double = Shooter.ShooterConfig.rpmFar) : Command = sequential(
+        shooter.goToRpmCommand(rpm),
+        shooter.openFingerCommand,
+        allStartCommand,
+        waitMs(300.0),
+        intake.stopIntakeCommand,
+        waitMs(700.0),
+        transfer.stopTransferCommand,
+        shooter.closeFingerCommand,
+        shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)
     )
 
 }

@@ -1,14 +1,19 @@
 package org.firstinspires.ftc.teamcode.robot
 
-import com.acmerobotics.dashboard.config.Config
+import com.bylazar.configurables.annotations.Configurable
 import com.commonlibs.units.Duration
 import com.commonlibs.units.deg
 import com.pedropathing.ftc.localization.Encoder
+import com.pedropathing.ivy.Command
+import com.pedropathing.ivy.commands.Commands.instant
+import com.pedropathing.ivy.commands.Commands.waitUntil
+import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.library.controller.PIDController
+import kotlin.math.abs
 
 class Shooter(
     val motorLeft : DcMotorEx,
@@ -17,8 +22,8 @@ class Shooter(
     val servo2 : Servo,
     val voltageSensor : VoltageSensor,
 ) {
-    @Config
-    data object ShooterConfig {
+    @Configurable
+    object ShooterConfig {
         @JvmField
         var controllerRpm = PIDController(
             kP = 0.0,
@@ -31,7 +36,7 @@ class Shooter(
         @JvmField var servoRange = 360.0
         @JvmField var gearRatio = 9.0 / 10.0
         @JvmField var maxFinalDegrees = servoRange * gearRatio
-
+        @JvmField var targetRpmTolerance = 50.0
     }
 
     fun servoToDeg(servoPos: Double): Double {
@@ -66,8 +71,7 @@ class Shooter(
             turretPosition = degToServo(value)
         }
 
-    //tho nuj daca trebe daca ii servo
-    fun updateHeading(headingError : Double) { // Asta nus daca o sa mearga ca nu stiu raportul servo-rulment // cum functioneaza formula? - Coman
+    fun updateHeading(headingError : Double) {
         turretPosition += degToServo(headingError)
     }
 
@@ -77,4 +81,19 @@ class Shooter(
         val feedforwardPower = ShooterConfig.kS + ShooterConfig.kV * targetRpm
         shooterPower = pidPower + feedforwardPower / voltage
     }
+
+    fun shooterBusy(): Boolean {
+        val busy = abs(targetRpm - currentRpm) > ShooterConfig.targetRpmTolerance
+        return busy
+    }
+
+    fun goToRpm(rpm : Double) {
+        targetRpm = rpm
+    }
+
+    fun goToRpmCommand(rpm: Double): Command =
+        sequential(
+            instant { goToRpm(rpm) },
+            waitUntil { !shooterBusy() }
+        )
 }

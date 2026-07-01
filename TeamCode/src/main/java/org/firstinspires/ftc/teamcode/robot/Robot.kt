@@ -12,6 +12,8 @@ import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.hardware.limelightvision.Limelight3A
+import com.qualcomm.robotcore.hardware.AnalogInput
+import com.qualcomm.robotcore.hardware.AnalogSensor
 import com.qualcomm.robotcore.hardware.Servo
 
 class Robot(
@@ -58,6 +60,7 @@ class Robot(
         // Transfer
         val motorTransfer = hardwareMap.get(DcMotorEx::class.java, "motorTransfer")
         val finger = hardwareMap.get(Servo::class.java, "finger")
+        val distanceSensor = hardwareMap.get(AnalogInput::class.java, "distanceSensor")
 
         drive = Drive(follower)
         shooter = Shooter(
@@ -69,6 +72,7 @@ class Robot(
             )
         transfer = Transfer(
             motor = motorTransfer,
+            distanceSensor = distanceSensor
         )
         intake = Intake(
             motor = motorIntake

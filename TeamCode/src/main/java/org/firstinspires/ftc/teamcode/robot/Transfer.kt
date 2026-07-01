@@ -1,14 +1,32 @@
 package org.firstinspires.ftc.teamcode.robot
 
+import com.acmerobotics.dashboard.config.Config
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.commands.Commands.instant
+import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor
 import com.qualcomm.robotcore.hardware.Servo
+import org.firstinspires.ftc.teamcode.library.controller.PIDController
 
 class Transfer(
     val motor: DcMotorEx,
+    val distanceSensor: AnalogInput
 ) {
+
+    data object TransferConfig {
+        val maxVoltage = 3.3
+        val maxDistanceMm = 1000.0
+    }
+
+    var distance= voltageToDistanceMm(distanceSensor.voltage)
+
+    fun voltageToDistanceMm(voltage: Double): Double {
+
+        // Cross-multiplication formula
+        return (voltage / TransferConfig.maxVoltage) * TransferConfig.maxDistanceMm
+    }
+
     var power
         get() = motor.power
         set(value) {

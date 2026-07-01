@@ -77,9 +77,18 @@ class Robot(
             camera = camera
         )
     }
-    val intakeBalls : Command = sequential(
+
+    val intakeStartCommand : Command = sequential(
         intake.startIntakeCommand,
+        transfer.startTransferCommand
+    )
+
+
+    val intakeBalls : Command = sequential(
+        intakeStartCommand,
+        waitMs(1000.0), // wait for sensor
+        transfer.stopTransferCommand,
         waitMs(1000.0),
-        intake.stopIntakeCommand,
+        intake.stopIntakeCommand
     )
 }

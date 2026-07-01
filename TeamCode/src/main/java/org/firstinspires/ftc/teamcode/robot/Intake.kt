@@ -14,9 +14,11 @@ class Intake(
             motor.power = value
         }
 
-    fun startIntake() { power = 1.0}
-    fun stopIntake() {power = 0.0}
+    fun startIntake() { power = 1.0 }
+    fun stopIntake() { power = 0.0 }
+    fun reverseIntake() { power = -1.0 }
 
     val startIntakeCommand : Command = instant { startIntake() }
     val stopIntakeCommand : Command = instant { stopIntake() }
+    val reverseIntakeCommand : Command = instant { reverseIntake() }
 }

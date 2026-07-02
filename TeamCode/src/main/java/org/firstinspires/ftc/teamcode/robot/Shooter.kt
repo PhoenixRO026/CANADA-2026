@@ -77,7 +77,7 @@ class Shooter(
     private var turretPosition = 0.5
         get() = servo1.position
         set(value) {
-            field = value.coerceIn(0.0, 1.0)
+            field = value.coerceIn(0.175, 0.850)
             servo1.position = field
             servo2.position = field
         }

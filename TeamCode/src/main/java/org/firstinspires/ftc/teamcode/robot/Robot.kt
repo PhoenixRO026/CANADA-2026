@@ -38,20 +38,22 @@ class Robot(
         camera.start()
 
         // Shooter
-        val motorShooterLeft = hardwareMap.get(DcMotorEx::class.java, "motorShooterTop")
-        val motorShooterRight = hardwareMap.get(DcMotorEx::class.java, "motorShooterBottom")
+        val motorShooterLeft = hardwareMap.get(DcMotorEx::class.java, "motorShooterLeft")
+        val motorShooterRight = hardwareMap.get(DcMotorEx::class.java, "motorShooterRight")
         motorShooterLeft.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        motorShooterLeft.direction = DcMotorSimple.Direction.REVERSE
+        motorShooterLeft.direction = DcMotorSimple.Direction.FORWARD
         motorShooterLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         motorShooterRight.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         motorShooterRight.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        motorShooterRight.direction = DcMotorSimple.Direction.FORWARD
+        motorShooterRight.direction = DcMotorSimple.Direction.REVERSE
         motorShooterRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         val servoTurret1 = hardwareMap.get(Servo::class.java, "turretServo1")
         val servoTurret2 = hardwareMap.get(Servo::class.java, "turretServo2")
+
         val servoHood = hardwareMap.get(Servo::class.java, "servoHood")
+        servoHood.scaleRange(0.2394, 0.83)
 
         val encoderOuttake = Encoder(hardwareMap.get(DcMotorEx::class.java, "motorLF"))
         encoderOuttake.setDirection(Encoder.REVERSE)
@@ -63,6 +65,7 @@ class Robot(
         // Transfer
         val motorTransfer = hardwareMap.get(DcMotorEx::class.java, "motorTransfer")
         val finger = hardwareMap.get(Servo::class.java, "finger")
+        finger.scaleRange(0.3844, 0.67)
         val distanceSensor = hardwareMap.get(AnalogInput::class.java, "distanceSensor")
 
         drive = Drive(follower)

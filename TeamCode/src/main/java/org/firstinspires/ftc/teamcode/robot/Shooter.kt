@@ -21,6 +21,7 @@ class Shooter(
     val servo1 : Servo,
     val servo2 : Servo,
     val finger : Servo,
+    val hood : Servo,
     val voltageSensor : VoltageSensor,
 ) {
     @Configurable
@@ -65,6 +66,14 @@ class Shooter(
             motorRight.power = value
         }
 
+    var hoodPosition
+        get() = hood.position
+        set(value) {
+            hood.position = value
+        }
+    fun hoodToPosition(position: Double) { hoodPosition = position }
+    fun hoodDown() { hoodToPosition(0.0) }
+
     private var turretPosition = 0.5
         get() = servo1.position
         set(value) {
@@ -84,6 +93,8 @@ class Shooter(
 
     fun openFinger() { finger.position = ShooterConfig.fingerOpen }
     fun closeFinger() { finger.position = ShooterConfig.fingerClose }
+
+    fun turretGoToAngle(targetAngle: Double) { turretAngle = targetAngle }
 
     fun updateHeading(headingError : Double) {
         turretPosition += degToServo(headingError)

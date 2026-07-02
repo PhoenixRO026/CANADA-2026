@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants
 import com.pedropathing.ftc.localization.Encoder
 import com.pedropathing.ivy.Command
+import com.pedropathing.ivy.behaviors.EndCondition
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.commands.Commands.waitUntil
 import com.pedropathing.ivy.groups.Groups.sequential
@@ -50,6 +51,7 @@ class Robot(
 
         val servoTurret1 = hardwareMap.get(Servo::class.java, "turretServo1")
         val servoTurret2 = hardwareMap.get(Servo::class.java, "turretServo2")
+        val servoHood = hardwareMap.get(Servo::class.java, "servoHood")
 
         val encoderOuttake = Encoder(hardwareMap.get(DcMotorEx::class.java, "motorLF"))
         encoderOuttake.setDirection(Encoder.REVERSE)
@@ -70,6 +72,7 @@ class Robot(
             servo1 = servoTurret1,
             servo2 = servoTurret2,
             finger = finger,
+            hood = servoHood,
             voltageSensor = voltageSensor
             )
         transfer = Transfer(
@@ -89,13 +92,18 @@ class Robot(
         transfer.startTransferCommand
     )
 
-    fun intakeBalls(time : Double = 50.0) : Command = sequential(
+    fun intakeBalls(time: Double = 50.0): Command = sequential(
         allStartCommand,
         waitUntil { transfer.isBallPresent() }, // wait for sensor
         transfer.stopTransferCommand,
         waitMs(time),
         intake.stopIntakeCommand
-    )
+    ).setEnd { endCondition ->
+        if (endCondition == EndCondition.INTERRUPTED) {
+            intake.power = 0.0
+            transfer.power = 0.0
+        }
+    }
 
     fun shootBalls(rpm : Double = Shooter.ShooterConfig.rpmFar) : Command = sequential(
         shooter.goToRpmCommand(rpm),

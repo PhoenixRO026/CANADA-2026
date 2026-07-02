@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop
 
+import com.bylazar.telemetry.PanelsTelemetry
 import com.pedropathing.follower.Follower
 import com.pedropathing.ivy.Scheduler
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -17,6 +18,7 @@ open class SummerDrive : LinearOpMode() {
     open val pipeline : Int = 1
 
     override fun runOpMode() {
+        val panelsTelemetry = PanelsTelemetry.telemetry
         val robot = Robot(hardwareMap)
         Scheduler.reset()
 
@@ -86,6 +88,14 @@ open class SummerDrive : LinearOpMode() {
             robot.shooter.updateRpm(timeKeep.deltaTime)
             robot.limelight.updateHeadingError()
             Scheduler.reset()
+
+            panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
+            panelsTelemetry.addData("turret heading error", robot.limelight.headingErrorDeg)
+            panelsTelemetry.addData("turret position", robot.shooter.servo1.position)
+            panelsTelemetry.addData("power intake", robot.intake.power)
+            panelsTelemetry.addData("power transfer", robot.transfer.power)
+            panelsTelemetry.addData("sensor distance", robot.transfer.distance)
+            panelsTelemetry.update(telemetry)
         }
     }
 }

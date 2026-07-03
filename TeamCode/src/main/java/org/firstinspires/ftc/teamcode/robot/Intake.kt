@@ -18,7 +18,7 @@ class Intake(
     fun stopIntake() { power = 0.0 }
     fun reverseIntake() { power = -1.0 }
 
-    val startIntakeCommand : Command = instant { startIntake() }
-    val stopIntakeCommand : Command = instant { stopIntake() }
-    val reverseIntakeCommand : Command = instant { reverseIntake() }
+    fun startIntakeCommand() : Command = instant { startIntake() }
+    fun stopIntakeCommand() : Command = instant { stopIntake() }
+    fun reverseIntakeCommand() : Command = instant { reverseIntake() }
 }

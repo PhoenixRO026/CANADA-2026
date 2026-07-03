@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.library.buttons.ButtonReader
 class StupidTransferTest : LinearOpMode() {
     override fun runOpMode() {
         val motor = hardwareMap.get(DcMotorEx::class.java, "motorIntake")
+        val motor2= hardwareMap.get(DcMotorEx::class.java, "motorTransfer")
         val encoder = Encoder(motor)
         encoder.setDirection(Encoder.REVERSE)
 
@@ -29,6 +30,7 @@ class StupidTransferTest : LinearOpMode() {
             loopTimer.reset()
 
             motor.power = if (gamepad1.right_bumper) 1.0 else 0.0
+            motor2.power =if (gamepad1.left_bumper) 1.0 else 0.0
 
             encoder.update()
 

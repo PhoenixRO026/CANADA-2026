@@ -90,34 +90,44 @@ class Robot(
         )
     }
 
-    val allStartCommand : Command = sequential(
-        intake.startIntakeCommand,
-        transfer.startTransferCommand
+    fun allStartCommand() : Command = sequential(
+        intake.startIntakeCommand(),
+        transfer.startTransferCommand()
     )
 
-    fun intakeBalls(time: Double = 50.0): Command = sequential(
-        allStartCommand,
+    fun allStopCommand() : Command = sequential(
+        intake.stopIntakeCommand(),
+        transfer.stopTransferCommand()
+    )
+
+    fun intakeBalls(time: Double = 5000.0): Command = sequential(
+        shooter.closeFingerCommand(),
+        allStartCommand(),
         waitUntil { transfer.isBallPresent() }, // wait for sensor
-        transfer.stopTransferCommand,
+        transfer.stopTransferCommand(),
         waitMs(time),
-        intake.stopIntakeCommand
-    ).setEnd { endCondition ->
-        if (endCondition == EndCondition.INTERRUPTED) {
-            intake.power = 0.0
-            transfer.power = 0.0
-        }
-    }
+        allStopCommand()
+    )
+
 
     fun shootBalls(rpm : Double = Shooter.ShooterConfig.rpmFar) : Command = sequential(
         shooter.goToRpmCommand(rpm),
-        shooter.openFingerCommand,
-        allStartCommand,
+        shooter.openFingerCommand(),
+        allStartCommand(),
         waitMs(300.0),
-        intake.stopIntakeCommand,
+        intake.stopIntakeCommand(),
         waitMs(700.0),
-        transfer.stopTransferCommand,
-        shooter.closeFingerCommand,
+        transfer.stopTransferCommand(),
+        shooter.closeFingerCommand(),
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)
+    )
+
+    fun ejectBalls() : Command = sequential(
+        intake.reverseIntakeCommand(),
+        transfer.reverseTransferCommand(),
+        waitMs(500.0),
+        transfer.stopTransferCommand(),
+        intake.stopIntakeCommand()
     )
 
 }

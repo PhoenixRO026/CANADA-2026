@@ -2,7 +2,11 @@ package org.firstinspires.ftc.teamcode.teleop
 
 import com.bylazar.telemetry.PanelsTelemetry
 import com.pedropathing.follower.Follower
+import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
+import com.pedropathing.ivy.commands.Commands.waitMs
+import com.pedropathing.ivy.commands.Commands.waitUntil
+import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.library.TimeKeep
@@ -28,16 +32,16 @@ open class SummerDrive : LinearOpMode() {
         val ejectBalls = ButtonReader { gamepad1.dpad_left }
         val shootBalls = ButtonReader { gamepad2.y }
         val rpmToRest = ButtonReader { gamepad2.left_bumper }
-        val buttons = listOf(intakeBalls, shootBalls, rpmToRest)
+        val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest)
         val timeKeep = TimeKeep()
 
         waitForStart()
 
-        var driverCommand = robot.intakeBalls().until { !intakeBalls.state }
+        var driverCommand : Command? = null
 
         robot.follower.startTeleopDrive()
         robot.shooter.closeFinger()
-        robot.shooter.turretGoToAngle(45.0)
+        robot.shooter.turretGoToAngle(0.0)
         robot.shooter.hoodDown()
 
         while (opModeIsActive()) {
@@ -45,7 +49,27 @@ open class SummerDrive : LinearOpMode() {
             timeKeep.resetDeltaTime()
 
             robot.follower.update()
-            Scheduler.execute()
+
+            //-----------------------
+            // debug zone
+            //-----------------------
+
+            if(gamepad1.x){
+                val intake : Command = sequential (
+                    robot.shooter.closeFingerCommand(),
+                    robot.intake.startIntakeCommand(),
+                    robot.transfer.startTransferCommand(),
+                    waitUntil { robot.transfer.isBallPresent() },
+                    robot.transfer.stopTransferCommand(),
+                    robot.intake.stopIntakeCommand(),
+                    robot.shooter.openFingerCommand()
+                )
+                intake.schedule()
+            }
+
+            //-----------------------
+            // debug zone
+            //-----------------------
 
             if(gamepad1.left_trigger >= 0.2) {
                 robot.drive.isSlowMode = true
@@ -55,7 +79,7 @@ open class SummerDrive : LinearOpMode() {
             }
 
             robot.drive.driveFieldCentric(
-                -gamepad1.left_stick_y.toDouble(),
+                gamepad1.left_stick_y.toDouble(),
                 -gamepad1.left_stick_x.toDouble(),
                 -gamepad1.right_stick_x.toDouble()
             )
@@ -63,31 +87,29 @@ open class SummerDrive : LinearOpMode() {
                 robot.drive.resetFieldCentric()
             }
 
-            if (intakeBalls.wasJustPressed()) {
-                if (intakeBalls.state) {
-                    driverCommand = robot.intakeBalls()
-                        .until { !intakeBalls.state }
-                    driverCommand!!.schedule()
+            if (intakeBalls.state) {
+                if(!robot.intakeBalls().isScheduled && !robot.shootBalls().isScheduled) {
+                    robot.intakeBalls().schedule()
                 }
-                else {
-                    driverCommand = null
+            }
+            else {
+                if(robot.intakeBalls().isScheduled) { // sau Scheduler.isRunning(robot.intakeBalls())
+                    Scheduler.cancel(robot.intakeBalls())
+                    robot.allStopCommand().schedule()
                 }
             }
 
-            if (shootBalls.wasJustPressed()) {
-                val shootCommand = robot.shootBalls()
-                    .unless { driverCommand != null && driverCommand!!.isScheduled() }
-
-                shootCommand.schedule()
+            if (shootBalls.wasJustPressed() && !robot.intakeBalls().isScheduled && !robot.shootBalls().isScheduled) {
+                robot.shootBalls().schedule()
             }
 
             if (ejectBalls.wasJustPressed()) {
-                robot.intake.stopIntakeCommand.schedule()
+                robot.ejectBalls().schedule()
             }
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
             robot.limelight.updateHeadingError()
-            Scheduler.reset()
+            Scheduler.execute()
 
             panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
             panelsTelemetry.addData("turret heading error", robot.limelight.headingErrorDeg)

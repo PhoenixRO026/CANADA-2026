@@ -19,14 +19,15 @@ class Transfer(
         val maxDistanceMm = 1000.0
     }
 
-    var distance= voltageToDistanceMm(distanceSensor.voltage)
+    var distance = 0.0
+        get() =  voltageToDistanceMm(distanceSensor.voltage)
 
     fun voltageToDistanceMm(voltage: Double): Double {
         return (voltage / TransferConfig.maxVoltage) * TransferConfig.maxDistanceMm
     }
 
     fun isBallPresent(): Boolean {
-        return distance in 30.0 .. 50.0
+        return distance in 60.0 .. 155.0
     }
 
     var power
@@ -38,8 +39,10 @@ class Transfer(
     fun startTransfer() { power = 1.0 }
     fun stopTransfer() { power = 0.0 }
     fun reverseTransfer() { power = -1.0 }
+    fun slowTransfer() { power = 0.1 }
 
-    val startTransferCommand : Command = instant { startTransfer() }
-    val stopTransferCommand : Command = instant { stopTransfer() }
-    val reverseTransferCommand : Command = instant { reverseTransfer() }
+    fun startTransferCommand() : Command = instant { startTransfer() }
+    fun stopTransferCommand() : Command = instant { stopTransfer() }
+    fun reverseTransferCommand() : Command = instant { reverseTransfer() }
+    fun slowTransferCommand() : Command = instant { slowTransfer() }
 }

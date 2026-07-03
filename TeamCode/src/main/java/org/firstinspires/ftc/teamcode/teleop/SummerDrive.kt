@@ -30,8 +30,8 @@ open class SummerDrive : LinearOpMode() {
 
         val intakeBalls = ToggleButtonReader ({ gamepad1.dpad_right })
         val ejectBalls = ButtonReader { gamepad1.dpad_left }
-        val shootBalls = ButtonReader { gamepad2.y }
-        val rpmToRest = ButtonReader { gamepad2.left_bumper }
+        val shootBalls = ButtonReader { gamepad1.dpad_up }
+        val rpmToRest = ButtonReader { gamepad1.left_bumper }
         val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest)
         val timeKeep = TimeKeep()
 
@@ -42,7 +42,7 @@ open class SummerDrive : LinearOpMode() {
         robot.follower.startTeleopDrive()
         robot.shooter.closeFinger()
         robot.shooter.turretGoToAngle(0.0)
-        robot.shooter.hoodDown()
+//        robot.shooter.hoodDown()
 
         while (opModeIsActive()) {
             buttons.forEach { it.readValue() }
@@ -79,7 +79,7 @@ open class SummerDrive : LinearOpMode() {
             }
 
             robot.drive.driveFieldCentric(
-                gamepad1.left_stick_y.toDouble(),
+                -gamepad1.left_stick_y.toDouble(),
                 -gamepad1.left_stick_x.toDouble(),
                 -gamepad1.right_stick_x.toDouble()
             )

@@ -92,7 +92,7 @@ class Robot(
 
     fun allStartCommand() : Command = sequential(
         intake.startIntakeCommand(),
-        transfer.startTransferCommand()
+        transfer.slowTransferCommand()
     )
 
     fun allStopCommand() : Command = sequential(

@@ -12,7 +12,9 @@ class Drive(
     var isSlowMode = false
 
     private var headingOffset = 0.0
-    val heading get() = follower.heading - headingOffset
+
+    val heading: Double
+        get() = follower.heading - headingOffset
 
     private val currentSpeed: Double
         get() = if (isSlowMode) DriveConfig.slowSpeed else 1.0
@@ -26,7 +28,8 @@ class Drive(
             forward * currentSpeed,
             strafe * currentSpeed,
             rotate * currentSpeed,
-            false
+            false,
+            headingOffset
         )
     }
 

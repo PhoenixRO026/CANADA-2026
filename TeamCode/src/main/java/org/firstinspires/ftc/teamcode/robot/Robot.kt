@@ -55,8 +55,7 @@ class Robot(
         val servoHood = hardwareMap.get(Servo::class.java, "servoHood")
         servoHood.scaleRange(0.2394, 0.83)
 
-        val encoderOuttake = Encoder(hardwareMap.get(DcMotorEx::class.java, "motorLF"))
-        encoderOuttake.setDirection(Encoder.REVERSE)
+        val motorRB = hardwareMap.get(DcMotorEx::class.java, "motorRB")
         val voltageSensor = hardwareMap.voltageSensor.iterator().next()
 
         // Intake
@@ -76,7 +75,8 @@ class Robot(
             servo2 = servoTurret2,
             finger = finger,
             hood = servoHood,
-            voltageSensor = voltageSensor
+            voltageSensor = voltageSensor,
+            motorEncoder = motorRB
             )
         transfer = Transfer(
             motor = motorTransfer,

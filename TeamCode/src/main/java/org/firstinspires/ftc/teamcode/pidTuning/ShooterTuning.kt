@@ -20,9 +20,8 @@ class ShooterTuning : LinearOpMode() {
             kI = 0.0012,
             stabilityThreshold = 50.0
         )
-        var kS = 1.4
-        @JvmField
-        var kV = 0.002
+        @JvmField var kS = 1.4
+        @JvmField var kV = 0.002
         @JvmField var targetRpm = 1000.0
     }
 

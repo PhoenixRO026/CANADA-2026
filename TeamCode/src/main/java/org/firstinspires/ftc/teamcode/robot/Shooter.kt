@@ -23,18 +23,19 @@ class Shooter(
     val finger : Servo,
     val hood : Servo,
     val voltageSensor : VoltageSensor,
+    val motorEncoder : DcMotorEx
 ) {
     @Configurable
     object ShooterConfig {
         @JvmField
         var controllerRpm = PIDController(
-            kP = 0.0,
-            kI = 0.0,
-            kD = 0.0,
+            kP = 0.0011,
+            kD = 0.0000001,
+            kI = 0.0012,
             stabilityThreshold = 50.0
         )
-        @JvmField var kS = 0.0
-        @JvmField var kV = 0.0
+        @JvmField var kS = 1.4
+        @JvmField var kV = 0.002
         @JvmField var servoRange = 360.0
         @JvmField var gearRatio = 9.0 / 10.0
         @JvmField var maxFinalDegrees = servoRange * gearRatio
@@ -57,7 +58,7 @@ class Shooter(
     }
 
     var targetRpm = 0.0
-    val currentRpm get() = motorLeft.velocity
+    val currentRpm get() = motorEncoder.velocity
 
     var shooterPower
         get() = motorLeft.power

@@ -58,7 +58,7 @@ class Shooter(
     }
 
     var targetRpm = 0.0
-    val currentRpm get() = motorEncoder.velocity
+    val currentRpm get() = -motorEncoder.velocity
 
     var shooterPower
         get() = motorLeft.power

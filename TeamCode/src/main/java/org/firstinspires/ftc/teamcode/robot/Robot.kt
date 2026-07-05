@@ -64,7 +64,7 @@ class Robot(
         // Transfer
         val motorTransfer = hardwareMap.get(DcMotorEx::class.java, "motorTransfer")
         val finger = hardwareMap.get(Servo::class.java, "finger")
-        finger.scaleRange(0.3844, 0.67)
+        finger.scaleRange(0.4, 0.609)
         val distanceSensor = hardwareMap.get(AnalogInput::class.java, "distanceSensor")
 
         drive = Drive(follower)

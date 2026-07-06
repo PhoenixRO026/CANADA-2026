@@ -28,11 +28,12 @@ open class SummerDrive : LinearOpMode() {
 
         robot.limelight.setPipeline(pipeline)
 
-        val intakeBalls = ToggleButtonReader ({ gamepad1.dpad_right })
+        val intakeBalls = ButtonReader { gamepad1.dpad_right }
         val ejectBalls = ButtonReader { gamepad1.dpad_left }
         val shootBalls = ButtonReader { gamepad1.dpad_up }
+        val stopIntake = ButtonReader { gamepad1.dpad_down}
         val rpmToRest = ButtonReader { gamepad1.left_bumper }
-        val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest)
+        val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake)
         val timeKeep = TimeKeep()
 
         waitForStart()
@@ -41,7 +42,7 @@ open class SummerDrive : LinearOpMode() {
 
         robot.follower.startTeleopDrive()
         robot.shooter.closeFinger()
-        robot.shooter.turretGoToAngle(0.0)
+//        robot.shooter.turretGoToAngle(0.0)
 //        robot.shooter.hoodDown()
 
         while (opModeIsActive()) {
@@ -54,7 +55,7 @@ open class SummerDrive : LinearOpMode() {
             // debug zone
             //-----------------------
 
-            if(gamepad1.x){
+            if (gamepad1.x) {
                 val intake : Command = sequential (
                     robot.shooter.closeFingerCommand(),
                     robot.intake.startIntakeCommand(),
@@ -87,27 +88,23 @@ open class SummerDrive : LinearOpMode() {
                 robot.drive.resetFieldCentric()
             }
 
-            if (intakeBalls.state) {
-                if(!robot.intakeBalls().isScheduled && !robot.shootBalls().isScheduled) {
-                    robot.intakeBalls().schedule()
-                }
+            if (intakeBalls.wasJustPressed()) {
+                robot.intakeBalls().schedule()
             }
-            else {
-                if(robot.intakeBalls().isScheduled) { // sau Scheduler.isRunning(robot.intakeBalls())
-                    Scheduler.cancel(robot.intakeBalls())
-                    robot.allStopCommand().schedule()
-                }
+            if (stopIntake.wasJustPressed()) {
+                robot.allStopCommand().schedule()
+                robot.shooter.openFingerCommand().schedule()
             }
 
-            if (shootBalls.wasJustPressed() && !robot.intakeBalls().isScheduled && !robot.shootBalls().isScheduled) {
-                robot.shootBalls().schedule()
-            }
+//            if (shootBalls.wasJustPressed() && !robot.intakeBalls().isScheduled && !robot.shootBalls().isScheduled) {
+//                robot.shootBalls().schedule()
+//            }
+//
+//            if (ejectBalls.wasJustPressed()) {
+//                robot.ejectBalls().schedule()
+//            }
 
-            if (ejectBalls.wasJustPressed()) {
-                robot.ejectBalls().schedule()
-            }
-
-            robot.shooter.updateRpm(timeKeep.deltaTime)
+//            robot.shooter.updateRpm(timeKeep.deltaTime)
             robot.limelight.updateHeadingError()
             Scheduler.execute()
 

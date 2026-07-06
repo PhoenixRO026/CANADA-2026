@@ -12,6 +12,7 @@ import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.behaviors.EndCondition
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.commands.Commands.waitUntil
+import com.pedropathing.ivy.groups.Groups.parallel
 import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.AnalogInput
@@ -95,18 +96,18 @@ class Robot(
         transfer.slowTransferCommand()
     )
 
-    fun allStopCommand() : Command = sequential(
+    fun allStopCommand() : Command = parallel(
         intake.stopIntakeCommand(),
         transfer.stopTransferCommand()
     )
 
-    fun intakeBalls(time: Double = 5000.0): Command = sequential(
-        shooter.closeFingerCommand(),
-        allStartCommand(),
-        waitUntil { transfer.isBallPresent() }, // wait for sensor
-        transfer.stopTransferCommand(),
-        waitMs(time),
-        allStopCommand()
+    fun intakeBalls(time: Double = 5000.0): Command =
+        sequential (
+            shooter.closeFingerCommand(),
+            intake.startIntakeCommand(),
+            transfer.startTransferCommand(),
+            waitUntil { transfer.isBallPresent() },
+            transfer.slowTransferCommand(),
     )
 
 

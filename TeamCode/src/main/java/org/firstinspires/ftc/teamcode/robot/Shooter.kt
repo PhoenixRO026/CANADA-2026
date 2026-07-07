@@ -44,9 +44,9 @@ class Shooter(
         @JvmField var fingerOpen = 0.0
         @JvmField var fingerClose = 1.0
 
-        @JvmField var rpmFar = 3400.0
+        @JvmField var rpmFar = 5000.0
         @JvmField var rpmNear = 3000.0
-        @JvmField var rpmRest = 1000.0
+        @JvmField var rpmRest = 0.0
     }
 
     fun servoToDeg(servoPos: Double): Double {
@@ -58,7 +58,7 @@ class Shooter(
     }
 
     var targetRpm = 0.0
-    val currentRpm get() = -motorEncoder.velocity
+    val currentRpm get() = motorEncoder.velocity * 60.0 / 28
 
     var shooterPower
         get() = motorLeft.power
@@ -75,7 +75,7 @@ class Shooter(
     fun hoodToPosition(position: Double) { hoodPosition = position }
     fun hoodDown() { hoodToPosition(0.0) }
 
-    private var turretPosition = 0.5
+    var turretPosition = 0.5
         get() = servo1.position
         set(value) {
             field = value.coerceIn(0.175, 0.850)
@@ -110,7 +110,12 @@ class Shooter(
     fun updateRpm(deltaTime : Duration) {
         val voltage = voltageSensor.voltage
         val pidPower = ShooterConfig.controllerRpm.calculate(currentRpm, targetRpm, deltaTime)
-        val feedforwardPower = ShooterConfig.kS + ShooterConfig.kV * targetRpm
+
+        var kS = ShooterConfig.kS
+        if (targetRpm == 0.0) {
+            kS = 0.0
+        }
+        val feedforwardPower = kS + ShooterConfig.kV * targetRpm
         shooterPower = pidPower + feedforwardPower / voltage
     }
 
@@ -128,6 +133,4 @@ class Shooter(
             instant { goToRpm(rpm) },
             waitUntil { !shooterBusy() }
         )
-
-
 }

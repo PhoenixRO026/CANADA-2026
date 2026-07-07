@@ -51,19 +51,19 @@ class LimeLightCore(
         camera.pipelineSwitch(index)
     }
 
-    fun updateCase() {
-        val id = camera.latestResult
-            ?.fiducialResults
-            ?.firstOrNull { it.fiducialId in listOf(21, 22, 23) }
-            ?.fiducialId
-
-        currentCase = when (id) {
-            21 -> AutoCase.GPP
-            22 -> AutoCase.PGP
-            23 -> AutoCase.PPG
-            else -> AutoCase.UNKNOWN
-        }
-    }
+//    fun updateCase() {
+//        val id = camera.latestResult
+//            ?.fiducialResults
+//            ?.firstOrNull { it.fiducialId in listOf(21, 22, 23) }
+//            ?.fiducialId
+//
+//        currentCase = when (id) {
+//            21 -> AutoCase.GPP
+//            22 -> AutoCase.PGP
+//            23 -> AutoCase.PPG
+//            else -> AutoCase.UNKNOWN
+//        }
+//    }
 
     fun updateHeadingError() {
         val fid = camera.latestResult

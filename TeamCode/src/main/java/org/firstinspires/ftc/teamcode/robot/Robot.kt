@@ -42,12 +42,12 @@ class Robot(
         val motorShooterLeft = hardwareMap.get(DcMotorEx::class.java, "motorShooterLeft")
         val motorShooterRight = hardwareMap.get(DcMotorEx::class.java, "motorShooterRight")
         motorShooterLeft.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        motorShooterLeft.direction = DcMotorSimple.Direction.FORWARD
+        motorShooterLeft.direction = DcMotorSimple.Direction.REVERSE
         motorShooterLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         motorShooterRight.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         motorShooterRight.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        motorShooterRight.direction = DcMotorSimple.Direction.REVERSE
+        motorShooterRight.direction = DcMotorSimple.Direction.FORWARD
         motorShooterRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         val servoTurret1 = hardwareMap.get(Servo::class.java, "turretServo1")
@@ -91,9 +91,9 @@ class Robot(
         )
     }
 
-    fun allStartCommand() : Command = sequential(
+    fun allStartCommand() : Command = parallel(
         intake.startIntakeCommand(),
-        transfer.slowTransferCommand()
+        transfer.startTransferCommand()
     )
 
     fun allStopCommand() : Command = parallel(

@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo
 class TurretTest : LinearOpMode() {
     @Configurable
     object TurretConfig {
-        @JvmField var turretStep = 0.01
+        @JvmField var turretStep = 0.1
         @JvmField var servo1Direction = 1
         @JvmField var servo2Direction = 1
     }

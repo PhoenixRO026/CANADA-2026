@@ -33,7 +33,10 @@ open class SummerDrive : LinearOpMode() {
         val shootBalls = ButtonReader { gamepad1.dpad_up }
         val stopIntake = ButtonReader { gamepad1.dpad_down}
         val rpmToRest = ButtonReader { gamepad1.left_bumper }
-        val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake)
+        val startShooter = ButtonReader {gamepad1.right_bumper}
+        val turretGoRight = ButtonReader { gamepad1.right_trigger_pressed }
+        val turretGoLeft = ButtonReader { gamepad1.right_trigger_pressed }
+        val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake, startShooter, turretGoLeft, turretGoRight)
         val timeKeep = TimeKeep()
 
         waitForStart()
@@ -72,7 +75,7 @@ open class SummerDrive : LinearOpMode() {
             // debug zone
             //-----------------------
 
-            if(gamepad1.left_trigger >= 0.2) {
+            if (gamepad1.left_trigger >= 0.2) {
                 robot.drive.isSlowMode = true
             }
             else {
@@ -96,19 +99,32 @@ open class SummerDrive : LinearOpMode() {
                 robot.shooter.openFingerCommand().schedule()
             }
 
-//            if (shootBalls.wasJustPressed() && !robot.intakeBalls().isScheduled && !robot.shootBalls().isScheduled) {
-//                robot.shootBalls().schedule()
+            if (shootBalls.wasJustPressed()) {
+                robot.shootBalls().schedule()
+            }
+
+            if (ejectBalls.wasJustPressed()) {
+                robot.ejectBalls().schedule()
+            }
+
+            if (startShooter.wasJustPressed()) {
+                robot.shooter.goToRpmCommand(4000.0).schedule()
+            }
+
+//            if (turretGoRight.wasJustPressed()) {
+//                robot.shooter.turretPosition += 0.1 * timeKeep.deltaTime
 //            }
-//
-//            if (ejectBalls.wasJustPressed()) {
-//                robot.ejectBalls().schedule()
+//            if (turretGoLeft.wasJustPressed()) {
+//                robot.shooter.turretPosition -= 0.1
 //            }
 
-//            robot.shooter.updateRpm(timeKeep.deltaTime)
+            robot.shooter.updateRpm(timeKeep.deltaTime)
             robot.limelight.updateHeadingError()
             Scheduler.execute()
 
             panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
+            panelsTelemetry.addData("target rpm", robot.shooter.targetRpm)
+            panelsTelemetry.addData("shooter rpm", robot.shooter.shooterPower)
             panelsTelemetry.addData("turret heading error", robot.limelight.headingErrorDeg)
             panelsTelemetry.addData("turret position", robot.shooter.servo1.position)
             panelsTelemetry.addData("power intake", robot.intake.power)

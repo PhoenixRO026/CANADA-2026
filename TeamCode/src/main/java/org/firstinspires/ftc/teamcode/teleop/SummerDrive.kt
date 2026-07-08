@@ -34,9 +34,7 @@ open class SummerDrive : LinearOpMode() {
         val stopIntake = ButtonReader { gamepad1.dpad_down}
         val rpmToRest = ButtonReader { gamepad1.left_bumper }
         val startShooter = ButtonReader {gamepad1.right_bumper}
-        val turretGoRight = ButtonReader { gamepad1.right_trigger_pressed }
-        val turretGoLeft = ButtonReader { gamepad1.right_trigger_pressed }
-        val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake, startShooter, turretGoLeft, turretGoRight)
+        val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake, startShooter)
         val timeKeep = TimeKeep()
 
         waitForStart()
@@ -53,6 +51,7 @@ open class SummerDrive : LinearOpMode() {
             timeKeep.resetDeltaTime()
 
             robot.follower.update()
+            robot.limelight.updateHeadingError()
 
             //-----------------------
             // debug zone
@@ -108,14 +107,16 @@ open class SummerDrive : LinearOpMode() {
             }
 
             if (startShooter.wasJustPressed()) {
-                robot.shooter.goToRpmCommand(4000.0).schedule()
+                robot.shooter.goToRpm(4000.0)
+            }
+            if (rpmToRest.wasJustPressed()) {
+                robot.shooter.goToRpm(0.0)
             }
 
-            robot.limelight.updateHeadingError()
-            if (turretGoRight.wasJustPressed()) {
+            if (gamepad2.right_trigger > 0) {
                 robot.shooter.turretPosition += 0.1 * timeKeep.deltaTime.asS
             }
-            if (turretGoLeft.wasJustPressed()) {
+            if (gamepad2.left_trigger > 0) {
                 robot.shooter.turretPosition -= 0.1 * timeKeep.deltaTime.asS
             }
             else {

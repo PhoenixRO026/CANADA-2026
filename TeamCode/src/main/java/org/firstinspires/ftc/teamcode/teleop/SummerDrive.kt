@@ -45,7 +45,7 @@ open class SummerDrive : LinearOpMode() {
 
         robot.follower.startTeleopDrive()
         robot.shooter.closeFinger()
-//        robot.shooter.turretGoToAngle(0.0)
+        robot.shooter.turretGoToAngle(0.5)
 //        robot.shooter.hoodDown()
 
         while (opModeIsActive()) {
@@ -111,12 +111,15 @@ open class SummerDrive : LinearOpMode() {
                 robot.shooter.goToRpmCommand(4000.0).schedule()
             }
 
-//            if (turretGoRight.wasJustPressed()) {
-//                robot.shooter.turretPosition += 0.1 * timeKeep.deltaTime
-//            }
-//            if (turretGoLeft.wasJustPressed()) {
-//                robot.shooter.turretPosition -= 0.1
-//            }
+            if (turretGoRight.wasJustPressed()) {
+                robot.shooter.turretPosition += 0.1 * timeKeep.deltaTime.asS
+            }
+            if (turretGoLeft.wasJustPressed()) {
+                robot.shooter.turretPosition -= 0.1 * timeKeep.deltaTime.asS
+            }
+            else {
+                robot.shooter.updateHeading(robot.limelight.headingErrorDeg)
+            }
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
             robot.limelight.updateHeadingError()

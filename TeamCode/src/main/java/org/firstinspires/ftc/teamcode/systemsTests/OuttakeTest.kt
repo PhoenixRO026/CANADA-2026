@@ -31,7 +31,7 @@ class OuttakeTest : LinearOpMode() {
         val servoHood = hardwareMap.get(Servo::class.java, "servoHood")
         val motorTransfer = hardwareMap.get(DcMotorEx::class.java, "motorTransfer")
         motorRight.direction = DcMotorSimple.Direction.REVERSE
-//        servoHood.position = 0.0
+        servoHood.position = 0.0
 
         waitForStart()
 
@@ -44,10 +44,10 @@ class OuttakeTest : LinearOpMode() {
             val rpm = leftFront.velocity * 60.0 / 28
 
             if (gamepad1.dpad_up) {
-//                servoHood.position = (servoHood.position + OuttakeConfig.hoodStep).coerceIn(0.0, 1.0)
+                servoHood.position = (servoHood.position + OuttakeConfig.hoodStep).coerceIn(0.0, 1.0)
             }
             if (gamepad1.dpad_down) {
-//                servoHood.position = (servoHood.position - OuttakeConfig.hoodStep).coerceIn(0.0, 1.0)
+                servoHood.position = (servoHood.position - OuttakeConfig.hoodStep).coerceIn(0.0, 1.0)
             }
             if (gamepad1.a) {
                 motorTransfer.power = 1.0

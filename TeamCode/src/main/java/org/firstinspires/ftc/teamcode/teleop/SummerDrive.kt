@@ -111,6 +111,7 @@ open class SummerDrive : LinearOpMode() {
                 robot.shooter.goToRpmCommand(4000.0).schedule()
             }
 
+            robot.limelight.updateHeadingError()
             if (turretGoRight.wasJustPressed()) {
                 robot.shooter.turretPosition += 0.1 * timeKeep.deltaTime.asS
             }
@@ -122,7 +123,6 @@ open class SummerDrive : LinearOpMode() {
             }
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
-            robot.limelight.updateHeadingError()
             Scheduler.execute()
 
             panelsTelemetry.addData("rpm", robot.shooter.currentRpm)

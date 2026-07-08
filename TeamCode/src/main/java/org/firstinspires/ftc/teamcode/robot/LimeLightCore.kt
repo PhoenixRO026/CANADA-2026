@@ -13,10 +13,6 @@ import kotlin.math.pow
 class LimeLightCore(
     val camera: Limelight3A,
 ) {
-    enum class AutoCase { PPG, PGP, GPP, UNKNOWN }
-    var currentCase: AutoCase = AutoCase.UNKNOWN
-        private set
-
     var headingErrorDeg: Double = 0.0
         private set
 
@@ -51,28 +47,13 @@ class LimeLightCore(
         camera.pipelineSwitch(index)
     }
 
-//    fun updateCase() {
-//        val id = camera.latestResult
-//            ?.fiducialResults
-//            ?.firstOrNull { it.fiducialId in listOf(21, 22, 23) }
-//            ?.fiducialId
-//
-//        currentCase = when (id) {
-//            21 -> AutoCase.GPP
-//            22 -> AutoCase.PGP
-//            23 -> AutoCase.PPG
-//            else -> AutoCase.UNKNOWN
-//        }
-//    }
-
     fun updateHeadingError() {
         val fid = camera.latestResult
             ?.fiducialResults
             ?.firstOrNull()
 
         if (fid != null) {
-            val currHeadingError = fid.targetXDegrees
-            headingErrorDeg = currHeadingError
+            headingErrorDeg = -fid.targetXDegrees
             tagVisible = true
         } else {
             headingErrorDeg = 0.0

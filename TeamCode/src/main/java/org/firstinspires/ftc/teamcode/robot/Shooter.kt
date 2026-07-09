@@ -36,7 +36,7 @@ class Shooter(
         )
         @JvmField var kS = 1.4
         @JvmField var kV = 0.002
-        @JvmField var servoRange = 360.0
+        @JvmField var servoRange = 296.74
         @JvmField var gearRatio = 9.0 / 10.0
         @JvmField var maxFinalDegrees = servoRange * gearRatio
         @JvmField var targetRpmTolerance = 50.0
@@ -44,17 +44,20 @@ class Shooter(
         @JvmField var fingerOpen = 0.0
         @JvmField var fingerClose = 1.0
 
+        @JvmField var hoodDown = 0.00384
+        @JvmField var hoodUp = 0.976
+
         @JvmField var rpmFar = 5000.0
         @JvmField var rpmNear = 3000.0
         @JvmField var rpmRest = 0.0
     }
 
     fun servoToDeg(servoPos: Double): Double {
-        return servoPos * ShooterConfig.maxFinalDegrees
+        return (servoPos - 0.5) * ShooterConfig.maxFinalDegrees
     }
 
     fun degToServo(deg: Double): Double {
-        return deg / ShooterConfig.maxFinalDegrees
+        return deg / ShooterConfig.maxFinalDegrees + 0.5
     }
 
     var targetRpm = 0.0
@@ -86,7 +89,7 @@ class Shooter(
 
     var turretAngle get() = servoToDeg(turretPosition)
         set(value) {
-            turretPosition = degToServo(value) + 0.5
+            turretPosition = degToServo(value)
         }
 
     var fingerPosition

@@ -14,6 +14,7 @@ import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.commands.Commands.waitUntil
 import com.pedropathing.ivy.groups.Groups.parallel
 import com.pedropathing.ivy.groups.Groups.sequential
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.AnalogSensor
@@ -37,6 +38,7 @@ class Robot(
         val camera = hardwareMap.get(Limelight3A::class.java, "limelight")
         camera.setPollRateHz(60)
         camera.start()
+        val pinpoint = hardwareMap.get(GoBildaPinpointDriver::class.java, "odo")
 
         // Shooter
         val motorShooterLeft = hardwareMap.get(DcMotorEx::class.java, "motorShooterLeft")
@@ -54,7 +56,6 @@ class Robot(
         val servoTurret2 = hardwareMap.get(Servo::class.java, "turretServo2")
 
         val servoHood = hardwareMap.get(Servo::class.java, "servoHood")
-        servoHood.scaleRange(0.2394, 0.83)
 
         val motorRB = hardwareMap.get(DcMotorEx::class.java, "motorRB")
         val voltageSensor = hardwareMap.voltageSensor.iterator().next()
@@ -77,7 +78,8 @@ class Robot(
             finger = finger,
             hood = servoHood,
             voltageSensor = voltageSensor,
-            motorEncoder = motorRB
+            motorEncoder = motorRB,
+            pinpoint = pinpoint
             )
         transfer = Transfer(
             motor = motorTransfer,

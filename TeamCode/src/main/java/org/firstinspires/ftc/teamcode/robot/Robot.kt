@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot
 
+import com.commonlibs.units.deg
+import com.commonlibs.units.rad
 import com.pedropathing.follower.Follower
 import com.pedropathing.geometry.Pose
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -19,6 +21,9 @@ import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.AnalogSensor
 import com.qualcomm.robotcore.hardware.Servo
+import kotlin.math.atan
+import kotlin.math.atan2
+import kotlin.math.min
 
 class Robot(
     hardwareMap: HardwareMap,
@@ -79,7 +84,6 @@ class Robot(
             hood = servoHood,
             voltageSensor = voltageSensor,
             motorEncoder = motorRB,
-            pinpoint = pinpoint
             )
         transfer = Transfer(
             motor = motorTransfer,
@@ -91,6 +95,42 @@ class Robot(
         limelight = LimeLightCore(
             camera = camera
         )
+    }
+
+    enum class Side { RED, BLUE}
+
+    var BlueGoal = Pose(7.5, 135.0)
+    var RedGoal = Pose(136.5, 135.0)
+
+    fun neededTurretAngle(side : Side) : Double {
+        val goal : Pose
+
+        if (side == Side.RED)
+            goal = RedGoal
+        else
+            goal = BlueGoal
+
+        val dx = goal.x - follower.pose.x
+        val dy = goal.y - follower.pose.y
+
+        val robotAngle = atan2(dy, dx).deg.asDeg
+
+        val robotHeading = follower.pose.heading.deg.asDeg
+
+        var turretAngle = robotAngle - robotHeading
+
+        // Normalize to [-180, 180]
+        while (turretAngle > 180.0)
+            turretAngle -= 360.0
+
+        while (turretAngle < -180.0)
+            turretAngle += 360.0
+
+        return turretAngle
+    }
+
+    fun updateHeading(side : Side) {
+        shooter.turretGoToAngle(neededTurretAngle(side).coerceIn(-90.0, 90.0))
     }
 
     fun allStartCommand() : Command = parallel(
@@ -132,5 +172,6 @@ class Robot(
         transfer.stopTransferCommand(),
         intake.stopIntakeCommand()
     )
+
 
 }

@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.teleop
 
 import com.bylazar.telemetry.PanelsTelemetry
+import com.commonlibs.units.deg
 import com.pedropathing.follower.Follower
+import com.pedropathing.geometry.Pose
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
 import com.pedropathing.ivy.commands.Commands.waitMs
@@ -23,7 +25,7 @@ open class SummerDrive : LinearOpMode() {
 
     override fun runOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
-        val robot = Robot(hardwareMap)
+        val robot = Robot(hardwareMap, Pose(39.0, 56.0, Math.PI/2))
         Scheduler.reset()
 
         robot.limelight.setPipeline(pipeline)
@@ -52,27 +54,6 @@ open class SummerDrive : LinearOpMode() {
 
             robot.follower.update()
             robot.limelight.updateHeadingError()
-
-            //-----------------------
-            // debug zone
-            //-----------------------
-
-            if (gamepad1.x) {
-                val intake : Command = sequential (
-                    robot.shooter.closeFingerCommand(),
-                    robot.intake.startIntakeCommand(),
-                    robot.transfer.startTransferCommand(),
-                    waitUntil { robot.transfer.isBallPresent() },
-                    robot.transfer.stopTransferCommand(),
-                    robot.intake.stopIntakeCommand(),
-                    robot.shooter.openFingerCommand()
-                )
-                intake.schedule()
-            }
-
-            //-----------------------
-            // debug zone
-            //-----------------------
 
             if (gamepad1.left_trigger >= 0.2) {
                 robot.drive.isSlowMode = true
@@ -120,7 +101,7 @@ open class SummerDrive : LinearOpMode() {
                 robot.shooter.turretPosition -= 0.1 * timeKeep.deltaTime.asS
             }
             else {
-                robot.shooter.updateHeading(robot.limelight.headingErrorDeg)
+                robot.updateHeading(Robot.Side.BLUE)
             }
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
@@ -130,6 +111,9 @@ open class SummerDrive : LinearOpMode() {
             panelsTelemetry.addData("target rpm", robot.shooter.targetRpm)
             panelsTelemetry.addData("shooter rpm", robot.shooter.shooterPower)
             panelsTelemetry.addData("turret heading error", robot.limelight.headingErrorDeg)
+            panelsTelemetry.addData("robot heading", Math.toDegrees(robot.follower.pose.heading))
+            panelsTelemetry.addData("turret heading", robot.shooter.turretAngle)
+            panelsTelemetry.addData("needed angle", robot.neededTurretAngle(Robot.Side.RED))
             panelsTelemetry.addData("turret position", robot.shooter.servo1.position)
             panelsTelemetry.addData("power intake", robot.intake.power)
             panelsTelemetry.addData("power transfer", robot.transfer.power)

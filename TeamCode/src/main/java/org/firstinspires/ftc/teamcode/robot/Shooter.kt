@@ -38,7 +38,7 @@ class Shooter(
         @JvmField var kV = 0.002
         @JvmField var servoRange = 360.0
         @JvmField var gearRatio = 9.0 / 10.0
-        @JvmField var maxFinalDegrees = servoRange * gearRatio
+        @JvmField var maxFinalDegrees = servoRange * gearRatio // 324
         @JvmField var targetRpmTolerance = 50.0
 
         @JvmField var fingerOpen = 0.0

@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot
 
-import com.commonlibs.units.deg
-import com.commonlibs.units.rad
+import com.commonlibs.units.degToRad
+import com.commonlibs.units.mmToInch
 import com.pedropathing.follower.Follower
 import com.pedropathing.geometry.Pose
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -9,9 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants
-import com.pedropathing.ftc.localization.Encoder
 import com.pedropathing.ivy.Command
-import com.pedropathing.ivy.behaviors.EndCondition
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.commands.Commands.waitUntil
 import com.pedropathing.ivy.groups.Groups.parallel
@@ -19,11 +17,11 @@ import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.AnalogInput
-import com.qualcomm.robotcore.hardware.AnalogSensor
 import com.qualcomm.robotcore.hardware.Servo
-import kotlin.math.atan
 import kotlin.math.atan2
-import kotlin.math.min
+import kotlin.math.cos
+import kotlin.math.sign
+import kotlin.math.sin
 
 class Robot(
     hardwareMap: HardwareMap,
@@ -110,12 +108,19 @@ class Robot(
         else
             goal = BlueGoal
 
-        val dx = goal.x - follower.pose.x
-        val dy = goal.y - follower.pose.y
-
-        val robotAngle = Math.toDegrees(atan2(dy, dx))
 
         val robotHeading = Math.toDegrees(follower.pose.heading)
+
+
+        val normalAngle = 180.0 * robotHeading.sign * (-1) + robotHeading
+        val offset = 67.026.mmToInch()
+
+        val newRobotPose = Pose(follower.pose.x + offset * cos(normalAngle.degToRad()), follower.pose.y + offset * sin(normalAngle.degToRad()), robotHeading)
+
+        val dx = goal.x - newRobotPose.x
+        val dy = goal.y - newRobotPose.y
+
+        val robotAngle = Math.toDegrees(atan2(dy, dx))
 
         var turretAngle = robotAngle - robotHeading
 

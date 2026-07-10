@@ -99,7 +99,7 @@ class Robot(
 
     enum class Side { RED, BLUE}
 
-    var BlueGoal = Pose(7.5, 135.0)
+    var BlueGoal = Pose(10.0, 135.0)
     var RedGoal = Pose(136.5, 135.0)
 
     fun neededTurretAngle(side : Side) : Double {

@@ -30,12 +30,12 @@ open class SummerDrive : LinearOpMode() {
 
         robot.limelight.setPipeline(pipeline)
 
-        val intakeBalls = ButtonReader { gamepad1.dpad_right }
+        val intakeBalls = ButtonReader { gamepad1.right_bumper }
         val ejectBalls = ButtonReader { gamepad1.dpad_left }
-        val shootBalls = ButtonReader { gamepad1.dpad_up }
-        val stopIntake = ButtonReader { gamepad1.dpad_down}
-        val rpmToRest = ButtonReader { gamepad1.left_bumper }
-        val startShooter = ButtonReader {gamepad1.right_bumper}
+        val shootBalls = ButtonReader { gamepad1.a }
+        val stopIntake = ButtonReader { gamepad1.left_bumper }
+        val rpmToRest = ButtonReader { gamepad1.dpad_up }
+        val startShooter = ButtonReader {gamepad1.dpad_down}
         val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake, startShooter)
         val timeKeep = TimeKeep()
 
@@ -94,15 +94,15 @@ open class SummerDrive : LinearOpMode() {
                 robot.shooter.goToRpm(0.0)
             }
 
-            if (gamepad2.right_trigger > 0) {
+            /*if (gamepad2.right_trigger > 0) {
                 robot.shooter.turretPosition += 0.1 * timeKeep.deltaTime.asS
             }
             if (gamepad2.left_trigger > 0) {
                 robot.shooter.turretPosition -= 0.1 * timeKeep.deltaTime.asS
             }
-            else {
+            else {*/
                 robot.updateHeading(Robot.Side.BLUE)
-            }
+            //}
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
             Scheduler.execute()

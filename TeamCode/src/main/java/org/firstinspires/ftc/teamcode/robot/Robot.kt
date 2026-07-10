@@ -113,9 +113,9 @@ class Robot(
         val dx = goal.x - follower.pose.x
         val dy = goal.y - follower.pose.y
 
-        val robotAngle = atan2(dy, dx).deg.asDeg
+        val robotAngle = Math.toDegrees(atan2(dy, dx))
 
-        val robotHeading = follower.pose.heading.deg.asDeg
+        val robotHeading = Math.toDegrees(follower.pose.heading)
 
         var turretAngle = robotAngle - robotHeading
 
@@ -126,7 +126,7 @@ class Robot(
         while (turretAngle < -180.0)
             turretAngle += 360.0
 
-        return turretAngle
+        return -turretAngle
     }
 
     fun updateHeading(side : Side) {
@@ -152,6 +152,15 @@ class Robot(
             transfer.slowTransferCommand(),
     )
 
+    var shootMany : Command = sequential(
+        shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar),
+        shooter.openFingerCommand(),
+        allStartCommand(),
+        waitMs(9000.0),
+        allStopCommand(),
+        shooter.closeFingerCommand(),
+        shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)
+    )
 
     fun shootBalls(rpm : Double = Shooter.ShooterConfig.rpmFar) : Command = sequential(
         shooter.goToRpmCommand(rpm),

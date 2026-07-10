@@ -36,7 +36,7 @@ class Shooter(
         )
         @JvmField var kS = 1.4
         @JvmField var kV = 0.002
-        @JvmField var servoRange = 296.74
+        @JvmField var servoRange = 360.0
         @JvmField var gearRatio = 9.0 / 10.0
         @JvmField var maxFinalDegrees = servoRange * gearRatio
         @JvmField var targetRpmTolerance = 50.0
@@ -87,7 +87,7 @@ class Shooter(
         }
 
 
-    var turretAngle get() = servoToDeg(turretPosition)
+    var turretAngle get() = -servoToDeg(turretPosition)
         set(value) {
             turretPosition = degToServo(value)
         }

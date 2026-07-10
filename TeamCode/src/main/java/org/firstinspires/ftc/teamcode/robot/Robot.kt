@@ -179,6 +179,19 @@ class Robot(
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)
     )
 
+    fun shootBallsAuto(rpm : Double = Shooter.ShooterConfig.rpmFar) : Command = sequential(
+        shooter.goToRpmCommand(rpm),
+        shooter.openFingerCommand(),
+        waitMs(300.0),
+        allStartCommand(),
+        waitMs(300.0),
+        intake.stopIntakeCommand(),
+        waitMs(700.0),
+        transfer.stopTransferCommand(),
+        shooter.closeFingerCommand(),
+        shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)
+    )
+
     fun ejectBalls() : Command = sequential(
         intake.reverseIntakeCommand(),
         transfer.reverseTransferCommand(),

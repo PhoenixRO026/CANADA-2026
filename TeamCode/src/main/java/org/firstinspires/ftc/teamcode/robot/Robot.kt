@@ -167,9 +167,12 @@ class Robot(
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)
     )
 
-    fun shootBalls(rpm : Double = Shooter.ShooterConfig.rpmFar) : Command = sequential(
-        shooter.goToRpmCommand(rpm),
-        shooter.openFingerCommand(),
+    fun shootBalls(rpm : Double = Shooter.ShooterConfig.rpmFar, hoodPos : Double = Shooter.ShooterConfig.hoodDown) : Command = sequential(
+        parallel(
+            shooter.goToRpmCommand(rpm),
+            shooter.openFingerCommand(),
+            shooter.hoodToPositionCommand(hoodPos)
+        ),
         allStartCommand(),
         waitMs(300.0),
         intake.stopIntakeCommand(),
@@ -179,9 +182,12 @@ class Robot(
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)
     )
 
-    fun shootBallsAuto(rpm : Double = Shooter.ShooterConfig.rpmFar) : Command = sequential(
-        shooter.goToRpmCommand(rpm),
-        shooter.openFingerCommand(),
+    fun shootBallsAuto(rpm : Double = Shooter.ShooterConfig.rpmFar, hoodPos : Double = Shooter.ShooterConfig.hoodDown) : Command = sequential(
+        parallel(
+            shooter.goToRpmCommand(rpm),
+            shooter.openFingerCommand(),
+            shooter.hoodToPositionCommand(hoodPos)
+        ),
         waitMs(300.0),
         allStartCommand(),
         waitMs(300.0),

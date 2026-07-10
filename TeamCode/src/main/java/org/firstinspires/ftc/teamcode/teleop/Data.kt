@@ -82,7 +82,7 @@ open class Data : LinearOpMode() {
                 robot.intakeBalls().schedule()
             }
             if (shootBalls.wasJustPressed()) {
-                robot.shootBalls().schedule()
+                robot.shootBalls(DataConfig.rpm, DataConfig.hoodAngle).schedule()
             }
             if (stopIntake.wasJustPressed()) {
                 robot.intake.stopIntakeCommand().schedule()

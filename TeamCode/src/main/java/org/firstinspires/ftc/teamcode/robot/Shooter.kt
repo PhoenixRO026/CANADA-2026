@@ -78,6 +78,8 @@ class Shooter(
     fun hoodToPosition(position: Double) { hoodPosition = position }
     fun hoodDown() { hoodToPosition(ShooterConfig.hoodDown) }
 
+    fun hoodToPositionCommand(position : Double) : Command = instant { hoodToPosition(position) }
+
     var turretPosition = 0.5
         get() = servo1.position
         set(value) {

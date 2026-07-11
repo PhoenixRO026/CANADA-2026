@@ -14,7 +14,7 @@ class PrepPositions : LinearOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
         val finger = hardwareMap.get(Servo::class.java, "finger")
         val hood = hardwareMap.get(Servo::class.java, "servoHood")
-        hood.scaleRange(0.2394, 0.83)
+        hood.scaleRange(0.3, 0.83)
         finger.scaleRange(0.3844, 0.67)
 
         var previousTime: Double
@@ -25,7 +25,7 @@ class PrepPositions : LinearOpMode() {
         previousTime = now()
 
         finger.position = 0.5
-        hood.position = 0.0
+        hood.position = 0.5
 
         while (opModeIsActive()) {
             deltaTime = now() - previousTime

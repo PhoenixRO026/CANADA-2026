@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot
 
 import com.bylazar.configurables.annotations.Configurable
+import com.commonlibs.units.Distance
 import com.commonlibs.units.Duration
 import com.commonlibs.units.deg
 import com.pedropathing.ftc.localization.Encoder
@@ -8,12 +9,14 @@ import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.commands.Commands.instant
 import com.pedropathing.ivy.commands.Commands.waitUntil
 import com.pedropathing.ivy.groups.Groups.sequential
+import com.pedropathing.math.MathFunctions
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.library.controller.PIDController
 import kotlin.math.abs
+import kotlin.math.pow
 
 class Shooter(
     val motorLeft : DcMotorEx,
@@ -44,8 +47,8 @@ class Shooter(
         @JvmField var fingerOpen = 0.0
         @JvmField var fingerClose = 1.0
 
-        @JvmField var hoodDown = 0.00384
-        @JvmField var hoodUp = 0.976
+        @JvmField var hoodDown = 0.3
+        @JvmField var hoodUp = 0.83
 
         @JvmField var rpmFar = 5000.0
         @JvmField var rpmNear = 3000.0
@@ -73,7 +76,7 @@ class Shooter(
     var hoodPosition
         get() = hood.position
         set(value) {
-            hood.position = value
+            hood.position = value.coerceIn(0.3, 0.83)
         }
     fun hoodToPosition(position: Double) { hoodPosition = position }
     fun hoodDown() { hoodToPosition(ShooterConfig.hoodDown) }
@@ -138,4 +141,13 @@ class Shooter(
             instant { goToRpm(rpm) },
             waitUntil { !shooterBusy() }
         )
+
+    fun neededRpm(distance: Double) : Double {
+        return MathFunctions.clamp(0.020562 * distance.pow(2) - 2.82086 * distance + 3319.09707,
+            0.0, 5100.0)
+    }
+
+    fun neededAngle(distance: Double) : Double {
+        return MathFunctions.clamp(0.00117854 * distance + 0.310367, 0.3, 0.83)
+    }
 }

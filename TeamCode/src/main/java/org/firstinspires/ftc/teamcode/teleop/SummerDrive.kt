@@ -46,7 +46,7 @@ open class SummerDrive : LinearOpMode() {
         robot.follower.startTeleopDrive()
         robot.shooter.closeFinger()
         robot.shooter.turretGoToAngle(0.5)
-//        robot.shooter.hoodDown()
+        robot.shooter.hoodDown()
 
         while (opModeIsActive()) {
             buttons.forEach { it.readValue() }
@@ -54,6 +54,10 @@ open class SummerDrive : LinearOpMode() {
 
             robot.follower.update()
             robot.limelight.updateHeadingError()
+            robot.limelight.updateDistance()
+
+            val targetRpm = robot.shooter.neededRpm(robot.limelight.aprilTagDistance)
+            val targetAngle = robot.shooter.neededAngle(robot.limelight.aprilTagDistance)
 
             if (gamepad1.left_trigger >= 0.2) {
                 robot.drive.isSlowMode = true
@@ -80,7 +84,7 @@ open class SummerDrive : LinearOpMode() {
             }
 
             if (shootBalls.wasJustPressed()) {
-                robot.shootBalls().schedule()
+                robot.shootBalls(targetRpm, targetAngle).schedule()
             }
 
             if (ejectBalls.wasJustPressed()) {
@@ -101,10 +105,11 @@ open class SummerDrive : LinearOpMode() {
                 robot.shooter.turretPosition -= 0.1 * timeKeep.deltaTime.asS
             }
             else {*/
-                robot.updateHeading(Robot.Side.BLUE)
+//                robot.updateHeading(Robot.Side.BLUE)
             //}
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
+
             Scheduler.execute()
 
             panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
@@ -118,6 +123,9 @@ open class SummerDrive : LinearOpMode() {
             panelsTelemetry.addData("power intake", robot.intake.power)
             panelsTelemetry.addData("power transfer", robot.transfer.power)
             panelsTelemetry.addData("sensor distance", robot.transfer.distance)
+            panelsTelemetry.addData("calculated rpm", targetRpm)
+            panelsTelemetry.addData("calculated angle", targetAngle)
+            panelsTelemetry.addData("distance from goal", robot.limelight.aprilTagDistance)
             panelsTelemetry.update(telemetry)
         }
     }

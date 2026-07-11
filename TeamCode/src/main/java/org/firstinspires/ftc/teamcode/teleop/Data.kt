@@ -54,6 +54,7 @@ open class Data : LinearOpMode() {
 
             robot.follower.update()
             robot.limelight.updateHeadingError()
+            robot.limelight.updateDistance()
 
             if (gamepad1.left_trigger >= 0.2) {
                 robot.drive.isSlowMode = true
@@ -85,18 +86,18 @@ open class Data : LinearOpMode() {
                 robot.shootBalls(DataConfig.rpm, DataConfig.hoodAngle).schedule()
             }
             if (stopIntake.wasJustPressed()) {
-                robot.intake.stopIntakeCommand().schedule()
+                robot.allStopCommand().schedule()
             }
-
             robot.shooter.updateRpm(timeKeep.deltaTime)
             Scheduler.execute()
 
             panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
             panelsTelemetry.addData("target rpm", robot.shooter.targetRpm)
             panelsTelemetry.addData("shooter power", robot.shooter.shooterPower)
-            panelsTelemetry.addData("hood angle", robot.shooter.hoodDown())
+            panelsTelemetry.addData("hood angle", robot.shooter.hoodPosition)
             panelsTelemetry.addData("turret heading error", robot.limelight.headingErrorDeg)
             panelsTelemetry.addData("turret position", robot.shooter.servo1.position)
+            panelsTelemetry.addData("distance", robot.limelight.aprilTagDistance)
             panelsTelemetry.update(telemetry)
         }
     }

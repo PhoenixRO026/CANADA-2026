@@ -21,7 +21,7 @@ class LimeLightCore(
 
     var aprilTagDistance: Double = 0.0
 
-    private fun updateDistance() {
+    fun updateDistance() {
         val fid = camera.latestResult
             ?.fiducialResults
             ?.firstOrNull { it.fiducialId in listOf(20, 24) }
@@ -33,14 +33,10 @@ class LimeLightCore(
         }
 
         val x = pose.position.x
+        val y = pose.position.y
         val z = pose.position.z
 
-        aprilTagDistance = kotlin.math.sqrt(x * x + z * z)
-    }
-
-    fun getDistance() : Double {
-        updateDistance()
-        return aprilTagDistance
+        aprilTagDistance = kotlin.math.sqrt(x * x + y * y + z * z) * 100
     }
 
     fun setPipeline(index: Int) {

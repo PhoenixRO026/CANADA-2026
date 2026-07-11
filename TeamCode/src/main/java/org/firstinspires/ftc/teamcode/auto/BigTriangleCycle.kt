@@ -23,13 +23,18 @@ class BigTriangleCycle : LinearOpMode() {
     private val startPose = Pose(18.0, 118.0, Math.toRadians(144.0))
     private val scorePreloadPose = Pose(40.0, 95.0, Math.toRadians(180.0))
     private val intakeClosePose = Pose(20.0, 82.5, Math.toRadians(180.0))
-    private val intakeMiddlePose = Pose()
+    private val intakeMiddlePose = Pose(16.0, 58.0, Math.toRadians(180.0))
+    private val intakeGatePose = Pose(12.0, 58.0, Math.toRadians(145.0))
     private val bigTriangleShootPose = Pose(44.5, 82.5, Math.toRadians(180.0))
 
     private lateinit var robot : Robot
     private lateinit var scorePreload: PathChain
     private lateinit var intakeClose: PathChain
-    private lateinit var returnToShoot: PathChain
+    private lateinit var shootClose: PathChain
+    private lateinit var shootMiddle: PathChain
+    private lateinit var intakeMiddle: PathChain
+    private lateinit var intakeGate: PathChain
+    private lateinit var shootGate: PathChain
 
     private fun buildPaths() {
         scorePreload = robot.follower.pathBuilder()
@@ -49,14 +54,14 @@ class BigTriangleCycle : LinearOpMode() {
             .addPath(
                 BezierCurve(
                     scorePreloadPose,
-                    Pose(47.34, 80.61),
+                    Pose(47.34, 80.61), // control point
                     intakeClosePose
                 )
             )
             .setConstantHeadingInterpolation(Math.PI)
             .build()
 
-        returnToShoot = robot.follower.pathBuilder()
+        shootClose = robot.follower.pathBuilder()
             .addPath(
                 BezierLine(
                     intakeClosePose,
@@ -65,12 +70,54 @@ class BigTriangleCycle : LinearOpMode() {
             )
             .setConstantHeadingInterpolation(Math.PI)
             .build()
-    }
+
+        intakeMiddle = robot.follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    bigTriangleShootPose,
+                    Pose(35.0710, 60.340),
+                    intakeMiddlePose
+                )
+            )
+            .setConstantHeadingInterpolation(Math.PI)
+            .build()
+
+        shootMiddle = robot.follower.pathBuilder()
+            .addPath(
+                BezierLine(
+                    intakeMiddlePose,
+                    bigTriangleShootPose
+                )
+            )
+            .setConstantHeadingInterpolation(Math.PI)
+            .build()
+
+        intakeGate = robot.follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    bigTriangleShootPose,
+                    Pose(35.071, 60.340),
+                    intakeGatePose
+                )
+            )
+            .setLinearHeadingInterpolation(bigTriangleShootPose.heading, intakeGatePose.heading)
+            .build()
+
+        shootGate = robot.follower.pathBuilder()
+            .addPath(
+                BezierLine(
+                    intakeGatePose,
+                    bigTriangleShootPose
+                )
+            )
+            .setLinearHeadingInterpolation(intakeGatePose.heading, bigTriangleShootPose.heading)
+            .build()
+}
 
     fun autoRoutine() : Command = sequential (
         parallel (
             robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar),
-                follow(robot.follower, scorePreload),
+                follow(robot.follower, scorePreload)
             ),
         robot.shootBallsAuto(Shooter.ShooterConfig.rpmFar),
         parallel(
@@ -78,11 +125,47 @@ class BigTriangleCycle : LinearOpMode() {
             robot.intakeBalls()
         ),
         parallel(
-            follow(robot.follower, returnToShoot),
+            follow(robot.follower, shootClose),
             robot.allStopCommand(),
-            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar),
+            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar)
         ),
-        robot.shootBallsAuto(Shooter.ShooterConfig.rpmFar)
+        robot.shootBallsAuto(Shooter.ShooterConfig.rpmFar),
+        parallel(
+            follow(robot.follower, intakeMiddle),
+            robot.intakeBalls()
+        ),
+        parallel(
+            follow(robot.follower, shootClose),
+            robot.allStopCommand(),
+            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar)
+        ),
+        parallel(
+            follow(robot.follower, intakeGate),
+            robot.intakeBalls()
+        ),
+        parallel(
+            follow(robot.follower, shootClose),
+            robot.allStopCommand(),
+            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar)
+        ),
+        parallel(
+            follow(robot.follower, intakeGate),
+            robot.intakeBalls()
+        ),
+        parallel(
+            follow(robot.follower, shootClose),
+            robot.allStopCommand(),
+            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar)
+        ),
+        parallel(
+            follow(robot.follower, intakeGate),
+            robot.intakeBalls()
+        ),
+        parallel(
+            follow(robot.follower, shootClose),
+            robot.allStopCommand(),
+            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar)
+        ),
     )
 
     override fun runOpMode() {

@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.library.controller.PIDController
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.sin
 
 class Shooter(
     val motorLeft : DcMotorEx,
@@ -76,9 +77,16 @@ class Shooter(
     var hoodPosition
         get() = hood.position
         set(value) {
+            if (value.isNaN())
+                hood.position = 0.5
             hood.position = value.coerceIn(0.3, 0.83)
         }
-    fun hoodToPosition(position: Double) { hoodPosition = position }
+    fun hoodToPosition(position: Double) {
+        if (position.isNaN() || position !in 0.0 .. 1.0)
+            return
+        else
+            hoodPosition = position
+    }
     fun hoodDown() { hoodToPosition(ShooterConfig.hoodDown) }
 
     fun hoodToPositionCommand(position : Double) : Command = instant { hoodToPosition(position) }
@@ -143,11 +151,32 @@ class Shooter(
         )
 
     fun neededRpm(distance: Double) : Double {
-        return MathFunctions.clamp(0.020562 * distance.pow(2) - 2.82086 * distance + 3319.09707,
-            0.0, 5100.0)
+        if(distance < 270) {
+            return MathFunctions.clamp(
+                0.0522296 * distance.pow(2) - 12.01592 * distance + 3939.40639,
+                0.0, 6000.0
+            )
+        }
+        else {
+            return MathFunctions.clamp(
+                0.0622614 * distance.pow(2) - 35.77519 * distance + 10383.1872,
+                0.0, 6000.0
+            )
+        }
     }
 
     fun neededAngle(distance: Double) : Double {
-        return MathFunctions.clamp(0.00117854 * distance + 0.310367, 0.3, 0.83)
+        if (distance < 270) {
+            return MathFunctions.clamp(
+                -0.00000878411 * distance.pow(2) + 0.00397688 * distance + 0.100881,
+                0.3, 0.83
+            )
+        }
+        else {
+            return MathFunctions.clamp(
+                0.120601 * sin(0.10933 * distance - 2.55739) + 0.49653,
+                0.0, 1.0
+            )
+        }
     }
 }

@@ -134,8 +134,14 @@ class Robot(
         return -turretAngle
     }
 
-    fun updateHeading(side : Side) {
-        shooter.turretGoToAngle(neededTurretAngle(side).coerceIn(-90.0, 90.0))
+    fun updateHeading(side: Side) {
+        val angle = neededTurretAngle(side)
+
+        if (!angle.isFinite()) {
+            return
+        }
+
+        shooter.turretGoToAngle(angle.coerceIn(-90.0, 90.0))
     }
 
     fun allStartCommand() : Command = parallel(
@@ -174,12 +180,14 @@ class Robot(
             shooter.hoodToPositionCommand(hoodPos)
         ),
         allStartCommand(),
-        waitMs(300.0),
+        waitMs(200.0),
         intake.stopIntakeCommand(),
-        waitMs(700.0),
+//        shooter.hoodToPositionCommand(shooter.hoodPosition - 0.1),
+        waitMs(400.0),
         transfer.stopTransferCommand(),
         shooter.closeFingerCommand(),
-        shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)
+        shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest),
+//        shooter.hoodToPositionCommand(shooter.hoodPosition + 0.1)
     )
 
     fun shootBallsAuto(rpm : Double = Shooter.ShooterConfig.rpmFar, hoodPos : Double = Shooter.ShooterConfig.hoodDown) : Command = sequential(

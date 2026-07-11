@@ -113,13 +113,12 @@ class BigTriangleCycle : LinearOpMode() {
             .setLinearHeadingInterpolation(intakeGatePose.heading, bigTriangleShootPose.heading)
             .build()
 }
-
     fun autoRoutine() : Command = sequential (
         parallel (
-            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar),
+            robot.shooter.goToAutoRpmCommand(),
                 follow(robot.follower, scorePreload)
             ),
-        robot.shootBallsAuto(Shooter.ShooterConfig.rpmFar),
+        robot.shootBallsAuto(),
         parallel(
             follow(robot.follower, intakeClose),
             robot.intakeBalls()
@@ -127,9 +126,10 @@ class BigTriangleCycle : LinearOpMode() {
         parallel(
             follow(robot.follower, shootClose),
             robot.allStopCommand(),
-            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar)
+            robot.shooter.goToAutoRpmCommand(),
+            robot.shooter.goToAutoAngleCommand()
         ),
-        robot.shootBallsAuto(Shooter.ShooterConfig.rpmFar),
+        robot.shootBallsAuto(),
         parallel(
             follow(robot.follower, intakeMiddle),
             robot.intakeBalls()
@@ -137,8 +137,10 @@ class BigTriangleCycle : LinearOpMode() {
         parallel(
             follow(robot.follower, shootClose),
             robot.allStopCommand(),
-            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar)
+            robot.shooter.goToAutoRpmCommand(),
+            robot.shooter.goToAutoAngleCommand()
         ),
+        robot.shootBallsAuto(),
         parallel(
             follow(robot.follower, intakeGate),
             robot.intakeBalls()
@@ -146,8 +148,10 @@ class BigTriangleCycle : LinearOpMode() {
         parallel(
             follow(robot.follower, shootClose),
             robot.allStopCommand(),
-            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar)
+            robot.shooter.goToAutoRpmCommand(),
+            robot.shooter.goToAutoAngleCommand()
         ),
+        robot.shootBallsAuto(),
         parallel(
             follow(robot.follower, intakeGate),
             robot.intakeBalls()
@@ -155,8 +159,10 @@ class BigTriangleCycle : LinearOpMode() {
         parallel(
             follow(robot.follower, shootClose),
             robot.allStopCommand(),
-            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar)
+            robot.shooter.goToAutoRpmCommand(),
+            robot.shooter.goToAutoAngleCommand()
         ),
+        robot.shootBallsAuto(),
         parallel(
             follow(robot.follower, intakeGate),
             robot.intakeBalls()
@@ -164,8 +170,10 @@ class BigTriangleCycle : LinearOpMode() {
         parallel(
             follow(robot.follower, shootClose),
             robot.allStopCommand(),
-            robot.shooter.goToRpmCommand(Shooter.ShooterConfig.rpmFar)
+            robot.shooter.goToAutoRpmCommand(),
+            robot.shooter.goToAutoAngleCommand()
         ),
+        robot.shootBallsAuto(),
     )
 
     override fun runOpMode() {
@@ -181,9 +189,16 @@ class BigTriangleCycle : LinearOpMode() {
 
         while (opModeIsActive()) {
             robot.follower.update()
-            Scheduler.execute()
+
+            robot.limelight.updateDistance()
+
+            val autoRpm = robot.shooter.neededRpm(robot.limelight.aprilTagDistance)
+            val autoAngle = robot.shooter.neededAngle(robot.limelight.aprilTagDistance)
+
             robot.shooter.updateRpm(timeKeep.deltaTime)
             robot.updateHeading(Robot.Side.BLUE)
+
+            Scheduler.execute()
         }
     }
 }

@@ -65,6 +65,8 @@ class Shooter(
     }
 
     var targetRpm = 0.0
+    var autoRpm = 0.0
+    var autoAngle = 0.0
     val currentRpm get() = motorEncoder.velocity * 60.0 / 28
 
     var shooterPower
@@ -150,33 +152,44 @@ class Shooter(
             waitUntil { !shooterBusy() }
         )
 
+    fun goToAutoRpmCommand(): Command =
+        sequential(
+            instant { goToRpm(autoRpm) },
+            waitUntil { !shooterBusy() }
+        )
+
+    fun goToAutoAngleCommand(): Command = instant { hoodToPosition(autoAngle) }
+
     fun neededRpm(distance: Double) : Double {
-        if(distance < 270) {
-            return MathFunctions.clamp(
+        if (distance < 270) {
+            autoRpm = MathFunctions.clamp(
                 0.0522296 * distance.pow(2) - 12.01592 * distance + 3939.40639,
                 0.0, 6000.0
             )
         }
         else {
-            return MathFunctions.clamp(
+            autoRpm = MathFunctions.clamp(
                 0.0622614 * distance.pow(2) - 35.77519 * distance + 10383.1872,
                 0.0, 6000.0
             )
         }
+        return autoRpm
     }
 
     fun neededAngle(distance: Double) : Double {
         if (distance < 270) {
-            return MathFunctions.clamp(
+            autoAngle = MathFunctions.clamp(
                 -0.00000878411 * distance.pow(2) + 0.00397688 * distance + 0.100881,
                 0.3, 0.83
             )
+
         }
         else {
-            return MathFunctions.clamp(
+            autoAngle = MathFunctions.clamp(
                 0.120601 * sin(0.10933 * distance - 2.55739) + 0.49653,
                 0.0, 1.0
             )
         }
+        return autoAngle
     }
 }

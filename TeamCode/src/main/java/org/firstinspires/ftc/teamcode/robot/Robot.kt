@@ -174,12 +174,14 @@ class Robot(
             shooter.hoodToPositionCommand(hoodPos)
         ),
         allStartCommand(),
-        waitMs(300.0),
+        waitMs(200.0),
         intake.stopIntakeCommand(),
-        waitMs(700.0),
+        shooter.hoodToPositionCommand(shooter.hoodPosition - 0.1),
+        waitMs(400.0),
         transfer.stopTransferCommand(),
         shooter.closeFingerCommand(),
-        shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)
+        shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest),
+        shooter.hoodToPositionCommand(shooter.hoodPosition + 0.1)
     )
 
     fun shootBallsAuto(rpm : Double = Shooter.ShooterConfig.rpmFar, hoodPos : Double = Shooter.ShooterConfig.hoodDown) : Command = sequential(

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.paths
+package org.firstinspires.ftc.teamcode.auto
 
 import com.bylazar.telemetry.PanelsTelemetry
 import com.pedropathing.geometry.BezierCurve
@@ -6,9 +6,8 @@ import com.pedropathing.geometry.BezierLine
 import com.pedropathing.geometry.Pose
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
-import com.pedropathing.ivy.groups.Groups.parallel
-import com.pedropathing.ivy.groups.Groups.sequential
-import com.pedropathing.ivy.pedro.PedroCommands.follow
+import com.pedropathing.ivy.groups.Groups
+import com.pedropathing.ivy.pedro.PedroCommands
 import com.pedropathing.paths.PathChain
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -17,13 +16,13 @@ import org.firstinspires.ftc.teamcode.robot.Robot
 
 @Autonomous
 class BigTriangleBlueSolo : LinearOpMode() {
-    private val startPose = Pose(18.0, 2118.0, Math.toRadians(144.0))
+    private val startPose = Pose(18.0, 118.0, Math.toRadians(144.0))
     private val scorePreloadPose = Pose(40.0, 95.0, Math.toRadians(180.0))
-    private val intakeClosePose = Pose(20.0, 84.0, Math.toRadians(180.0))
+    private val intakeClosePose = Pose(22.0, 84.0, Math.toRadians(180.0))
     private val closeShootPose = Pose(44.5, 83.0, Math.toRadians(180.0))
-    private val intakeMiddlePose = Pose(15.0, 59.0, Math.toRadians(180.0))
+    private val intakeMiddlePose = Pose(17.0, 59.0, Math.toRadians(180.0))
     private val gateApproachPose = Pose(23.5, 66.0, Math.toRadians(180.0))
-    private val gateRamPose = Pose(11.0, 46.0, Math.toRadians(150.0))
+    private val gateRamPose = Pose(12.0, 46.0, Math.toRadians(150.0))
     private val bigTriangleShootPose = Pose(44.5, 82.5, Math.toRadians(180.0))
 
     private lateinit var robot : Robot
@@ -75,57 +74,77 @@ class BigTriangleBlueSolo : LinearOpMode() {
             .build()
     }
 
-    fun autoRoutine() : Command = sequential (
+    fun autoRoutine() : Command = Groups.sequential(
         // Preload
-        parallel (
+        Groups.parallel(
             robot.shooter.goToRpmCommand(robot.shooter.neededRpm(125.0)),
-            follow(robot.follower, scorePreload)
+            PedroCommands.follow(robot.follower, scorePreload)
         ),
         robot.shootBallsAuto(),
 
         // Close Line
-        parallel(
-            follow(robot.follower, intakeClose),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, intakeClose),
             robot.intakeBalls()
         ),
-        parallel(
-            follow(robot.follower, shootClose),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, shootClose),
             robot.allStopCommand(),
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
         robot.shootBallsAuto(),
 
         // Middle Line
-        parallel(
-            follow(robot.follower, intakeMiddle),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, intakeMiddle),
             robot.intakeBalls()
         ),
-        parallel(
-            follow(robot.follower, shootMiddle),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, shootMiddle),
             robot.allStopCommand(),
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
         robot.shootBallsAuto(),
 
         // Gate Cycles (1 through 5)
-        parallel(follow(robot.follower, intakeGate), robot.intakeBalls()),
-        parallel(follow(robot.follower, shootGate), robot.allStopCommand(), robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))),
+        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, shootGate),
+            robot.allStopCommand(),
+            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+        ),
         robot.shootBallsAuto(),
 
-        parallel(follow(robot.follower, intakeGate), robot.intakeBalls()),
-        parallel(follow(robot.follower, shootGate), robot.allStopCommand(), robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))),
+        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, shootGate),
+            robot.allStopCommand(),
+            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+        ),
         robot.shootBallsAuto(),
 
-        parallel(follow(robot.follower, intakeGate), robot.intakeBalls()),
-        parallel(follow(robot.follower, shootGate), robot.allStopCommand(), robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))),
+        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, shootGate),
+            robot.allStopCommand(),
+            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+        ),
         robot.shootBallsAuto(),
 
-        parallel(follow(robot.follower, intakeGate), robot.intakeBalls()),
-        parallel(follow(robot.follower, shootGate), robot.allStopCommand(), robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))),
+        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, shootGate),
+            robot.allStopCommand(),
+            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+        ),
         robot.shootBallsAuto(),
 
-        parallel(follow(robot.follower, intakeGate), robot.intakeBalls()),
-        parallel(follow(robot.follower, shootGate), robot.allStopCommand(), robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))),
+        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, shootGate),
+            robot.allStopCommand(),
+            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+        ),
         robot.shootBallsAuto()
     )
 
@@ -157,6 +176,9 @@ class BigTriangleBlueSolo : LinearOpMode() {
             panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
             panelsTelemetry.addData("distance from goal", goalDist)
             panelsTelemetry.addData("sensor distance", robot.transfer.distance)
+            panelsTelemetry.addData("follower busy", robot.follower.isBusy)
+            panelsTelemetry.addData("follower stuck", robot.follower.isRobotStuck)
+            panelsTelemetry.update(telemetry)
         }
     }
 }

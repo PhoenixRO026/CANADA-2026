@@ -180,7 +180,7 @@ class Robot(
             transfer.startTransferCommand(),
             race (
                 waitUntil { transfer.isBallPresent() },
-                waitMs(1000.0)
+                waitMs(3000.0)
             ),
             transfer.slowTransferCommand(),
     )

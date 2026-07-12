@@ -56,7 +56,7 @@ open class SummerDrive : LinearOpMode() {
             robot.limelight.updateHeadingError()
             robot.limelight.updateDistance()
 
-            val targetRpm = robot.shooter.neededRpm(robot.limelight.aprilTagDistance)
+            val targetRpm = robot.shooter.neededRpm(robot.distanceFromGoal(Robot.Side.BLUE))
             val targetAngle = robot.shooter.neededAngle(robot.limelight.aprilTagDistance)
 
             if (gamepad1.left_trigger >= 0.2) {

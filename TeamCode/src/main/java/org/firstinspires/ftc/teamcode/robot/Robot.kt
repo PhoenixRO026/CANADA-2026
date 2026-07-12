@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot
 
 import com.commonlibs.units.degToRad
 import com.commonlibs.units.mmToInch
+import com.commonlibs.units.rad
 import com.pedropathing.follower.Follower
 import com.pedropathing.geometry.Pose
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants
 import com.pedropathing.ivy.Command
+import com.pedropathing.ivy.commands.Commands.instant
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.commands.Commands.waitUntil
 import com.pedropathing.ivy.groups.Groups.parallel
@@ -18,10 +20,13 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.Servo
+import java.lang.Math.pow
 import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.pow
 import kotlin.math.sign
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 class Robot(
     hardwareMap: HardwareMap,
@@ -100,6 +105,18 @@ class Robot(
     var BlueGoal = Pose(10.0, 135.0)
     var RedGoal = Pose(136.5, 135.0)
 
+    fun distanceFromGoal(side : Side) : Double {
+        val goal : Pose
+
+        if (side == Side.RED)
+            goal = RedGoal
+        else
+            goal = BlueGoal
+
+        val d = sqrt((follower.pose.x - goal.x).pow(2) + (follower.pose.y - goal.y).pow(2))
+        return d
+    }
+
     fun neededTurretAngle(side : Side) : Double {
         val goal : Pose
 
@@ -161,6 +178,13 @@ class Robot(
             transfer.startTransferCommand(),
             waitUntil { transfer.isBallPresent() },
             transfer.slowTransferCommand(),
+    )
+
+    fun goToRpmAndAngleCommand(dist : Double) : Command = sequential(
+        instant { shooter.autoRpm = shooter.neededRpm(dist) },
+        instant { shooter.autoAngle = shooter.neededAngle(dist) },
+        shooter.goToAutoRpmCommand(),
+        shooter.goToAutoAngleCommand()
     )
 
     var shootMany : Command = sequential(

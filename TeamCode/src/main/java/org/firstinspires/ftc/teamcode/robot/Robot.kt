@@ -114,7 +114,7 @@ class Robot(
         else
             goal = BlueGoal
 
-        val d = sqrt((follower.pose.x - goal.x).pow(2) + (follower.pose.y - goal.y).pow(2))
+        val d = sqrt((follower.pose.x - goal.x).pow(2) + (follower.pose.y - goal.y).pow(2)) * 2.54 - 12
         drive.distanceFromGoal = d
         return d
     }
@@ -173,14 +173,14 @@ class Robot(
         transfer.stopTransferCommand()
     )
 
-    fun intakeBalls(time: Double = 5000.0): Command =
+    fun intakeBalls(time: Double = 2500.0): Command =
         sequential (
             shooter.closeFingerCommand(),
             intake.startIntakeCommand(),
             transfer.startTransferCommand(),
             race (
                 waitUntil { transfer.isBallPresent() },
-                waitMs(1500.0)
+                waitMs(3000.0)
             ),
             transfer.slowTransferCommand(),
     )
@@ -219,8 +219,8 @@ class Robot(
 
     fun shootBallsAuto() : Command = sequential(
         parallel(
-            shooter.goToRpmCommand(shooter.autoRpm),
             shooter.openFingerCommand(),
+            shooter.goToRpmCommand(shooter.autoRpm),
             shooter.hoodToPositionCommand(shooter.autoAngle)
         ),
         waitMs(200.0),

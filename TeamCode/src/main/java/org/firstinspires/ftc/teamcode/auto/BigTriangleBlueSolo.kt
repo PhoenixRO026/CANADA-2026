@@ -18,10 +18,10 @@ import org.firstinspires.ftc.teamcode.robot.Robot
 class BigTriangleBlueSolo : LinearOpMode() {
     private val startPose = Pose(18.0, 118.0, Math.toRadians(144.0))
     private val scorePreloadPose = Pose(40.0, 95.0, Math.toRadians(180.0))
-    private val intakeClosePose = Pose(22.0, 84.0, Math.toRadians(180.0))
+    private val intakeClosePose = Pose(20.0, 84.0, Math.toRadians(180.0))
     private val closeShootPose = Pose(44.5, 83.0, Math.toRadians(180.0))
-    private val intakeMiddlePose = Pose(17.0, 59.0, Math.toRadians(180.0))
-    private val gateApproachPose = Pose(18.0, 63.0, Math.toRadians(180.0))
+    private val intakeMiddlePose = Pose(15.0, 59.0, Math.toRadians(180.0))
+    private val gateApproachPose = Pose(17.8, 63.0, Math.toRadians(180.0))
     private val gateRamPose = Pose(12.0, 50.0, Math.toRadians(120.0))
     private val bigTriangleShootPose = Pose(44.5, 82.5, Math.toRadians(180.0))
 
@@ -108,6 +108,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
         robot.shootBallsAuto(),
+        robot.allStartCommand(),
 
         // Gate Cycles (1 through 5)
         PedroCommands.follow(
@@ -124,6 +125,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
         robot.shootBallsAuto(),
+        robot.allStartCommand(),
 
         PedroCommands.follow(
             robot.follower,
@@ -139,6 +141,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
         robot.shootBallsAuto(),
+        robot.allStartCommand(),
 
         PedroCommands.follow(
             robot.follower,
@@ -154,6 +157,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
         robot.shootBallsAuto(),
+        robot.allStartCommand(),
 
         PedroCommands.follow(
             robot.follower,
@@ -169,6 +173,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
         robot.shootBallsAuto(),
+        robot.allStartCommand(),
 
         PedroCommands.follow(
             robot.follower,
@@ -184,6 +189,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
         robot.shootBallsAuto(),
+        robot.allStartCommand()
 
 
 

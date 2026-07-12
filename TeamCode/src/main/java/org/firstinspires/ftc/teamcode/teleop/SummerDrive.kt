@@ -125,7 +125,8 @@ open class SummerDrive : LinearOpMode() {
             panelsTelemetry.addData("sensor distance", robot.transfer.distance)
             panelsTelemetry.addData("calculated rpm", targetRpm)
             panelsTelemetry.addData("calculated angle", targetAngle)
-            panelsTelemetry.addData("distance from goal", robot.limelight.aprilTagDistance)
+            panelsTelemetry.addData("distance camera", robot.limelight.aprilTagDistance)
+            panelsTelemetry.addData("distance odometry", robot.distanceFromGoal(Robot.Side.BLUE))
             panelsTelemetry.update(telemetry)
         }
     }

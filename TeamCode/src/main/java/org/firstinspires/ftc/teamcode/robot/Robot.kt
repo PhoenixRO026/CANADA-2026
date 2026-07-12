@@ -15,6 +15,7 @@ import com.pedropathing.ivy.commands.Commands.instant
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.commands.Commands.waitUntil
 import com.pedropathing.ivy.groups.Groups.parallel
+import com.pedropathing.ivy.groups.Groups.race
 import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.hardware.limelightvision.Limelight3A
@@ -114,6 +115,7 @@ class Robot(
             goal = BlueGoal
 
         val d = sqrt((follower.pose.x - goal.x).pow(2) + (follower.pose.y - goal.y).pow(2))
+        drive.distanceFromGoal = d
         return d
     }
 
@@ -176,7 +178,10 @@ class Robot(
             shooter.closeFingerCommand(),
             intake.startIntakeCommand(),
             transfer.startTransferCommand(),
-            waitUntil { transfer.isBallPresent() },
+            race (
+                waitUntil { transfer.isBallPresent() },
+                waitMs(1000.0)
+            ),
             transfer.slowTransferCommand(),
     )
 
@@ -218,11 +223,11 @@ class Robot(
             shooter.openFingerCommand(),
             shooter.hoodToPositionCommand(shooter.autoAngle)
         ),
-        waitMs(300.0),
+        waitMs(200.0),
         allStartCommand(),
-        waitMs(300.0),
+        waitMs(200.0),
         intake.stopIntakeCommand(),
-        waitMs(700.0),
+        waitMs(400.0),
         transfer.stopTransferCommand(),
         shooter.closeFingerCommand(),
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)

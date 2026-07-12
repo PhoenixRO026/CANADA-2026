@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.auto
+package org.firstinspires.ftc.teamcode.auto.paths
 
+import com.bylazar.telemetry.PanelsTelemetry
 import com.pedropathing.geometry.BezierCurve
 import com.pedropathing.geometry.BezierLine
 import com.pedropathing.geometry.Pose
@@ -12,12 +13,11 @@ import com.pedropathing.paths.PathChain
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
-import org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower
 import org.firstinspires.ftc.teamcode.robot.Robot
 
 @Autonomous
-class BigTriangleCycle : LinearOpMode() {
-    private val startPose = Pose(18.0, 118.0, Math.toRadians(144.0))
+class BigTriangleBlueSolo : LinearOpMode() {
+    private val startPose = Pose(18.0, 2118.0, Math.toRadians(144.0))
     private val scorePreloadPose = Pose(40.0, 95.0, Math.toRadians(180.0))
     private val intakeClosePose = Pose(20.0, 84.0, Math.toRadians(180.0))
     private val closeShootPose = Pose(44.5, 83.0, Math.toRadians(180.0))
@@ -130,6 +130,7 @@ class BigTriangleCycle : LinearOpMode() {
     )
 
     override fun runOpMode() {
+        val panelsTelemetry = PanelsTelemetry.telemetry
         robot = Robot(hardwareMap, startPose)
 
         Scheduler.reset()
@@ -146,12 +147,16 @@ class BigTriangleCycle : LinearOpMode() {
 
             val goalDist = robot.distanceFromGoal(Robot.Side.BLUE)
             val autoRpm = robot.shooter.neededRpm(goalDist)
-            val autoAngle = robot.shooter.neededAngle(robot.limelight.aprilTagDistance)
+            val autoAngle = robot.shooter.neededAngle(goalDist)
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
             robot.updateHeading(Robot.Side.BLUE)
 
             Scheduler.execute()
+
+            panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
+            panelsTelemetry.addData("distance from goal", goalDist)
+            panelsTelemetry.addData("sensor distance", robot.transfer.distance)
         }
     }
 }

@@ -31,15 +31,15 @@
       "name": "IntakeClose",
       "endPoint": {
         "x": 20,
-        "y": 82.5,
+        "y": 84,
         "heading": "constant",
         "reverse": false,
         "degrees": 180
       },
       "controlPoints": [
         {
-          "x": 47.34,
-          "y": 80.61
+          "x": 43,
+          "y": 84
         }
       ],
       "color": "#7A5A6D",
@@ -54,7 +54,7 @@
       "name": "ShootClose",
       "endPoint": {
         "x": 44.5,
-        "y": 82.5,
+        "y": 83,
         "heading": "constant",
         "reverse": false,
         "degrees": 180
@@ -71,8 +71,8 @@
       "id": "line-intakeMiddle",
       "name": "IntakeMiddle",
       "endPoint": {
-        "x": 17,
-        "y": 58,
+        "x": 15,
+        "y": 59,
         "heading": "constant",
         "reverse": false,
         "degrees": 180
@@ -80,7 +80,7 @@
       "controlPoints": [
         {
           "x": 48,
-          "y": 50
+          "y": 53
         }
       ],
       "color": "#7A5A6D",
@@ -117,17 +117,18 @@
       "id": "line-gateApproach",
       "name": "GateApproach",
       "endPoint": {
-        "x": 23,
-        "y": 56,
-        "heading": "linear",
+        "x": 23.5,
+        "y": 66,
+        "heading": "constant",
         "reverse": false,
         "startDeg": 180,
-        "endDeg": 145
+        "endDeg": 180,
+        "degrees": 180
       },
       "controlPoints": [
         {
-          "x": 35.071,
-          "y": 60.34
+          "x": 35,
+          "y": 65
         }
       ],
       "color": "#2563eb",
@@ -141,16 +142,22 @@
       "id": "line-gateRam",
       "name": "GateRam",
       "endPoint": {
-        "x": 20,
-        "y": 50,
-        "heading": "constant",
+        "x": 11,
+        "y": 46,
+        "heading": "linear",
         "reverse": false,
-        "degrees": 145
+        "degrees": 160,
+        "startDeg": 180,
+        "endDeg": 150
       },
       "controlPoints": [
         {
-          "x": 34,
+          "x": 30,
           "y": 48
+        },
+        {
+          "x": 11,
+          "y": 62
         }
       ],
       "color": "#dc2626",
@@ -168,8 +175,9 @@
         "y": 82.5,
         "heading": "linear",
         "reverse": false,
-        "startDeg": 145,
-        "endDeg": 180
+        "startDeg": 150,
+        "endDeg": 180,
+        "degrees": 180
       },
       "controlPoints": [],
       "color": "#7A5A6D",
@@ -290,5 +298,5 @@
     }
   ],
   "version": "1.2.1",
-  "timestamp": "2026-07-12T00:28:18.703Z"
+  "timestamp": "2026-07-12T13:11:14.204Z"
 }

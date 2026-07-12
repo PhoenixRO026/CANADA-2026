@@ -16,6 +16,8 @@ class Drive(
     val heading: Double
         get() = follower.heading - headingOffset
 
+    var distanceFromGoal = 0.0
+
     private val currentSpeed: Double
         get() = if (isSlowMode) DriveConfig.slowSpeed else 1.0
 

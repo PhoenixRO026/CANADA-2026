@@ -28,7 +28,7 @@ class LimeLightCore(
             ?: run { aprilTagDistance = Double.NaN; return }
 
         val pose = fid.targetPoseCameraSpace ?: run {
-            aprilTagDistance = Double.NaN
+            aprilTagDistance = 0.0
             return
         }
 

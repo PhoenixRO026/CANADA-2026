@@ -14,7 +14,6 @@ class PrepPositions : LinearOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
         val finger = hardwareMap.get(Servo::class.java, "finger")
         val hood = hardwareMap.get(Servo::class.java, "servoHood")
-        hood.scaleRange(0.3, 0.83)
         finger.scaleRange(0.3844, 0.67)
 
         var previousTime: Double
@@ -25,17 +24,17 @@ class PrepPositions : LinearOpMode() {
         previousTime = now()
 
         finger.position = 0.5
-        hood.position = 0.5
+        hood.position = 0.3
 
         while (opModeIsActive()) {
             deltaTime = now() - previousTime
             previousTime = now()
 
             if (gamepad1.dpad_up) {
-                hood.position += 0.1 * deltaTime
+                hood.position += (0.1 * deltaTime).coerceIn(0.3, 0.83)
             }
             if (gamepad1.dpad_down) {
-                hood.position -= 0.1 * deltaTime
+                hood.position -= (0.1 * deltaTime).coerceIn(0.3, 0.83)
             }
             if (gamepad1.dpad_right) {
                 finger.position += 0.1 * deltaTime

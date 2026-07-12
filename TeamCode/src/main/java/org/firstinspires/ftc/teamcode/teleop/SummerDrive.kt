@@ -56,7 +56,7 @@ open class SummerDrive : LinearOpMode() {
             robot.limelight.updateHeadingError()
             robot.limelight.updateDistance()
 
-            val targetRpm = robot.shooter.neededRpm(robot.limelight.aprilTagDistance)
+            val targetRpm = robot.shooter.neededRpm(robot.distanceFromGoal(Robot.Side.BLUE))
             val targetAngle = robot.shooter.neededAngle(robot.limelight.aprilTagDistance)
 
             if (gamepad1.left_trigger >= 0.2) {
@@ -98,15 +98,15 @@ open class SummerDrive : LinearOpMode() {
                 robot.shooter.goToRpm(0.0)
             }
 
-            /*if (gamepad2.right_trigger > 0) {
+            if (gamepad2.right_trigger > 0) {
                 robot.shooter.turretPosition += 0.1 * timeKeep.deltaTime.asS
             }
             if (gamepad2.left_trigger > 0) {
                 robot.shooter.turretPosition -= 0.1 * timeKeep.deltaTime.asS
             }
-            else {*/
-//                robot.updateHeading(Robot.Side.BLUE)
-            //}
+            else {
+              robot.updateHeading(Robot.Side.BLUE)
+            }
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
 

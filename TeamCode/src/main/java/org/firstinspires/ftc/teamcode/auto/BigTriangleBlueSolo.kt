@@ -21,8 +21,8 @@ class BigTriangleBlueSolo : LinearOpMode() {
     private val intakeClosePose = Pose(22.0, 84.0, Math.toRadians(180.0))
     private val closeShootPose = Pose(44.5, 83.0, Math.toRadians(180.0))
     private val intakeMiddlePose = Pose(17.0, 59.0, Math.toRadians(180.0))
-    private val gateApproachPose = Pose(23.5, 66.0, Math.toRadians(180.0))
-    private val gateRamPose = Pose(12.0, 46.0, Math.toRadians(150.0))
+    private val gateApproachPose = Pose(18.0, 63.0, Math.toRadians(180.0))
+    private val gateRamPose = Pose(12.0, 50.0, Math.toRadians(120.0))
     private val bigTriangleShootPose = Pose(44.5, 82.5, Math.toRadians(180.0))
 
     private lateinit var robot : Robot
@@ -31,6 +31,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
     private lateinit var shootClose: PathChain
     private lateinit var shootMiddle: PathChain
     private lateinit var intakeMiddle: PathChain
+    private lateinit var openGate: PathChain
     private lateinit var intakeGate: PathChain
     private lateinit var shootGate: PathChain
 
@@ -60,11 +61,13 @@ class BigTriangleBlueSolo : LinearOpMode() {
             .setConstantHeadingInterpolation(Math.PI)
             .build()
 
-        intakeGate = robot.follower.pathBuilder()
-            .addPath(BezierCurve(bigTriangleShootPose, Pose(35.0, 65.0), gateApproachPose))
+        openGate = robot.follower.pathBuilder()
+            .addPath(BezierLine(bigTriangleShootPose, gateApproachPose))
             .setConstantHeadingInterpolation(Math.PI)
-            // UPDATED: First control point of the cubic Bezier shifted to (30.0, 48.0)
-            .addPath(BezierCurve(gateApproachPose, Pose(30.0, 48.0), Pose(11.0, 62.0), gateRamPose))
+            .build()
+
+        intakeGate = robot.follower.pathBuilder()
+            .addPath(BezierLine(gateApproachPose, gateRamPose))
             .setLinearHeadingInterpolation(gateApproachPose.heading, gateRamPose.heading)
             .build()
 
@@ -107,7 +110,14 @@ class BigTriangleBlueSolo : LinearOpMode() {
         robot.shootBallsAuto(),
 
         // Gate Cycles (1 through 5)
-        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+        PedroCommands.follow(
+            robot.follower,
+            openGate
+        ),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, intakeGate),
+            robot.intakeBalls()
+        ),
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
@@ -115,7 +125,14 @@ class BigTriangleBlueSolo : LinearOpMode() {
         ),
         robot.shootBallsAuto(),
 
-        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+        PedroCommands.follow(
+            robot.follower,
+            openGate
+        ),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, intakeGate),
+            robot.intakeBalls()
+        ),
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
@@ -123,7 +140,14 @@ class BigTriangleBlueSolo : LinearOpMode() {
         ),
         robot.shootBallsAuto(),
 
-        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+        PedroCommands.follow(
+            robot.follower,
+            openGate
+        ),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, intakeGate),
+            robot.intakeBalls()
+        ),
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
@@ -131,7 +155,14 @@ class BigTriangleBlueSolo : LinearOpMode() {
         ),
         robot.shootBallsAuto(),
 
-        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+        PedroCommands.follow(
+            robot.follower,
+            openGate
+        ),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, intakeGate),
+            robot.intakeBalls()
+        ),
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
@@ -139,13 +170,62 @@ class BigTriangleBlueSolo : LinearOpMode() {
         ),
         robot.shootBallsAuto(),
 
-        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+        PedroCommands.follow(
+            robot.follower,
+            openGate
+        ),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, intakeGate),
+            robot.intakeBalls()
+        ),
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
-        robot.shootBallsAuto()
+        robot.shootBallsAuto(),
+
+
+
+//        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+//        Groups.parallel(
+//            PedroCommands.follow(robot.follower, shootGate),
+//            robot.allStopCommand(),
+//            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+//        ),
+//        robot.shootBallsAuto(),
+//
+//        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+//        Groups.parallel(
+//            PedroCommands.follow(robot.follower, shootGate),
+//            robot.allStopCommand(),
+//            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+//        ),
+//        robot.shootBallsAuto(),
+//
+//        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+//        Groups.parallel(
+//            PedroCommands.follow(robot.follower, shootGate),
+//            robot.allStopCommand(),
+//            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+//        ),
+//        robot.shootBallsAuto(),
+//
+//        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+//        Groups.parallel(
+//            PedroCommands.follow(robot.follower, shootGate),
+//            robot.allStopCommand(),
+//            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+//        ),
+//        robot.shootBallsAuto(),
+//
+//        Groups.parallel(PedroCommands.follow(robot.follower, intakeGate), robot.intakeBalls()),
+//        Groups.parallel(
+//            PedroCommands.follow(robot.follower, shootGate),
+//            robot.allStopCommand(),
+//            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+//        ),
+//        robot.shootBallsAuto()
     )
 
     override fun runOpMode() {

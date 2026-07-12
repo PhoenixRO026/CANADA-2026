@@ -180,7 +180,7 @@ class Robot(
             transfer.startTransferCommand(),
             race (
                 waitUntil { transfer.isBallPresent() },
-                waitMs(3000.0)
+                waitMs(1500.0)
             ),
             transfer.slowTransferCommand(),
     )
@@ -227,7 +227,7 @@ class Robot(
         allStartCommand(),
         waitMs(200.0),
         intake.stopIntakeCommand(),
-        waitMs(400.0),
+        waitMs(300.0),
         transfer.stopTransferCommand(),
         shooter.closeFingerCommand(),
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)

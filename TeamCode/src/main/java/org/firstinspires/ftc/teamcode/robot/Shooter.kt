@@ -53,7 +53,7 @@ class Shooter(
 
         @JvmField var rpmFar = 5000.0
         @JvmField var rpmNear = 3000.0
-        @JvmField var rpmRest = 0.0
+        @JvmField var rpmRest = 2000.0
     }
 
     fun servoToDeg(servoPos: Double): Double {

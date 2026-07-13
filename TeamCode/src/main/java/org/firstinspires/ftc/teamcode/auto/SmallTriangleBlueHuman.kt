@@ -18,12 +18,19 @@ import org.firstinspires.ftc.teamcode.robot.Robot
 
 @Autonomous
 class SmallTriangleBlueHuman : LinearOpMode() {
-    private val startPose = Pose(55.0, 8.5, Math.toRadians(90.0))
+    private val startPose = Pose(55.0, 9.0, Math.toRadians(90.0))
     private val intakeFarPose = Pose(23.0, 35.0, Math.toRadians(180.0))
-    private val intakeHumanPose = Pose(9.0, 8.0, Math.toRadians(180.0))
-    private val smallTriangleShootPose = Pose(9.0, 8.0, Math.toRadians(180.0))
-    private val intakeBetweenPose= Pose()
+    private val intakeHumanPose = Pose(12.0, 8.0, Math.toRadians(180.0))
+    private val smallTriangleShootPose = Pose(42.0, 8.0, Math.toRadians(180.0))
+    private val intakeBetweenPose = Pose(12.0, 25.0, Math.toRadians(180.0))
+
+    private val shootPreloadRPM = 5400.0
+    private val shootFarRPM = 5200.0
+    private val turretPosePreload = 0.6
+    private val turretPoseFar = 0.5
+
     private lateinit var robot : Robot
+
     private lateinit var scorePreload: PathChain
     private lateinit var intakeFar: PathChain
     private lateinit var  shootFar: PathChain
@@ -33,16 +40,14 @@ class SmallTriangleBlueHuman : LinearOpMode() {
     private lateinit var shootBetween: PathChain
 
 
-
     private fun buildPaths() {
-
         intakeFar = robot.follower.pathBuilder()
             .addPath(BezierCurve(startPose, Pose(54.5, 37.0), intakeFarPose))
-            .setConstantHeadingInterpolation(Math.PI)
+            .setLinearHeadingInterpolation(startPose.heading, intakeFarPose.heading)
             .build()
 
         shootFar = robot.follower.pathBuilder()
-            .addPath(BezierCurve(intakeFarPose, Pose(20.0, 14.0), smallTriangleShootPose))
+            .addPath(BezierLine(intakeFarPose, smallTriangleShootPose))
             .setConstantHeadingInterpolation(Math.PI)
             .build()
 
@@ -59,14 +64,14 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         intakeBetween = robot.follower.pathBuilder()
             .addPath(BezierCurve(smallTriangleShootPose, Pose(40.0, 26.5), intakeBetweenPose))
             .build()
+
+        shootBetween = robot.follower.pathBuilder()
+            .addPath(BezierLine(intakeBetweenPose, smallTriangleShootPose))
+            .setConstantHeadingInterpolation(Math.PI)
+            .build()
     }
 
     fun autoRoutine() : Command = sequential (
-        // Preload
-        parallel (
-            robot.shooter.goToRpmCommand(robot.shooter.neededRpm(125.0)),
-            follow(robot.follower, scorePreload)
-        ),
         robot.shootBallsAuto(),
 
         //Far Line
@@ -96,6 +101,8 @@ class SmallTriangleBlueHuman : LinearOpMode() {
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
         robot.shootBallsAuto(),
+
+
     )
 
     override fun runOpMode() {

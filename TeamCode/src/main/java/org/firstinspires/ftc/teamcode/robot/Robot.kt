@@ -24,6 +24,7 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.Servo
+import org.firstinspires.ftc.teamcode.library.limelightToRobotPos
 import java.lang.Math.pow
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -166,6 +167,29 @@ class Robot(
         shooter.turretGoToAngle(angle.coerceIn(-90.0, 90.0))
     }
 
+    fun resetRobotPose() {
+        limelight.updateLimelightPose()
+
+        if (!limelight.limelightPoseValid) {
+            return
+        }
+
+        val cameraPose = limelight.limelightPose
+        val turretHeading = Math.toRadians(shooter.turretAngle)
+
+        val newRobotPosition = limelightToRobotPos(
+            cameraPose,
+            turretHeading
+        )
+
+        follower.pose = newRobotPosition
+    }
+
+    fun resetRobotPoseCommand() : Command = sequential(
+        instant { resetRobotPose() },
+        waitMs(100.0)
+    )
+
     fun allStartCommand() : Command = parallel(
         intake.startIntakeCommand(),
         transfer.startTransferCommand()
@@ -183,10 +207,23 @@ class Robot(
             transfer.startTransferCommand(),
             race (
                 waitUntil { transfer.isBallPresent() },
-                waitMs(3000.0)
+                waitMs(2000.0)
             ),
             transfer.slowTransferCommand(),
     )
+
+    fun intakeBallsAuto(time: Double = 1000.0): Command =
+        sequential (
+            shooter.closeFingerCommand(),
+            intake.startIntakeCommand(),
+            transfer.startTransferCommand(),
+            race (
+                waitUntil { transfer.isBallPresent() },
+                waitMs(2000.0)
+            ),
+            transfer.slowTransferCommand(),
+            waitMs(time)
+        )
 
     fun goToRpmAndAngleCommand(dist : Double) : Command = sequential(
         instant { shooter.autoRpm = shooter.neededRpm(dist) },
@@ -230,7 +267,7 @@ class Robot(
         allStartCommand(),
         waitMs(220.0),
         intake.stopIntakeCommand(),
-        waitMs(300.0),
+        waitMs(400.0),
         transfer.stopTransferCommand(),
         shooter.closeFingerCommand(),
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)

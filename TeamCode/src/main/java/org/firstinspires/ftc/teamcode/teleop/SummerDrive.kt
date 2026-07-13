@@ -35,8 +35,9 @@ open class SummerDrive : LinearOpMode() {
         val shootBalls = ButtonReader { gamepad1.a }
         val stopIntake = ButtonReader { gamepad1.left_bumper }
         val rpmToRest = ButtonReader { gamepad1.dpad_up }
-        val startShooter = ButtonReader {gamepad1.dpad_down}
-        val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake, startShooter)
+        val startShooter = ButtonReader { gamepad1.dpad_down }
+        val resetOdo = ButtonReader { gamepad1.x }
+        val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake, startShooter, resetOdo)
         val timeKeep = TimeKeep()
 
         waitForStart()
@@ -105,7 +106,11 @@ open class SummerDrive : LinearOpMode() {
                 robot.shooter.turretPosition -= 0.1 * timeKeep.deltaTime.asS
             }
             else {
-              robot.updateHeading(Robot.Side.BLUE)
+                robot.updateHeading(Robot.Side.BLUE)
+            }
+
+            if (resetOdo.wasJustPressed()) {
+                robot.resetRobotPose()
             }
 
             robot.shooter.updateRpm(timeKeep.deltaTime)

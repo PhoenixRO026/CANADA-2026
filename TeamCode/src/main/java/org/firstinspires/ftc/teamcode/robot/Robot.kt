@@ -230,7 +230,7 @@ class Robot(
         allStartCommand(),
         waitMs(220.0),
         intake.stopIntakeCommand(),
-        waitMs(250.0),
+        waitMs(300.0),
         transfer.stopTransferCommand(),
         shooter.closeFingerCommand(),
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)

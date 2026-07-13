@@ -22,10 +22,11 @@ class BigTriangleToSmall : LinearOpMode() {
     private val scorePreloadPose = Pose(40.0, 95.0, Math.toRadians(180.0))
     private val intakeClosePose = Pose(20.0, 84.0, Math.toRadians(180.0))
     private val closeShootPose = Pose(44.5, 83.0, Math.toRadians(180.0))
-    private val intakeMiddlePose = Pose(17.0, 64.0, Math.toRadians(180.0))
+    private val intakeMiddlePose = Pose(23.0, 59.5, Math.toRadians(180.0))
     private val intakeFarPose = Pose(15.0, 35.0, Math.toRadians(180.0))
     private val bigTriangleShootPose = Pose(49.5, 77.5, Math.toRadians(180.0))
-    private val intakeHumanPose = Pose(10.0, 8.0, Math.toRadians(180.0))
+    private val intakeHumanPose = Pose(9.0, 8.0, Math.toRadians(180.0))
+    private val openGatePose = Pose(16.3, 67.7, Math.toRadians(180.0))
 
     private lateinit var robot : Robot
     private lateinit var scorePreload: PathChain
@@ -37,6 +38,7 @@ class BigTriangleToSmall : LinearOpMode() {
     private lateinit var  shootFar: PathChain
     private lateinit var intakeHuman: PathChain
     private lateinit var  shootHuman: PathChain
+    private lateinit var  openGate: PathChain
 
 
     private fun buildPaths() {
@@ -56,12 +58,17 @@ class BigTriangleToSmall : LinearOpMode() {
             .build()
 
         intakeMiddle = robot.follower.pathBuilder()
-            .addPath(BezierCurve(closeShootPose, Pose(57.0, 50.0), intakeMiddlePose))
+            .addPath(BezierCurve(closeShootPose, Pose(55.0, 56.0), intakeMiddlePose))
+            .setConstantHeadingInterpolation(Math.PI)
+            .build()
+
+        openGate = robot.follower.pathBuilder()
+            .addPath(BezierLine(intakeMiddlePose, openGatePose))
             .setConstantHeadingInterpolation(Math.PI)
             .build()
 
         shootMiddle = robot.follower.pathBuilder()
-            .addPath(BezierCurve(intakeMiddlePose, Pose(35.0, 60.0), bigTriangleShootPose))
+            .addPath(BezierCurve(openGatePose, Pose(39.0, 69.0), bigTriangleShootPose))
             .setConstantHeadingInterpolation(Math.PI)
             .build()
 

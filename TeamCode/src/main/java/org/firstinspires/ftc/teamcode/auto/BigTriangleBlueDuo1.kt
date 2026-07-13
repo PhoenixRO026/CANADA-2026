@@ -135,10 +135,12 @@ class BigTriangleBlueDuo1 : LinearOpMode() {
         // First Gate Cycle
 
         race(
-            follow(robot.follower, intakeGateFirstApproach),
-            waitMs(2200.0)
+            parallel(
+                follow(robot.follower, intakeGateFirstApproach),
+                robot.intakeBalls()
+            ),
+            waitMs(4000.0)
         ),
-        robot.intakeBalls(),
         follow(robot.follower, gateTurn),
         parallel(
             follow(robot.follower, shootGate),
@@ -148,13 +150,13 @@ class BigTriangleBlueDuo1 : LinearOpMode() {
         robot.shootBallsAuto(),
 
         // Subsequent Gate Cycle
-
         race(
-            follow(robot.follower, intakeGateSubsequentApproach),
-            waitMs(2200.0)
+            parallel(
+                follow(robot.follower, intakeGateSubsequentApproach),
+                robot.intakeBalls(),
+            ),
+            waitMs(4000.0)
         ),
-        robot.intakeBalls(),
-
         follow(robot.follower, gateTurn),
         parallel(
             follow(robot.follower, shootGate),
@@ -164,19 +166,20 @@ class BigTriangleBlueDuo1 : LinearOpMode() {
         robot.shootBallsAuto(),
 
         // Subsequent Gate Cycle 2
-
-            race(
+        race(
+            parallel(
                 follow(robot.follower, intakeGateSubsequentApproach),
-                waitMs(2200.0)
+                robot.intakeBalls(),
             ),
-        robot.intakeBalls(),
-    follow(robot.follower, gateTurn),
-        parallel(
-        follow(robot.follower, shootGate),
-        robot.allStopCommand(),
-        robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+            waitMs(3500.0)
         ),
-        robot.shootBallsAuto()
+        follow(robot.follower, gateTurn),
+        parallel(
+            follow(robot.follower, shootGate),
+            robot.allStopCommand(),
+            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+        ),
+        robot.shootBallsAuto(),
     )
 
     override fun runOpMode() {

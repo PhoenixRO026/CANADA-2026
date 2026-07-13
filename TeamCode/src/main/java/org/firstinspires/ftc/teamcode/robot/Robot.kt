@@ -226,11 +226,11 @@ class Robot(
             shooter.goToRpmCommand(shooter.autoRpm),
             shooter.hoodToPositionCommand(shooter.autoAngle)
         ),
-        waitMs(200.0),
+        waitMs(190.0),
         allStartCommand(),
-        waitMs(180.0),
-        intake.stopIntakeCommand(),
         waitMs(220.0),
+        intake.stopIntakeCommand(),
+        waitMs(230.0),
         transfer.stopTransferCommand(),
         shooter.closeFingerCommand(),
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)

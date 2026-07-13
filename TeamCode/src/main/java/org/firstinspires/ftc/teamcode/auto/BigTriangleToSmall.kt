@@ -5,7 +5,9 @@ import com.pedropathing.geometry.BezierLine
 import com.pedropathing.geometry.Pose
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
+import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups.parallel
+import com.pedropathing.ivy.groups.Groups.race
 import com.pedropathing.ivy.groups.Groups.sequential
 import com.pedropathing.ivy.pedro.PedroCommands.follow
 import com.pedropathing.paths.PathChain
@@ -20,10 +22,10 @@ class BigTriangleToSmall : LinearOpMode() {
     private val scorePreloadPose = Pose(40.0, 95.0, Math.toRadians(180.0))
     private val intakeClosePose = Pose(20.0, 84.0, Math.toRadians(180.0))
     private val closeShootPose = Pose(44.5, 83.0, Math.toRadians(180.0))
-    private val intakeMiddlePose = Pose(17.0, 63.0, Math.toRadians(180.0))
+    private val intakeMiddlePose = Pose(17.0, 64.0, Math.toRadians(180.0))
     private val intakeFarPose = Pose(15.0, 35.0, Math.toRadians(180.0))
     private val bigTriangleShootPose = Pose(49.5, 77.5, Math.toRadians(180.0))
-    private val intakeHumanPose = Pose(9.4, 7.6, Math.toRadians(180.0))
+    private val intakeHumanPose = Pose(10.0, 8.0, Math.toRadians(180.0))
 
     private lateinit var robot : Robot
     private lateinit var scorePreload: PathChain
@@ -129,10 +131,14 @@ class BigTriangleToSmall : LinearOpMode() {
         robot.shootBallsAuto(),
 
         //Human Line
-        parallel(
-            follow(robot.follower, intakeHuman),
-            robot.intakeBalls()
+        race(
+            parallel(
+                follow(robot.follower, intakeHuman),
+                robot.intakeBalls()
+            ),
+            waitMs(3500.0)
         ),
+        robot.allStopCommand(),
         parallel(
             follow(robot.follower, shootHuman),
             robot.allStopCommand(),

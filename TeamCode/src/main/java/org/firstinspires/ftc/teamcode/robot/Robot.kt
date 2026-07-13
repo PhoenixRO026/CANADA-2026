@@ -14,9 +14,12 @@ import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.commands.Commands.instant
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.commands.Commands.waitUntil
+import com.pedropathing.ivy.groups.Groups
 import com.pedropathing.ivy.groups.Groups.parallel
 import com.pedropathing.ivy.groups.Groups.race
 import com.pedropathing.ivy.groups.Groups.sequential
+import com.pedropathing.ivy.pedro.PedroCommands
+import com.pedropathing.paths.PathChain
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.AnalogInput
@@ -225,9 +228,9 @@ class Robot(
         ),
         waitMs(200.0),
         allStartCommand(),
-        waitMs(200.0),
+        waitMs(180.0),
         intake.stopIntakeCommand(),
-        waitMs(300.0),
+        waitMs(220.0),
         transfer.stopTransferCommand(),
         shooter.closeFingerCommand(),
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)

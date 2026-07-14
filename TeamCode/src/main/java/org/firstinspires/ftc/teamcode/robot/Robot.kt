@@ -203,6 +203,7 @@ class Robot(
     fun intakeBalls(time: Double = 2500.0): Command =
         sequential (
             shooter.closeFingerCommand(),
+            waitMs(100.0),
             intake.startIntakeCommand(),
             transfer.startTransferCommand(),
             race (
@@ -212,18 +213,22 @@ class Robot(
             transfer.slowTransferCommand(),
     )
 
-    fun intakeBallsAuto(time: Double = 1000.0): Command =
+    fun intakeBallsAuto(time: Double = 2000.0): Command = parallel(
+        shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest),
         sequential (
-            shooter.closeFingerCommand(),
-            intake.startIntakeCommand(),
-            transfer.startTransferCommand(),
+            parallel(
+                shooter.closeFingerCommand(),
+                intake.startIntakeCommand(),
+                transfer.startTransferCommand(),
+            ),
             race (
                 waitUntil { transfer.isBallPresent() },
-                waitMs(2000.0)
+                waitMs(750.0)
             ),
             transfer.slowTransferCommand(),
             waitMs(time)
         )
+    )
 
     fun goToRpmAndAngleCommand(dist : Double) : Command = sequential(
         instant { shooter.autoRpm = shooter.neededRpm(dist) },
@@ -251,10 +256,11 @@ class Robot(
         allStartCommand(),
         waitMs(200.0),
         intake.stopIntakeCommand(),
-        waitMs(400.0),
-        transfer.stopTransferCommand(),
-        shooter.closeFingerCommand(),
-        shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest),
+        waitMs(350.0),
+        parallel(
+            transfer.stopTransferCommand(),
+            shooter.closeFingerCommand(),
+        )
     )
 
     fun shootBallsAuto() : Command = sequential(
@@ -263,14 +269,14 @@ class Robot(
             shooter.goToRpmCommand(shooter.autoRpm),
             shooter.hoodToPositionCommand(shooter.autoAngle)
         ),
-        waitMs(200.0),
         allStartCommand(),
         waitMs(220.0),
         intake.stopIntakeCommand(),
-        waitMs(400.0),
-        transfer.stopTransferCommand(),
-        shooter.closeFingerCommand(),
-        shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest)
+        waitMs(200.0),
+        parallel(
+            transfer.stopTransferCommand(),
+            shooter.closeFingerCommand()
+        )
     )
 
     fun ejectBalls() : Command = sequential(

@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.library.controller.PIDController
 import kotlin.math.abs
+import kotlin.math.ln
 import kotlin.math.pow
 import kotlin.math.sin
 
@@ -163,7 +164,7 @@ class Shooter(
     fun neededRpm(distance: Double) : Double {
         if (distance < 270) {
             autoRpm = MathFunctions.clamp(
-                0.0522296 * distance.pow(2) - 12.01592 * distance + 3939.40639,
+                0.0420412 * distance.pow(2) - 9.91401 * distance + 3859.72236,
                 0.0, 6000.0
             )
         }
@@ -177,9 +178,9 @@ class Shooter(
     }
 
     fun neededAngle(distance: Double) : Double {
-        if (distance < 270) {
+        if (0.0 < distance && distance < 270.0) {
             autoAngle = MathFunctions.clamp(
-                -0.00000878411 * distance.pow(2) + 0.00397688 * distance + 0.100881,
+                -0.301191 + 0.157061 * ln(distance),
                 0.3, 0.83
             )
 

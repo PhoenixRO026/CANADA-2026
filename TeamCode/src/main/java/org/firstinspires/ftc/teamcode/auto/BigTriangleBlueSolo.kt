@@ -26,6 +26,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
     private val turnToWall = Pose(13.0, 55.0, Math.toRadians(180.0))
     private val bigTriangleShootPose = Pose(59.5, 68.0, Math.toRadians(180.0))
 
+    private val hoodFar = 0.6
     private lateinit var robot : Robot
     private lateinit var scorePreload: PathChain
     private lateinit var intakeClose: PathChain
@@ -119,7 +120,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.allStopCommand(),
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
-        robot.shootBallsAuto(),
+        robot.shootBallsAuto(4000.0),
         // Middle Line
         Groups.parallel(
             PedroCommands.follow(robot.follower, intakeMiddle),
@@ -251,6 +252,8 @@ class BigTriangleBlueSolo : LinearOpMode() {
 
         robot.shooter.openFinger()
         Scheduler.schedule(autoRoutine())
+        robot.shooter.turretPosition = 0.67
+        robot.shooter.hoodToPosition(hoodFar)
 
         while (opModeIsActive()) {
             robot.follower.update()
@@ -258,11 +261,11 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.limelight.updateLimelightPose()
 
             val goalDist = robot.distanceFromGoal(Robot.Side.BLUE)
-            val autoRpm = robot.shooter.neededRpm(goalDist)
-            val autoAngle = robot.shooter.neededAngle(goalDist)
+            //val autoRpm = robot.shooter.neededRpm(goalDist)
+            //val autoAngle = robot.shooter.neededAngle(goalDist)
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
-            robot.updateHeading(Robot.Side.BLUE)
+            //robot.updateHeading(Robot.Side.BLUE)
 
             Scheduler.execute()
 

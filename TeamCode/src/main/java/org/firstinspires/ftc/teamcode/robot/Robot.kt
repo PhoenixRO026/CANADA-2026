@@ -268,6 +268,7 @@ class Robot(
             shooter.openFingerCommand(),
             shooter.hoodToPositionCommand(hoodPos)
         ),
+        waitMs(200.0),
         allStartCommand(),
         waitMs(350.0),
         intake.stopIntakeCommand(),

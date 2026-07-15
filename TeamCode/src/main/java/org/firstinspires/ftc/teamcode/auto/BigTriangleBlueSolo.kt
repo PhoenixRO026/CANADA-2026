@@ -108,10 +108,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.shooter.goToRpmCommand(robot.shooter.neededRpm(125.0)),
             PedroCommands.follow(robot.follower, scorePreload)
         ),
-        Groups.parallel(
-            robot.shootBallsAuto(),
-            robot.resetRobotPoseCommand(),
-        ),
+        robot.shootBallsAuto(),
         // Close Line
         Groups.parallel(
             PedroCommands.follow(robot.follower, intakeClose),
@@ -122,10 +119,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.allStopCommand(),
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
-        Groups.parallel(
-            robot.shootBallsAuto(),
-            robot.resetRobotPoseCommand(),
-        ),
+        robot.shootBallsAuto(),
         // Middle Line
         Groups.parallel(
             PedroCommands.follow(robot.follower, intakeMiddle),
@@ -134,12 +128,9 @@ class BigTriangleBlueSolo : LinearOpMode() {
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootMiddle),
             robot.allStopCommand(),
-            robot.goToRpmAndAngleCommand(195.0)
+            robot.rpmAndAngleTo(4000.0, 0.6)
         ),
-        Groups.parallel(
-            robot.shootBallsAuto(),
-            robot.resetRobotPoseCommand(),
-        ),
+        robot.shootBallsAuto(4000.0, 0.6),
         robot.allStartCommand(),
 
         // Gate Cycles (1 through 5)
@@ -158,12 +149,9 @@ class BigTriangleBlueSolo : LinearOpMode() {
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
-            robot.goToRpmAndAngleCommand(220.0)
+            robot.rpmAndAngleTo(4000.0, 0.6)
         ),
-        Groups.parallel(
-            robot.shootBallsAuto(),
-            robot.resetRobotPoseCommand(),
-        ),
+        robot.shootBallsAuto(4000.0, 0.6),
         robot.allStartCommand(),
 
         // Gate Cycles (2)
@@ -182,12 +170,9 @@ class BigTriangleBlueSolo : LinearOpMode() {
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
-            robot.goToRpmAndAngleCommand(220.0)
+            robot.rpmAndAngleTo(4000.0, 0.6)
         ),
-        Groups.parallel(
-            robot.shootBallsAuto(),
-            robot.resetRobotPoseCommand(),
-        ),
+        robot.shootBallsAuto(4000.0, 0.6),
         robot.allStartCommand(),
 
         // Gate Cycles (3)
@@ -206,12 +191,9 @@ class BigTriangleBlueSolo : LinearOpMode() {
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
-            robot.goToRpmAndAngleCommand(220.0)
+            robot.rpmAndAngleTo(4000.0, 0.6)
         ),
-        Groups.parallel(
-            robot.shootBallsAuto(),
-            robot.resetRobotPoseCommand(),
-        ),
+        robot.shootBallsAuto(4000.0, 0.6),
         robot.allStartCommand(),
 
         // Gate Cycles (4)
@@ -230,12 +212,9 @@ class BigTriangleBlueSolo : LinearOpMode() {
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
-            robot.goToRpmAndAngleCommand(220.0)
+            robot.rpmAndAngleTo(4000.0, 0.6)
         ),
-        Groups.parallel(
-            robot.shootBallsAuto(),
-            robot.resetRobotPoseCommand(),
-        ),
+        robot.shootBallsAuto(4000.0, 0.6),
         robot.allStartCommand(),
 
         // Gate Cycles (5)
@@ -254,12 +233,9 @@ class BigTriangleBlueSolo : LinearOpMode() {
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
-            robot.goToRpmAndAngleCommand(220.0)
+            robot.rpmAndAngleTo(4000.0, 0.6)
         ),
-        Groups.parallel(
-            robot.shootBallsAuto(),
-            robot.resetRobotPoseCommand(),
-        ),
+        robot.shootBallsAuto(4000.0, 0.6),
         robot.allStartCommand(),
     )
 

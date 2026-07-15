@@ -1,18 +1,26 @@
 package org.firstinspires.ftc.teamcode.teleop
 
 import com.bylazar.telemetry.PanelsTelemetry
+import com.commonlibs.units.deg
+import com.pedropathing.follower.Follower
 import com.pedropathing.geometry.Pose
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
+import com.pedropathing.ivy.commands.Commands.waitMs
+import com.pedropathing.ivy.commands.Commands.waitUntil
+import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.library.TimeKeep
-import org.firstinspires.ftc.teamcode.library.buttons.ButtonReader
-import org.firstinspires.ftc.teamcode.pedroPathing.DrawingClone
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants
 import org.firstinspires.ftc.teamcode.robot.Robot
+import kotlin.compareTo
+import kotlin.text.toDouble
+import org.firstinspires.ftc.teamcode.library.buttons.ButtonReader
+import org.firstinspires.ftc.teamcode.library.buttons.ToggleButtonReader
 
 @TeleOp
-open class SummerDrive : LinearOpMode() {
+open class SummerDriveDuo : LinearOpMode() {
     open val pipeline : Int = 1
 
     override fun runOpMode() {
@@ -22,13 +30,13 @@ open class SummerDrive : LinearOpMode() {
 
         robot.limelight.setPipeline(pipeline)
 
-        val intakeBalls = ButtonReader { gamepad1.right_bumper }
-        val ejectBalls = ButtonReader { gamepad1.dpad_left }
-        val shootBalls = ButtonReader { gamepad1.a }
-        val stopIntake = ButtonReader { gamepad1.left_bumper }
-        val rpmToRest = ButtonReader { gamepad1.dpad_up }
-        val startShooter = ButtonReader { gamepad1.dpad_down }
-        val resetOdo = ButtonReader { gamepad1.x }
+        val intakeBalls = ButtonReader { gamepad2.right_bumper }
+        val ejectBalls = ButtonReader { gamepad2.dpad_left }
+        val shootBalls = ButtonReader { gamepad2.y }
+        val stopIntake = ButtonReader { gamepad2.left_bumper }
+        val rpmToRest = ButtonReader { gamepad2.dpad_up }
+        val startShooter = ButtonReader { gamepad2.dpad_down }
+        val resetOdo = ButtonReader { gamepad2.x }
         val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake, startShooter, resetOdo)
         val timeKeep = TimeKeep()
 
@@ -107,8 +115,6 @@ open class SummerDrive : LinearOpMode() {
             robot.shooter.updateRpm(timeKeep.deltaTime)
 
             Scheduler.execute()
-
-            DrawingClone.drawDebug(robot.follower)
 
             panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
             panelsTelemetry.addData("target rpm", robot.shooter.targetRpm)

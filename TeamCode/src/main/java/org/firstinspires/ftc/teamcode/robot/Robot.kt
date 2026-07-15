@@ -1,31 +1,28 @@
 package org.firstinspires.ftc.teamcode.robot
 
+import com.bylazar.field.Style
 import com.commonlibs.units.degToRad
 import com.commonlibs.units.mmToInch
-import com.commonlibs.units.rad
 import com.pedropathing.follower.Follower
 import com.pedropathing.geometry.Pose
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorEx
-import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.commands.Commands.instant
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.commands.Commands.waitUntil
-import com.pedropathing.ivy.groups.Groups
 import com.pedropathing.ivy.groups.Groups.parallel
 import com.pedropathing.ivy.groups.Groups.race
 import com.pedropathing.ivy.groups.Groups.sequential
-import com.pedropathing.ivy.pedro.PedroCommands
-import com.pedropathing.paths.PathChain
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.AnalogInput
+import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.library.limelightToRobotPos
-import java.lang.Math.pow
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants
+import org.firstinspires.ftc.teamcode.pedroPathing.DrawingClone
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
@@ -43,6 +40,13 @@ class Robot(
     val shooter: Shooter
     val transfer: Transfer
     val limelight : LimeLightCore
+
+    val cameraLook: Style = Style(
+        "", "#3fb560", 0.75
+    )
+    val convertLook: Style = Style(
+        "", "#070ff5", 0.75
+    )
 
     init {
         follower.setStartingPose(pose)
@@ -175,6 +179,7 @@ class Robot(
         }
 
         val cameraPose = limelight.limelightPose
+        DrawingClone.drawRobot(cameraPose, cameraLook)
         val turretHeading = Math.toRadians(shooter.turretAngle)
 
         val newRobotPosition = limelightToRobotPos(
@@ -182,6 +187,11 @@ class Robot(
             turretHeading
         )
 
+        DrawingClone.drawRobot(newRobotPosition, convertLook)
+
+//        DrawingClone.sendPacket()
+
+        //debug
         follower.pose = newRobotPosition
     }
 
@@ -213,7 +223,7 @@ class Robot(
             transfer.slowTransferCommand(),
     )
 
-    fun intakeBallsAuto(time: Double = 2000.0): Command = parallel(
+    fun intakeBallsAuto(time: Double = 1500.0): Command = parallel(
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest),
         sequential (
             parallel(

@@ -18,16 +18,15 @@ import org.firstinspires.ftc.teamcode.robot.Robot
 
 @Autonomous
 class SmallTriangleBlueHuman : LinearOpMode() {
-    private val startPose = Pose(55.0, 9.0, Math.toRadians(90.0))
+    private val startPose = Pose(55.7, 9.0, Math.toRadians(90.0))
     private val intakeFarPose = Pose(23.0, 35.0, Math.toRadians(180.0))
-    private val intakeHumanPose = Pose(12.0, 8.0, Math.toRadians(180.0))
-    private val smallTriangleShootPose = Pose(42.0, 8.0, Math.toRadians(180.0))
+    private val intakeHumanPose = Pose(16.0, 10.0, Math.toRadians(180.0))
+    private val smallTriangleShootPose = Pose(55.7, 25.6, Math.toRadians(180.0))
     private val intakeBetweenPose = Pose(12.0, 25.0, Math.toRadians(180.0))
 
-    private val shootPreloadRPM = 5400.0
-    private val shootFarRPM = 5200.0
-    private val turretPosePreload = 0.6
-    private val turretPoseFar = 0.5
+    private val shootFarRPM = 5400.0
+    private val hoodFar = 0.6
+    private val turretPoseFar = 0.6
 
     private lateinit var robot : Robot
 
@@ -41,9 +40,14 @@ class SmallTriangleBlueHuman : LinearOpMode() {
 
 
     private fun buildPaths() {
+        scorePreload = robot.follower.pathBuilder()
+            .addPath(BezierLine(startPose, smallTriangleShootPose))
+            .setLinearHeadingInterpolation(startPose.heading, smallTriangleShootPose.heading)
+            .build()
+
         intakeFar = robot.follower.pathBuilder()
-            .addPath(BezierCurve(startPose, Pose(54.5, 37.0), intakeFarPose))
-            .setLinearHeadingInterpolation(startPose.heading, intakeFarPose.heading)
+            .addPath(BezierCurve(smallTriangleShootPose, Pose(54.5, 37.0), intakeFarPose))
+            .setLinearHeadingInterpolation(smallTriangleShootPose.heading, intakeFarPose.heading)
             .build()
 
         shootFar = robot.follower.pathBuilder()
@@ -72,7 +76,11 @@ class SmallTriangleBlueHuman : LinearOpMode() {
     }
 
     fun autoRoutine() : Command = sequential (
-        robot.shootBallsAuto(),
+        parallel(
+            follow(robot.follower, scorePreload),
+            robot.shooter.goToRpmCommand(shootFarRPM)
+        ),
+        robot.shootBallsAuto(shootFarRPM),
 
         //Far Line
         parallel(
@@ -82,9 +90,9 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootFar),
             robot.allStopCommand(),
-            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+            robot.shooter.goToRpmCommand(shootFarRPM)
         ),
-        robot.shootBallsAuto(),
+        robot.shootBallsAuto(shootFarRPM),
 
         //Human Line
         race(
@@ -98,9 +106,9 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.allStopCommand(),
-            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
+            robot.shooter.goToRpmCommand(shootFarRPM)
         ),
-        robot.shootBallsAuto(),
+        robot.shootBallsAuto(shootFarRPM),
 
 
     )
@@ -113,19 +121,17 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         val timeKeep = TimeKeep()
 
         waitForStart()
+        robot.shooter.turretPosition = 0.8
+        robot.shooter.hoodToPosition(hoodFar)
 
         Scheduler.schedule(autoRoutine())
 
         while (opModeIsActive()) {
             robot.follower.update()
-            robot.limelight.updateDistance()
 
             val goalDist = robot.distanceFromGoal(Robot.Side.BLUE)
-            val autoRpm = robot.shooter.neededRpm(goalDist)
-            val autoAngle = robot.shooter.neededAngle(robot.limelight.aprilTagDistance)
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
-            robot.updateHeading(Robot.Side.BLUE)
 
             Scheduler.execute()
         }

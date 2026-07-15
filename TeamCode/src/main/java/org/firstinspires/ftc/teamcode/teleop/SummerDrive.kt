@@ -81,7 +81,6 @@ open class SummerDrive : LinearOpMode() {
             }
             if (stopIntake.wasJustPressed()) {
                 robot.allStopCommand().schedule()
-                robot.shooter.openFingerCommand().schedule()
             }
 
             if (shootBalls.wasJustPressed()) {

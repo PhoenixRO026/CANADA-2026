@@ -254,19 +254,20 @@ class Robot(
             shooter.hoodToPositionCommand(hoodPos)
         ),
         allStartCommand(),
-        waitMs(200.0),
-        intake.stopIntakeCommand(),
         waitMs(350.0),
+        intake.stopIntakeCommand(),
+        waitMs(200.0),
         parallel(
             transfer.stopTransferCommand(),
             shooter.closeFingerCommand(),
+            shooter.goToRpmCommand(0.0)
         )
     )
 
-    fun shootBallsAuto() : Command = sequential(
+    fun shootBallsAuto(rpm : Double = shooter.autoRpm) : Command = sequential(
         parallel(
             shooter.openFingerCommand(),
-            shooter.goToRpmCommand(shooter.autoRpm),
+            shooter.goToRpmCommand(rpm),
             shooter.hoodToPositionCommand(shooter.autoAngle)
         ),
         allStartCommand(),

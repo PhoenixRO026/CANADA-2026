@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto
 
+import com.bylazar.telemetry.PanelsTelemetry
 import com.pedropathing.geometry.BezierCurve
 import com.pedropathing.geometry.BezierLine
 import com.pedropathing.geometry.Pose
@@ -18,21 +19,23 @@ import org.firstinspires.ftc.teamcode.robot.Robot
 
 @Autonomous
 class SmallTriangleBlueHuman : LinearOpMode() {
-    private val startPose = Pose(55.7, 9.0, Math.toRadians(90.0))
-    private val intakeFarPose = Pose(23.0, 35.0, Math.toRadians(180.0))
-    private val intakeHumanPose = Pose(16.0, 10.0, Math.toRadians(180.0))
-    private val smallTriangleShootPose = Pose(55.7, 25.6, Math.toRadians(180.0))
+    private val startPose = Pose(55.0, 9.0, Math.toRadians(90.0))
+    private val scorePreloadPose = Pose(55.0, 11.0, Math.toRadians(90.0))
+    private val intakeFarPose = Pose(12.0, 35.0, Math.toRadians(180.0))
+    private val intakeHumanPose = Pose(12.0, 8.0, Math.toRadians(180.0))
+    private val smallTriangleShootPose = Pose(42.0, 8.0, Math.toRadians(180.0))
     private val intakeBetweenPose = Pose(12.0, 25.0, Math.toRadians(180.0))
 
-    private val shootFarRPM = 5400.0
-    private val hoodFar = 0.6
-    private val turretPoseFar = 0.6
+    private val shootFarRPM = 5200.0
+    private val hoodFar = 0.83
+    private val turretPoseFar = 0.7
+    private val turretPosePreload = 0.42
 
     private lateinit var robot : Robot
 
     private lateinit var scorePreload: PathChain
     private lateinit var intakeFar: PathChain
-    private lateinit var  shootFar: PathChain
+    private lateinit var shootFar: PathChain
     private lateinit var intakeHuman: PathChain
     private lateinit var  shootHuman: PathChain
     private lateinit var intakeBetween: PathChain
@@ -41,13 +44,13 @@ class SmallTriangleBlueHuman : LinearOpMode() {
 
     private fun buildPaths() {
         scorePreload = robot.follower.pathBuilder()
-            .addPath(BezierLine(startPose, smallTriangleShootPose))
-            .setLinearHeadingInterpolation(startPose.heading, smallTriangleShootPose.heading)
+            .addPath(BezierLine(startPose, scorePreloadPose))
+            .setLinearHeadingInterpolation(startPose.heading, scorePreloadPose.heading)
             .build()
 
         intakeFar = robot.follower.pathBuilder()
-            .addPath(BezierCurve(smallTriangleShootPose, Pose(54.5, 37.0), intakeFarPose))
-            .setLinearHeadingInterpolation(smallTriangleShootPose.heading, intakeFarPose.heading)
+            .addPath(BezierCurve(scorePreloadPose, Pose(54.5, 37.0), intakeFarPose))
+            .setLinearHeadingInterpolation(scorePreloadPose.heading, intakeFarPose.heading)
             .build()
 
         shootFar = robot.follower.pathBuilder()
@@ -70,7 +73,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
             .build()
 
         shootBetween = robot.follower.pathBuilder()
-            .addPath(BezierLine(intakeBetweenPose, smallTriangleShootPose))
+            .addPath(BezierCurve(intakeBetweenPose, Pose(20.0, 14.0), smallTriangleShootPose))
             .setConstantHeadingInterpolation(Math.PI)
             .build()
     }
@@ -78,9 +81,10 @@ class SmallTriangleBlueHuman : LinearOpMode() {
     fun autoRoutine() : Command = sequential (
         parallel(
             follow(robot.follower, scorePreload),
-            robot.shooter.goToRpmCommand(shootFarRPM)
+            robot.rpmAndAngleTo(shootFarRPM, hoodFar),
+            robot.shooter.turretToPosition(turretPosePreload)
         ),
-        robot.shootBallsAuto(shootFarRPM),
+        robot.shootBallsFar(),
 
         //Far Line
         parallel(
@@ -90,30 +94,43 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootFar),
             robot.allStopCommand(),
-            robot.shooter.goToRpmCommand(shootFarRPM)
+            robot.rpmAndAngleTo(shootFarRPM, hoodFar),
+            robot.shooter.turretToPosition(turretPoseFar)
         ),
-        robot.shootBallsAuto(shootFarRPM),
+        robot.shootBallsFar(shootFarRPM),
 
         //Human Line
-        race(
-            parallel(
-                follow(robot.follower, intakeHuman),
-                robot.intakeBalls()
-            ),
-            waitMs(3500.0)
+        parallel(
+            follow(robot.follower, intakeHuman),
+            robot.intakeBalls()
         ),
         robot.allStopCommand(),
+
         parallel(
             follow(robot.follower, shootHuman),
-            robot.allStopCommand(),
-            robot.shooter.goToRpmCommand(shootFarRPM)
-        ),
-        robot.shootBallsAuto(shootFarRPM),
+            robot.rpmAndAngleTo(shootFarRPM, hoodFar),
+            robot.shooter.turretToPosition(turretPoseFar)
 
+        ),
+        robot.shootBallsFar(shootFarRPM),
+
+        // Between pose
+        parallel(
+            follow(robot.follower, intakeBetween),
+            robot.intakeBalls()
+        ),
+        parallel(
+            follow(robot.follower, shootFar),
+            robot.allStopCommand(),
+            robot.rpmAndAngleTo(shootFarRPM, hoodFar),
+            robot.shooter.turretToPosition(turretPoseFar)
+        ),
+        robot.shootBallsFar(shootFarRPM),
 
     )
 
     override fun runOpMode() {
+        val panelsTelemetry = PanelsTelemetry.telemetry
         robot = Robot(hardwareMap, startPose)
 
         Scheduler.reset()
@@ -127,6 +144,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         Scheduler.schedule(autoRoutine())
 
         while (opModeIsActive()) {
+            timeKeep.resetDeltaTime()
             robot.follower.update()
 
             val goalDist = robot.distanceFromGoal(Robot.Side.BLUE)
@@ -134,6 +152,13 @@ class SmallTriangleBlueHuman : LinearOpMode() {
             robot.shooter.updateRpm(timeKeep.deltaTime)
 
             Scheduler.execute()
+
+            panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
+            panelsTelemetry.addData("motor intake", robot.intake.power)
+            panelsTelemetry.addData("motor transfer", robot.transfer.power)
+            panelsTelemetry.addData("wait for rpm", robot.shooter.shooterBusy())
+            panelsTelemetry.addData("delta time", timeKeep.deltaTime)
+            panelsTelemetry.update(telemetry)
         }
     }
 }

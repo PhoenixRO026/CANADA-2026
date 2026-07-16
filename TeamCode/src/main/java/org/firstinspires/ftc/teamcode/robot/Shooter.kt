@@ -117,6 +117,8 @@ class Shooter(
     fun openFingerCommand() : Command = instant { openFinger() }
     fun closeFingerCommand() : Command = instant { closeFinger() }
 
+    fun turretToPosition(pos : Double) : Command = instant { turretPosition = pos }
+
     fun openFinger() { fingerPosition = ShooterConfig.fingerOpen }
     fun closeFinger() { fingerPosition = ShooterConfig.fingerClose }
 

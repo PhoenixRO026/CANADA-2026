@@ -298,6 +298,7 @@ class Robot(
 
     fun ejectBalls() : Command = sequential(
         intake.reverseIntakeCommand(),
+        shooter.openFingerCommand(),
         transfer.reverseTransferCommand(),
         waitMs(500.0),
         transfer.stopTransferCommand(),
@@ -310,14 +311,15 @@ class Robot(
             shooter.goToRpmCommand(rpm),
             shooter.hoodToPositionCommand(angle)
         ),
-        instant { transfer.power = 0.7 },
+        waitMs(100.0),
+        instant { transfer.power = 0.8 },
         instant { intake.power = 1.0 },
         waitMs(300.0),
         intake.stopIntakeCommand(),
-        waitMs(300.0),
-        parallel(
-            transfer.stopTransferCommand(),
-            shooter.closeFingerCommand()
-        )
+        waitMs(500.0),
+
+        transfer.stopTransferCommand(),
+        shooter.closeFingerCommand(),
+        shooter.goToRpmCommand(0.0)
     )
 }

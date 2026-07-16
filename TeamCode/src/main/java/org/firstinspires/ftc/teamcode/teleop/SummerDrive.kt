@@ -30,7 +30,7 @@ open class SummerDrive : LinearOpMode() {
         val startShooter = ButtonReader { gamepad1.dpad_down }
         val resetOdo = ButtonReader { gamepad1.x }
         val shootFar = ButtonReader { gamepad1.b }
-        val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake, startShooter, resetOdo)
+        val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake, startShooter, resetOdo, shootFar)
         val timeKeep = TimeKeep()
 
         waitForStart()

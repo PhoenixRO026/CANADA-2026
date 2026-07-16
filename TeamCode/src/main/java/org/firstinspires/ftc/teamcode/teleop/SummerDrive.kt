@@ -29,6 +29,7 @@ open class SummerDrive : LinearOpMode() {
         val rpmToRest = ButtonReader { gamepad1.dpad_up }
         val startShooter = ButtonReader { gamepad1.dpad_down }
         val resetOdo = ButtonReader { gamepad1.x }
+        val shootFar = ButtonReader { gamepad1.b }
         val buttons = listOf(intakeBalls, ejectBalls, shootBalls, rpmToRest, stopIntake, startShooter, resetOdo)
         val timeKeep = TimeKeep()
 
@@ -102,6 +103,9 @@ open class SummerDrive : LinearOpMode() {
 
             if (resetOdo.wasJustPressed()) {
                 robot.resetRobotPose()
+            }
+            if (shootFar.wasJustPressed()) {
+                robot.shootBallsFar().schedule()
             }
 
             robot.shooter.updateRpm(timeKeep.deltaTime)

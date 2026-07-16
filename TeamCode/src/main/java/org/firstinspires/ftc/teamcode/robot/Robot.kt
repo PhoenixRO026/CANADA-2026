@@ -303,4 +303,21 @@ class Robot(
         transfer.stopTransferCommand(),
         intake.stopIntakeCommand()
     )
+
+    fun shootBallsFar(rpm : Double = 5200.0, angle : Double = 0.83) : Command = sequential(
+        parallel(
+            shooter.openFingerCommand(),
+            shooter.goToRpmCommand(rpm),
+            shooter.hoodToPositionCommand(angle)
+        ),
+        instant { transfer.power = 0.7 },
+        instant { intake.power = 1.0 },
+        waitMs(300.0),
+        intake.stopIntakeCommand(),
+        waitMs(300.0),
+        parallel(
+            transfer.stopTransferCommand(),
+            shooter.closeFingerCommand()
+        )
+    )
 }

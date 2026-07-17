@@ -20,9 +20,9 @@ import org.firstinspires.ftc.teamcode.robot.Robot
 @Autonomous
 class SmallTriangleBlueHuman : LinearOpMode() {
     private val startPose = Pose(55.0, 9.0, Math.toRadians(90.0))
-    private val scorePreloadPose = Pose(55.0, 10.0, Math.toRadians(90.0))
+    private val scorePreloadPose = Pose(55.0, 12.0, Math.toRadians(90.0))
     private val intakeFarPose = Pose(12.0, 35.0, Math.toRadians(180.0))
-    private val intakeHumanPose = Pose(12.0, 9.0, Math.toRadians(180.0))
+    private val intakeHumanPose = Pose(12.0, 9.5, Math.toRadians(180.0))
     private val smallTriangleShootPose = Pose(42.0, 9.5, Math.toRadians(180.0))
     private val intakeBetweenPose = Pose(12.0, 25.0, Math.toRadians(180.0))
 
@@ -64,7 +64,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
             .build()
 
         shootHuman = robot.follower.pathBuilder()
-            .addPath(BezierLine(intakeHumanPose, smallTriangleShootPose))
+            .addPath(BezierCurve(intakeHumanPose, Pose(20.0, 15.0), smallTriangleShootPose))
             .setConstantHeadingInterpolation(Math.PI)
             .build()
 
@@ -124,6 +124,36 @@ class SmallTriangleBlueHuman : LinearOpMode() {
             robot.allStopCommand(),
             robot.rpmAndAngleTo(5200.0,0.83),
             robot.shooter.turretToPosition(0.765)
+        ),
+        robot.shootBallsFar(5200.0, 0.83),
+
+        //Human Line
+        parallel(
+            follow(robot.follower, intakeHuman),
+            robot.intakeBalls()
+        ),
+        robot.allStopCommand(),
+
+        parallel(
+            follow(robot.follower, shootHuman),
+            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.shooter.turretToPosition(0.765)
+
+        ),
+        robot.shootBallsFar(5200.0, 0.83),
+
+        //Human Line
+        parallel(
+            follow(robot.follower, intakeHuman),
+            robot.intakeBalls()
+        ),
+        robot.allStopCommand(),
+
+        parallel(
+            follow(robot.follower, shootHuman),
+            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.shooter.turretToPosition(0.765)
+
         ),
         robot.shootBallsFar(5200.0, 0.83),
 

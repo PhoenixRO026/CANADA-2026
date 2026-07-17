@@ -329,12 +329,12 @@ class Robot(
             shooter.goToRpmCommand(rpm),
             shooter.hoodToPositionCommand(angle)
         ),
-        waitMs(100.0),
+        waitMs(50.0),
         // Use the official commands so the subsystem scheduler takes ownership of the power
         allStartCommand(),
-        waitMs(400.0),
+        waitMs(450.0),
         intake.stopIntakeCommand(),
-        waitMs(500.0),
+        waitMs(600.0),
         parallel(
             allStopCommand(),
             shooter.closeFingerCommand(),

@@ -172,7 +172,7 @@ class Shooter(
         }
         else {
             autoRpm = MathFunctions.clamp(
-                0.0622614 * distance.pow(2) - 35.77519 * distance + 10383.1872,
+                2192.87438 * 1.0021.pow(distance) ,
                 0.0, 6000.0
             )
         }
@@ -189,7 +189,7 @@ class Shooter(
         }
         else {
             autoAngle = MathFunctions.clamp(
-                0.120601 * sin(0.10933 * distance - 2.55739) + 0.49653,
+                0.0846247 * sin(0.077299 * distance - 0.883679) + 0.525991,
                 0.0, 1.0
             )
         }

@@ -280,11 +280,10 @@ class Robot(
         )
     )
 
-    fun shootBallsAuto(rpm : Double = shooter.autoRpm, angle : Double = shooter.autoAngle) : Command = sequential(
+    fun shootBallsAuto(rpm : Double = shooter.autoRpm) : Command = sequential(
         parallel(
             shooter.openFingerCommand(),
             shooter.goToRpmCommand(rpm),
-            shooter.hoodToPositionCommand(angle)
         ),
         allStartCommand(),
         waitMs(220.0),

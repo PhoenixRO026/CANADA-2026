@@ -166,7 +166,9 @@ class Shooter(
     fun neededRpm(distance: Double) : Double {
         if (distance < 270) {
             autoRpm = MathFunctions.clamp(
-                0.0420412 * distance.pow(2) - 9.91401 * distance + 3859.72236,
+                -0.0208476 * distance.pow(2) +
+                        11.85304 * distance +
+                        2053.49282,
                 0.0, 6000.0
             )
         }
@@ -186,7 +188,11 @@ class Shooter(
     fun neededAngle(distance: Double) : Double {
         if (0.0 < distance && distance < 270.0) {
             autoAngle = MathFunctions.clamp(
-                -0.301191 + 0.157061 * ln(distance),
+                5.39259e-9 * distance.pow(4) -
+                        0.00000365985 * distance.pow(3) +
+                        0.000850636 * distance.pow(2) -
+                        0.0769662 * distance +
+                        2.66891,
                 0.3, 0.83
             )
 

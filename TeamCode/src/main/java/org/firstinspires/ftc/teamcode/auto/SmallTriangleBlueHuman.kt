@@ -81,10 +81,10 @@ class SmallTriangleBlueHuman : LinearOpMode() {
     fun autoRoutine() : Command = sequential (
         parallel(
             follow(robot.follower, scorePreload),
-            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.rpmAndAngleTo(4300.0, 0.46),
             robot.shooter.turretToPosition(0.43)
         ),
-        robot.shootBallsFar(5200.0, 0.83),
+        robot.shootBallsFar(4300.0, 0.46),
 
         //Far Line
         parallel(
@@ -94,10 +94,10 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootFar),
             robot.allStopCommand(),
-            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.rpmAndAngleTo(4300.0, 0.46),
             robot.shooter.turretToPosition(0.765)
         ),
-        robot.shootBallsFar(5200.0, 0.83),
+        robot.shootBallsFar(4300.0, 0.46),
 
         //Human Line
         parallel(
@@ -108,11 +108,11 @@ class SmallTriangleBlueHuman : LinearOpMode() {
 
         parallel(
             follow(robot.follower, shootHuman),
-            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.rpmAndAngleTo(4300.0, 0.46),
             robot.shooter.turretToPosition(0.765)
 
         ),
-        robot.shootBallsFar(5200.0, 0.83),
+        robot.shootBallsFar(4300.0, 0.46),
 
         // Between pose
         parallel(
@@ -122,10 +122,10 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootFar),
             robot.allStopCommand(),
-            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.rpmAndAngleTo(4300.0, 0.46),
             robot.shooter.turretToPosition(0.765)
         ),
-        robot.shootBallsFar(5200.0, 0.83),
+        robot.shootBallsFar(4300.0, 0.46),
 
         //Human Line
         parallel(
@@ -136,11 +136,11 @@ class SmallTriangleBlueHuman : LinearOpMode() {
 
         parallel(
             follow(robot.follower, shootHuman),
-            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.rpmAndAngleTo(4300.0, 0.46),
             robot.shooter.turretToPosition(0.765)
 
         ),
-        robot.shootBallsFar(5200.0, 0.83),
+        robot.shootBallsFar(4300.0, 0.46),
 
         //Human Line
         parallel(
@@ -151,11 +151,11 @@ class SmallTriangleBlueHuman : LinearOpMode() {
 
         parallel(
             follow(robot.follower, shootHuman),
-            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.rpmAndAngleTo(4300.0, 0.46),
             robot.shooter.turretToPosition(0.765)
 
         ),
-        robot.shootBallsFar(5200.0, 0.83),
+        robot.shootBallsFar(4300.0, 0.46),
 
     )
 
@@ -171,7 +171,6 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         robot.shooter.openFinger()
         Scheduler.schedule(autoRoutine())
         robot.shooter.turretPosition = 0.43
-        robot.shooter.hoodToPosition(0.83)
 
         while (opModeIsActive()) {
             robot.follower.update()

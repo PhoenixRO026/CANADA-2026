@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop
 import com.bylazar.configurables.annotations.Configurable
 import com.bylazar.telemetry.PanelsTelemetry
 import com.pedropathing.follower.Follower
+import com.pedropathing.geometry.Pose
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
 import com.pedropathing.ivy.commands.Commands.waitMs
@@ -30,7 +31,7 @@ open class Data : LinearOpMode() {
 
     override fun runOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
-        val robot = Robot(hardwareMap)
+        val robot = Robot(hardwareMap, Pose(39.0, 56.0, Math.PI/2))
         Scheduler.reset()
 
         robot.limelight.setPipeline(pipeline)

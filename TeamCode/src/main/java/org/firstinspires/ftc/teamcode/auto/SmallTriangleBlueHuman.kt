@@ -20,16 +20,16 @@ import org.firstinspires.ftc.teamcode.robot.Robot
 @Autonomous
 class SmallTriangleBlueHuman : LinearOpMode() {
     private val startPose = Pose(55.0, 9.0, Math.toRadians(90.0))
-    private val scorePreloadPose = Pose(55.0, 11.0, Math.toRadians(90.0))
+    private val scorePreloadPose = Pose(55.0, 10.0, Math.toRadians(90.0))
     private val intakeFarPose = Pose(12.0, 35.0, Math.toRadians(180.0))
-    private val intakeHumanPose = Pose(12.0, 8.0, Math.toRadians(180.0))
-    private val smallTriangleShootPose = Pose(42.0, 8.0, Math.toRadians(180.0))
+    private val intakeHumanPose = Pose(12.0, 9.0, Math.toRadians(180.0))
+    private val smallTriangleShootPose = Pose(42.0, 9.5, Math.toRadians(180.0))
     private val intakeBetweenPose = Pose(12.0, 25.0, Math.toRadians(180.0))
 
-    private val shootFarRPM = 5200.0
-    private val hoodFar = 0.83
-    private val turretPoseFar = 0.7
-    private val turretPosePreload = 0.42
+//    private val shootFarRPM = 5200.0
+//    private val hoodFar = 0.83
+//    private val turretPoseFar = 0.75
+//    private val turretPosePreload = 0.43
 
     private lateinit var robot : Robot
 
@@ -49,7 +49,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
             .build()
 
         intakeFar = robot.follower.pathBuilder()
-            .addPath(BezierCurve(scorePreloadPose, Pose(54.5, 37.0), intakeFarPose))
+            .addPath(BezierCurve(scorePreloadPose, Pose(45.0, 30.0), intakeFarPose))
             .setLinearHeadingInterpolation(scorePreloadPose.heading, intakeFarPose.heading)
             .build()
 
@@ -81,10 +81,10 @@ class SmallTriangleBlueHuman : LinearOpMode() {
     fun autoRoutine() : Command = sequential (
         parallel(
             follow(robot.follower, scorePreload),
-            robot.rpmAndAngleTo(shootFarRPM, hoodFar),
-            robot.shooter.turretToPosition(turretPosePreload)
+            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.shooter.turretToPosition(0.43)
         ),
-        robot.shootBallsFar(),
+        robot.shootBallsFar(5200.0, 0.83),
 
         //Far Line
         parallel(
@@ -94,10 +94,10 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootFar),
             robot.allStopCommand(),
-            robot.rpmAndAngleTo(shootFarRPM, hoodFar),
-            robot.shooter.turretToPosition(turretPoseFar)
+            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.shooter.turretToPosition(0.765)
         ),
-        robot.shootBallsFar(shootFarRPM),
+        robot.shootBallsFar(5200.0, 0.83),
 
         //Human Line
         parallel(
@@ -108,11 +108,11 @@ class SmallTriangleBlueHuman : LinearOpMode() {
 
         parallel(
             follow(robot.follower, shootHuman),
-            robot.rpmAndAngleTo(shootFarRPM, hoodFar),
-            robot.shooter.turretToPosition(turretPoseFar)
+            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.shooter.turretToPosition(0.765)
 
         ),
-        robot.shootBallsFar(shootFarRPM),
+        robot.shootBallsFar(5200.0, 0.83),
 
         // Between pose
         parallel(
@@ -122,10 +122,10 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootFar),
             robot.allStopCommand(),
-            robot.rpmAndAngleTo(shootFarRPM, hoodFar),
-            robot.shooter.turretToPosition(turretPoseFar)
+            robot.rpmAndAngleTo(5200.0,0.83),
+            robot.shooter.turretToPosition(0.765)
         ),
-        robot.shootBallsFar(shootFarRPM),
+        robot.shootBallsFar(5200.0, 0.83),
 
     )
 
@@ -138,14 +138,14 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         val timeKeep = TimeKeep()
 
         waitForStart()
-        robot.shooter.turretPosition = 0.8
-        robot.shooter.hoodToPosition(hoodFar)
-
+        robot.shooter.openFinger()
         Scheduler.schedule(autoRoutine())
+        robot.shooter.turretPosition = 0.43
+        robot.shooter.hoodToPosition(0.83)
 
         while (opModeIsActive()) {
-            timeKeep.resetDeltaTime()
             robot.follower.update()
+            timeKeep.resetDeltaTime()
 
             val goalDist = robot.distanceFromGoal(Robot.Side.BLUE)
 

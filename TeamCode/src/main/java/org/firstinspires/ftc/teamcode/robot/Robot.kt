@@ -305,6 +305,24 @@ class Robot(
         intake.stopIntakeCommand()
     )
 
+//    fun shootBallsFar(rpm : Double = 5200.0, angle : Double = 0.83) : Command = sequential(
+//        parallel(
+//            shooter.openFingerCommand(),
+//            shooter.goToRpmCommand(rpm),
+//            shooter.hoodToPositionCommand(angle)
+//        ),
+//        waitMs(100.0),
+//        instant { transfer.power = 0.8 },
+//        instant { intake.power = 1.0 },
+//        waitMs(300.0),
+//        intake.stopIntakeCommand(),
+//        waitMs(500.0),
+//
+//        transfer.stopTransferCommand(),
+//        shooter.closeFingerCommand(),
+//        shooter.goToRpmCommand(0.0)
+//    )
+
     fun shootBallsFar(rpm : Double = 5200.0, angle : Double = 0.83) : Command = sequential(
         parallel(
             shooter.openFingerCommand(),
@@ -312,14 +330,15 @@ class Robot(
             shooter.hoodToPositionCommand(angle)
         ),
         waitMs(100.0),
-        instant { transfer.power = 0.8 },
-        instant { intake.power = 1.0 },
-        waitMs(300.0),
+        // Use the official commands so the subsystem scheduler takes ownership of the power
+        allStartCommand(),
+        waitMs(400.0),
         intake.stopIntakeCommand(),
         waitMs(500.0),
-
-        transfer.stopTransferCommand(),
-        shooter.closeFingerCommand(),
-        shooter.goToRpmCommand(0.0)
+        parallel(
+            allStopCommand(),
+            shooter.closeFingerCommand(),
+            shooter.goToRpmCommand(0.0)
+        )
     )
 }

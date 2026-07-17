@@ -39,8 +39,8 @@ class Shooter(
             kI = 0.0012,
             stabilityThreshold = 50.0
         )
-        @JvmField var kS = 1.4
-        @JvmField var kV = 0.002
+        @JvmField var kS = 1.125
+        @JvmField var kV = 0.002065
         @JvmField var servoRange = 360.0
         @JvmField var gearRatio = 9.0 / 10.0
         @JvmField var maxFinalDegrees = servoRange * gearRatio // 324

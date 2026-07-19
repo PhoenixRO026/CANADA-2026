@@ -24,7 +24,7 @@ import org.psilynx.psikit.ftc.wrappers.MotorWrapper
 import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 
 @Autonomous
-class SmallTriangleBlueHuman : LinearOpMode() {
+class SmallTriangleBlueHuman : LoggedOpMode() {
     private val startPose = Pose(55.0, 9.0, Math.toRadians(90.0))
     private val scorePreloadPose = Pose(55.0, 12.0, Math.toRadians(90.0))
     private val intakeFarPose = Pose(12.0, 35.0, Math.toRadians(180.0))
@@ -185,8 +185,8 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         val motors = drivetrain?.motors?.map { it as? MotorWrapper }
 
         while (opModeIsActive()) {
-//            wrapper?.cacheResets?.forEach { it() }
-//            motors?.forEach { it?.cacheResets?.forEach { it() } }
+            wrapper?.cacheResets?.forEach { it() }
+            motors?.forEach { it?.cacheResets?.forEach { it() } }
 
             robot.follower.update()
             timeKeep.resetDeltaTime()

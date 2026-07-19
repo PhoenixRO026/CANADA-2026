@@ -17,11 +17,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.LoggedOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.robot.Robot
+import org.psilynx.psikit.ftc.wrappers.Limelight3AWrapper
 import org.psilynx.psikit.ftc.wrappers.MotorWrapper
 import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 
 @Autonomous
-class BigTriangleBlueSolo : LinearOpMode() {
+class BigTriangleBlueSolo : LoggedOpMode() {
     private val startPose = Pose(18.0, 118.0, Math.toRadians(144.0))
     // FIXED: Preload now goes to (59.5, 68)
     private val scorePreloadPose = Pose(59.5, 68.0, Math.toRadians(180.0))
@@ -220,6 +221,8 @@ class BigTriangleBlueSolo : LinearOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
         robot = Robot(hardwareMap, startPose)
 
+        robot.limelight.setPipeline(1)
+
         Scheduler.reset()
         buildPaths()
         val timeKeep = TimeKeep()
@@ -235,10 +238,12 @@ class BigTriangleBlueSolo : LinearOpMode() {
         val wrapper = localizer?.pinpoint as? PinpointWrapper
         val drivetrain = robot.follower.drivetrain as? Mecanum
         val motors = drivetrain?.motors?.map { it as? MotorWrapper }
+        val limelight = robot.limelight.camera as? Limelight3AWrapper
 
         while (opModeIsActive()) {
-//            wrapper?.cacheResets?.forEach { it() }
-//            motors?.forEach { it?.cacheResets?.forEach { it() } }
+            wrapper?.cacheResets?.forEach { it() }
+            motors?.forEach { it?.cacheResets?.forEach { it() } }
+            limelight?.cacheResets?.forEach { it() }
 
             robot.follower.update()
             robot.limelight.updateDistance()

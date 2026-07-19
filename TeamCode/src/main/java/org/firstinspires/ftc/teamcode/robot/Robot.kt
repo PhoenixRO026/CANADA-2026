@@ -12,6 +12,7 @@ import com.pedropathing.ivy.commands.Commands.waitUntil
 import com.pedropathing.ivy.groups.Groups.parallel
 import com.pedropathing.ivy.groups.Groups.race
 import com.pedropathing.ivy.groups.Groups.sequential
+import com.pedropathing.localization.FusionLocalizer
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.AnalogInput
@@ -47,6 +48,15 @@ class Robot(
     val convertLook: Style = Style(
         "", "#070ff5", 0.75
     )
+    val fusionLocalizer = follower.poseTracker.localizer as? FusionLocalizer
+
+    fun updateFusion() {
+        if (fusionLocalizer == null) return
+
+        val llResult = limelight.getNewPose() ?: return
+
+        fusionLocalizer.addMeasurement(llResult.pose, llResult.timestamp)
+    }
 
     init {
         follower.setStartingPose(pose)

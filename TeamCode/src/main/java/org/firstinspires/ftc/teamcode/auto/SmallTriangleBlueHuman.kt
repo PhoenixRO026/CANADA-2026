@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.auto
 
 import com.bylazar.telemetry.PanelsTelemetry
+import com.pedropathing.ftc.drivetrains.Mecanum
+import com.pedropathing.ftc.localization.localizers.PinpointLocalizer
 import com.pedropathing.geometry.BezierCurve
 import com.pedropathing.geometry.BezierLine
 import com.pedropathing.geometry.Pose
@@ -17,9 +19,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.LoggedOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.robot.Robot
+import org.psilynx.psikit.ftc.HardwareMapWrapper
+import org.psilynx.psikit.ftc.wrappers.MotorWrapper
+import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 
 @Autonomous
-class SmallTriangleBlueHuman : LoggedOpMode() {
+class SmallTriangleBlueHuman : LinearOpMode() {
     private val startPose = Pose(55.0, 9.0, Math.toRadians(90.0))
     private val scorePreloadPose = Pose(55.0, 12.0, Math.toRadians(90.0))
     private val intakeFarPose = Pose(12.0, 35.0, Math.toRadians(180.0))
@@ -174,7 +179,15 @@ class SmallTriangleBlueHuman : LoggedOpMode() {
         Scheduler.schedule(autoRoutine())
         robot.shooter.turretPosition = 0.43
 
+        val localizer = robot.follower.poseTracker.localizer as? PinpointLocalizer
+        val wrapper = localizer?.pinpoint as? PinpointWrapper
+        val drivetrain = robot.follower.drivetrain as? Mecanum
+        val motors = drivetrain?.motors?.map { it as? MotorWrapper }
+
         while (opModeIsActive()) {
+//            wrapper?.cacheResets?.forEach { it() }
+//            motors?.forEach { it?.cacheResets?.forEach { it() } }
+
             robot.follower.update()
             timeKeep.resetDeltaTime()
 
@@ -184,6 +197,7 @@ class SmallTriangleBlueHuman : LoggedOpMode() {
 
             Scheduler.execute()
 
+            panelsTelemetry.addData("pos", robot.follower.pose)
             panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
             panelsTelemetry.addData("motor intake", robot.intake.power)
             panelsTelemetry.addData("motor transfer", robot.transfer.power)

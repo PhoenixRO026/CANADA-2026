@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.auto
 
 import com.bylazar.telemetry.PanelsTelemetry
+import com.pedropathing.ftc.drivetrains.Mecanum
+import com.pedropathing.ftc.localization.localizers.PinpointLocalizer
 import com.pedropathing.geometry.BezierCurve
 import com.pedropathing.geometry.BezierLine
 import com.pedropathing.geometry.Pose
@@ -12,8 +14,11 @@ import com.pedropathing.ivy.pedro.PedroCommands
 import com.pedropathing.paths.PathChain
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.eventloop.opmode.LoggedOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.robot.Robot
+import org.psilynx.psikit.ftc.wrappers.MotorWrapper
+import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 
 @Autonomous
 class BigTriangleBlueSolo : LinearOpMode() {
@@ -226,7 +231,15 @@ class BigTriangleBlueSolo : LinearOpMode() {
         robot.shooter.turretPosition = 0.67
         robot.shooter.hoodToPosition(hoodFar)
 
+        val localizer = robot.follower.poseTracker.localizer as? PinpointLocalizer
+        val wrapper = localizer?.pinpoint as? PinpointWrapper
+        val drivetrain = robot.follower.drivetrain as? Mecanum
+        val motors = drivetrain?.motors?.map { it as? MotorWrapper }
+
         while (opModeIsActive()) {
+//            wrapper?.cacheResets?.forEach { it() }
+//            motors?.forEach { it?.cacheResets?.forEach { it() } }
+
             robot.follower.update()
             robot.limelight.updateDistance()
             robot.limelight.updateLimelightPose()

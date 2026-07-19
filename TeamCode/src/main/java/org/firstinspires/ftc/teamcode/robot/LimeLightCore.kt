@@ -36,6 +36,36 @@ class LimeLightCore(
 
     var limelightPoseValid: Boolean = false
 
+    data class LLResult(
+        val pose: Pose,
+        val timestamp: Long
+    )
+
+    fun getNewPose(): LLResult? {
+        val result = camera.latestResult ?: return null
+
+        if (!(result.isValid && result.staleness > 200)) {
+            return null
+        }
+
+        val botpose = result.botpose
+
+        val variance = result.stddevMt1
+
+        val pose = botpose.position.unit.run {
+            Pose(
+                toInches(botpose.position.x),
+                toInches(botpose.position.y),
+                botpose.orientation.getYaw(AngleUnit.RADIANS),
+                FTCCoordinates.INSTANCE
+            )
+        }.getAsCoordinateSystem(PedroCoordinates.INSTANCE)
+
+        val timestamp = result.controlHubTimeStamp
+
+        return LLResult(pose, timestamp)
+    }
+
     fun updateLimelightPose() {
         val result = camera.latestResult ?: run {
             aprilTagDistance = Double.NaN

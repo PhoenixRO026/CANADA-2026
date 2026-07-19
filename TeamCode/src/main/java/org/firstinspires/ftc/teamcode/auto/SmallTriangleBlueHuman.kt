@@ -14,11 +14,12 @@ import com.pedropathing.ivy.pedro.PedroCommands.follow
 import com.pedropathing.paths.PathChain
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.eventloop.opmode.LoggedOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.robot.Robot
 
 @Autonomous
-class SmallTriangleBlueHuman : LinearOpMode() {
+class SmallTriangleBlueHuman : LoggedOpMode() {
     private val startPose = Pose(55.0, 9.0, Math.toRadians(90.0))
     private val scorePreloadPose = Pose(55.0, 12.0, Math.toRadians(90.0))
     private val intakeFarPose = Pose(12.0, 35.0, Math.toRadians(180.0))

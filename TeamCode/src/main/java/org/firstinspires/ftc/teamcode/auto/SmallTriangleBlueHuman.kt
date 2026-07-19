@@ -22,14 +22,9 @@ class SmallTriangleBlueHuman : LinearOpMode() {
     private val startPose = Pose(55.0, 9.0, Math.toRadians(90.0))
     private val scorePreloadPose = Pose(55.0, 12.0, Math.toRadians(90.0))
     private val intakeFarPose = Pose(12.0, 35.0, Math.toRadians(180.0))
-    private val intakeHumanPose = Pose(12.0, 9.5, Math.toRadians(180.0))
+    private val intakeHumanPose = Pose(12.0, 9.5, Math.toRadians(170.0))
+    private val kindaBetweenPose = Pose(12.0, 24.0, Math.toRadians(180.0))
     private val smallTriangleShootPose = Pose(42.0, 9.5, Math.toRadians(180.0))
-    private val intakeBetweenPose = Pose(12.0, 25.0, Math.toRadians(180.0))
-
-//    private val shootFarRPM = 5200.0
-//    private val hoodFar = 0.83
-//    private val turretPoseFar = 0.75
-//    private val turretPosePreload = 0.43
 
     private lateinit var robot : Robot
 
@@ -37,10 +32,8 @@ class SmallTriangleBlueHuman : LinearOpMode() {
     private lateinit var intakeFar: PathChain
     private lateinit var shootFar: PathChain
     private lateinit var intakeHuman: PathChain
-    private lateinit var  shootHuman: PathChain
-    private lateinit var intakeBetween: PathChain
-    private lateinit var shootBetween: PathChain
-
+    private lateinit var kindaBetween: PathChain
+    private lateinit var shootHuman: PathChain
 
     private fun buildPaths() {
         scorePreload = robot.follower.pathBuilder()
@@ -63,97 +56,105 @@ class SmallTriangleBlueHuman : LinearOpMode() {
             .setConstantHeadingInterpolation(Math.PI)
             .build()
 
+        // Shuffles from human intake pose to the next coordinate
+        kindaBetween = robot.follower.pathBuilder()
+            .addPath(BezierCurve(intakeHumanPose, Pose(20.0, 15.0), kindaBetweenPose))
+            .setLinearHeadingInterpolation(intakeHumanPose.heading, kindaBetweenPose.heading)
+            .build()
+
         shootHuman = robot.follower.pathBuilder()
-            .addPath(BezierCurve(intakeHumanPose, Pose(20.0, 15.0), smallTriangleShootPose))
-            .setConstantHeadingInterpolation(Math.PI)
-            .build()
-
-        intakeBetween = robot.follower.pathBuilder()
-            .addPath(BezierCurve(smallTriangleShootPose, Pose(40.0, 26.5), intakeBetweenPose))
-            .build()
-
-        shootBetween = robot.follower.pathBuilder()
-            .addPath(BezierCurve(intakeBetweenPose, Pose(20.0, 14.0), smallTriangleShootPose))
+            .addPath(BezierCurve(kindaBetweenPose, Pose(20.0, 15.0), smallTriangleShootPose))
             .setConstantHeadingInterpolation(Math.PI)
             .build()
     }
 
     fun autoRoutine() : Command = sequential (
+        // Preload
         parallel(
             follow(robot.follower, scorePreload),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.43)
+            robot.shooter.turretToPosition(0.38)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
-        //Far Line
-        parallel(
+        // Far Line
+        race(
             follow(robot.follower, intakeFar),
-            robot.intakeBalls()
+            robot.intakeBallsAuto()
         ),
         parallel(
             follow(robot.follower, shootFar),
             robot.allStopCommand(),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.765)
+            robot.shooter.turretToPosition(0.75)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
-        //Human Line
-        parallel(
-            follow(robot.follower, intakeHuman),
-            robot.intakeBalls()
+        // cycle 1
+        race(
+            sequential(
+                follow(robot.follower, intakeHuman),
+                follow(robot.follower, kindaBetween)
+            ),
+            robot.intakeBallsAuto()
         ),
         robot.allStopCommand(),
 
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.765)
-
+            robot.shooter.turretToPosition(0.75)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
-        // Between pose
-        parallel(
-            follow(robot.follower, intakeBetween),
-            robot.intakeBalls()
-        ),
-        parallel(
-            follow(robot.follower, shootFar),
-            robot.allStopCommand(),
-            robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.765)
-        ),
-        robot.shootBallsFar(4300.0, 0.46),
-
-        //Human Line
-        parallel(
-            follow(robot.follower, intakeHuman),
-            robot.intakeBalls()
+        // cycle 2
+        race(
+            sequential(
+                follow(robot.follower, intakeHuman),
+                follow(robot.follower, kindaBetween)
+            ),
+            robot.intakeBallsAuto()
         ),
         robot.allStopCommand(),
 
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.765)
-
+            robot.shooter.turretToPosition(0.75)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
-        //Human Line
-        parallel(
-            follow(robot.follower, intakeHuman),
-            robot.intakeBalls()
+        // cycle 3
+        race(
+            sequential(
+                follow(robot.follower, intakeHuman),
+                follow(robot.follower, kindaBetween)
+            ),
+            robot.intakeBallsAuto()
         ),
         robot.allStopCommand(),
 
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.765)
+            robot.shooter.turretToPosition(0.75)
+        ),
+        robot.shootBallsFar(4300.0, 0.46),
 
+        // cycle 4
+        race(
+            sequential(
+                follow(robot.follower, intakeHuman),
+                follow(robot.follower, kindaBetween)
+            ),
+            robot.intakeBallsAuto()
+        ),
+        robot.allStopCommand(),
+
+        parallel(
+            follow(robot.follower, shootHuman),
+            robot.rpmAndAngleTo(4300.0, 0.46),
+            robot.shooter.turretToPosition(0.75)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 

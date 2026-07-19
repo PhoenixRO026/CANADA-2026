@@ -197,7 +197,6 @@ class Robot(
 
     fun resetRobotPoseCommand() : Command = sequential(
         instant { resetRobotPose() },
-        waitMs(100.0)
     )
 
     fun allStartCommand() : Command = parallel(
@@ -264,6 +263,7 @@ class Robot(
 
     fun shootBalls(rpm : Double = Shooter.ShooterConfig.rpmFar, hoodPos : Double = Shooter.ShooterConfig.hoodDown) : Command = sequential(
         parallel(
+            resetRobotPoseCommand(),
             shooter.goToRpmCommand(rpm),
             shooter.openFingerCommand(),
             shooter.hoodToPositionCommand(hoodPos)

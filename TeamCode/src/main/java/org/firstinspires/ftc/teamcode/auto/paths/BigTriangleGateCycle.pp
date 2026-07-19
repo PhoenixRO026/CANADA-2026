@@ -5,15 +5,15 @@
     "heading": "linear",
     "startDeg": 144,
     "endDeg": 180,
-    "locked": false
+    "locked": true
   },
   "lines": [
     {
       "id": "line-scorePreload",
       "name": "ScorePreload",
       "endPoint": {
-        "x": 40,
-        "y": 95,
+        "x": 52,
+        "y": 84,
         "heading": "linear",
         "startDeg": 144,
         "endDeg": 180
@@ -30,7 +30,7 @@
       "id": "line-intakeClose",
       "name": "IntakeClose",
       "endPoint": {
-        "x": 20,
+        "x": 22,
         "y": 84,
         "heading": "constant",
         "reverse": false,
@@ -53,8 +53,8 @@
       "id": "line-shootClose",
       "name": "ShootClose",
       "endPoint": {
-        "x": 44.5,
-        "y": 83,
+        "x": 59.5,
+        "y": 68,
         "heading": "constant",
         "reverse": false,
         "degrees": 180
@@ -71,7 +71,7 @@
       "id": "line-intakeMiddle",
       "name": "IntakeMiddle",
       "endPoint": {
-        "x": 15,
+        "x": 19,
         "y": 59,
         "heading": "constant",
         "reverse": false,
@@ -94,8 +94,8 @@
       "id": "line-shootMiddle",
       "name": "ShootMiddle",
       "endPoint": {
-        "x": 44.5,
-        "y": 82.5,
+        "x": 59.5,
+        "y": 68,
         "heading": "constant",
         "reverse": false,
         "degrees": 180
@@ -117,8 +117,8 @@
       "id": "line-gateApproach",
       "name": "GateApproach",
       "endPoint": {
-        "x": 23.5,
-        "y": 66,
+        "x": 17.5,
+        "y": 65,
         "heading": "constant",
         "reverse": false,
         "startDeg": 180,
@@ -131,7 +131,7 @@
           "y": 65
         }
       ],
-      "color": "#2563eb",
+      "color": "#7A5A6D",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
@@ -142,8 +142,8 @@
       "id": "line-gateRam",
       "name": "GateRam",
       "endPoint": {
-        "x": 11,
-        "y": 46,
+        "x": 14,
+        "y": 48,
         "heading": "linear",
         "reverse": false,
         "degrees": 160,
@@ -153,14 +153,38 @@
       "controlPoints": [
         {
           "x": 30,
-          "y": 48
+          "y": 53
         },
         {
-          "x": 11,
-          "y": 62
+          "x": 15,
+          "y": 58
         }
       ],
-      "color": "#dc2626",
+      "color": "#7A5A6D",
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "locked": true
+    },
+    {
+      "id": "mrhwt3ke-2ynukz",
+      "name": "GateTurn",
+      "endPoint": {
+        "x": 13,
+        "y": 55,
+        "heading": "linear",
+        "reverse": false,
+        "startDeg": 150,
+        "endDeg": 180
+      },
+      "controlPoints": [
+        {
+          "x": 18,
+          "y": 55
+        }
+      ],
+      "color": "#7A5A6D",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
@@ -171,15 +195,20 @@
       "id": "line-shootGate",
       "name": "ShootGate",
       "endPoint": {
-        "x": 44.5,
-        "y": 82.5,
-        "heading": "linear",
+        "x": 59.5,
+        "y": 68,
+        "heading": "constant",
         "reverse": false,
-        "startDeg": 150,
-        "endDeg": 180,
+        "startDeg": 180,
+        "endDeg": -90,
         "degrees": 180
       },
-      "controlPoints": [],
+      "controlPoints": [
+        {
+          "x": 37,
+          "y": 50
+        }
+      ],
       "color": "#7A5A6D",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
@@ -193,26 +222,11 @@
       "id": "triangle-1",
       "name": "Red Goal",
       "vertices": [
-        {
-          "x": 141.5,
-          "y": 70
-        },
-        {
-          "x": 141.5,
-          "y": 141.5
-        },
-        {
-          "x": 120,
-          "y": 141.5
-        },
-        {
-          "x": 138,
-          "y": 119
-        },
-        {
-          "x": 138,
-          "y": 70
-        }
+        { "x": 141.5, "y": 70 },
+        { "x": 141.5, "y": 141.5 },
+        { "x": 120, "y": 141.5 },
+        { "x": 138, "y": 119 },
+        { "x": 138, "y": 70 }
       ],
       "color": "#dc2626",
       "fillColor": "#ff6b6b"
@@ -221,64 +235,26 @@
       "id": "triangle-2",
       "name": "Blue Goal",
       "vertices": [
-        {
-          "x": 6,
-          "y": 119
-        },
-        {
-          "x": 25,
-          "y": 141.5
-        },
-        {
-          "x": 0,
-          "y": 141.5
-        },
-        {
-          "x": 0,
-          "y": 70
-        },
-        {
-          "x": 6,
-          "y": 70
-        }
+        { "x": 6, "y": 119 },
+        { "x": 25, "y": 141.5 },
+        { "x": 0, "y": 141.5 },
+        { "x": 0, "y": 70 },
+        { "x": 6, "y": 70 }
       ],
       "color": "#2563eb",
       "fillColor": "#60a5fa"
     }
   ],
   "sequence": [
-    {
-      "kind": "path",
-      "lineId": "line-scorePreload"
-    },
-    {
-      "kind": "path",
-      "lineId": "line-intakeClose"
-    },
-    {
-      "kind": "path",
-      "lineId": "line-shootClose"
-    },
-    {
-      "kind": "path",
-      "lineId": "line-intakeMiddle"
-    },
-    {
-      "kind": "path",
-      "lineId": "line-shootMiddle"
-    },
-    {
-      "kind": "path",
-      "lineId": "line-gateApproach"
-    },
-    {
-      "kind": "path",
-      "lineId": "line-gateRam"
-    },
-    {
-      "kind": "path",
-      "lineId": "line-shootGate"
-    }
+    { "kind": "path", "lineId": "line-scorePreload" },
+    { "kind": "path", "lineId": "line-intakeClose" },
+    { "kind": "path", "lineId": "line-shootClose" },
+    { "kind": "path", "lineId": "line-intakeMiddle" },
+    { "kind": "path", "lineId": "line-shootMiddle" },
+    { "kind": "path", "lineId": "line-gateApproach" },
+    { "kind": "path", "lineId": "line-gateRam" },
+    { "kind": "path", "lineId": "mrhwt3ke-2ynukz" },
+    { "kind": "path", "lineId": "line-shootGate" }
   ],
   "pathChains": [
     {
@@ -293,10 +269,11 @@
         "line-shootMiddle",
         "line-gateApproach",
         "line-gateRam",
+        "mrhwt3ke-2ynukz",
         "line-shootGate"
       ]
     }
   ],
   "version": "1.2.1",
-  "timestamp": "2026-07-12T13:11:14.204Z"
+  "timestamp": "2026-07-17T19:22:00.000Z"
 }

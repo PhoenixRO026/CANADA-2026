@@ -23,22 +23,22 @@ import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 @Autonomous
 class BigTriangleRedSolo : LoggedOpMode() {
     // Mirrored start and scoring poses for Red Alliance
-    private val startPose = Pose(123.5, 118.0, Math.toRadians(36.0))
-    private val scorePreloadPose = Pose(82.0, 68.0, Math.toRadians(0.0))
+    private val startPose = Pose(123.0, 118.0, Math.toRadians(36.0))
+    private val scorePreloadPose = Pose(82.5, 77.0, Math.toRadians(0.0))
 
     // Middle Poses (Mirrored)
     private val intakeMiddlePose = Pose(122.5, 59.0, Math.toRadians(0.0))
     private val shootMiddlePose = Pose(82.0, 68.0, Math.toRadians(0.0))
 
     // Gate Poses (Mirrored)
-    private val gateApproachPose = Pose(124.0, 65.0, Math.toRadians(0.0))
+    private val gateApproachPose = Pose(122.0, 65.0, Math.toRadians(0.0))
     private val gateRamPose = Pose(127.5, 48.0, Math.toRadians(30.0))
     private val turnToWall = Pose(128.5, 55.0, Math.toRadians(0.0))
-    private val bigTriangleShootPose = Pose(82.5, 68.0, Math.toRadians(0.0))
+    private val bigTriangleShootPose = Pose(82.5, 80.0, Math.toRadians(0.0))
 
     // Close Poses (Mirrored)
     private val intakeClosePose = Pose(119.5, 84.0, Math.toRadians(0.0))
-    private val shootClosePose = Pose(99.5, 84.0, Math.toRadians(0.0))
+    private val shootClosePose = Pose(82.5, 77.0, Math.toRadians(0.0))
 
     private val hoodFar = 0.6
     private lateinit var robot : Robot
@@ -122,7 +122,7 @@ class BigTriangleRedSolo : LoggedOpMode() {
         // 1. Middle Line
         Groups.parallel(
             PedroCommands.follow(robot.follower, intakeMiddle),
-            robot.intakeBalls()
+            robot.intakeBallsAuto()
         ),
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootMiddle),
@@ -200,7 +200,7 @@ class BigTriangleRedSolo : LoggedOpMode() {
 
         Groups.parallel(
             PedroCommands.follow(robot.follower, intakeClose),
-            robot.intakeBalls()
+            robot.intakeBallsAuto()
         ),
         Groups.parallel(
             PedroCommands.follow(robot.follower, shootClose),

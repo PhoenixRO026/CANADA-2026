@@ -32,7 +32,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
     private val shootMiddlePose = Pose(59.5, 68.0, Math.toRadians(180.0))
 
     // Gate Poses
-    private val gateApproachPose = Pose(17.0, 65.0, Math.toRadians(180.0))
+    private val gateApproachPose = Pose(18.5, 65.0, Math.toRadians(180.0))
     private val gateRamPose = Pose(14.0, 48.0, Math.toRadians(150.0))
     private val turnToWall = Pose(13.0, 55.0, Math.toRadians(180.0))
     private val bigTriangleShootPose = Pose(59.5, 68.0, Math.toRadians(180.0))

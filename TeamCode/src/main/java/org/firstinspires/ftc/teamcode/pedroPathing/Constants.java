@@ -28,7 +28,7 @@ public class Constants {
             .translationalPIDFCoefficients(new PIDFCoefficients(0.07, 0, 0.002, 0.02))
             .headingPIDFCoefficients(new PIDFCoefficients(0.9, 0, 0.002, 0.02))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.015, 0, 0.0002, 0.6, 0.02))
-            .predictiveBrakingCoefficients(new PredictiveBrakingCoefficients(0.1, 0.05861, 0.000196)) // (kP, kLinear, kQuadratic)
+            .predictiveBrakingCoefficients(new PredictiveBrakingCoefficients(0.1, 0.0662463927843752, 0.0001987758200157638)) // (kP, kLinear, kQuadratic)
             .centripetalScaling(0.0);
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1.8, 1);

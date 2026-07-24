@@ -19,6 +19,7 @@ import kotlin.compareTo
 import kotlin.text.toDouble
 import org.firstinspires.ftc.teamcode.library.buttons.ButtonReader
 import org.firstinspires.ftc.teamcode.library.buttons.ToggleButtonReader
+import org.firstinspires.ftc.teamcode.pedroPathing.DrawingClone
 
 @TeleOp
 open class SummerDriveDuo : LinearOpMode() {
@@ -117,6 +118,8 @@ open class SummerDriveDuo : LinearOpMode() {
             }
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
+
+            DrawingClone.drawDebug(robot.follower)
 
             Scheduler.execute()
 

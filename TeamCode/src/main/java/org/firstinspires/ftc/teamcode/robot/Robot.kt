@@ -299,7 +299,7 @@ class Robot(
         parallel(
             shooter.openFingerCommand(),
             shooter.goToRpmCommand(rpm),
-            resetRobotPoseCommand()
+//            resetRobotPoseCommand()
         ),
         allStartCommand(),
         waitMs(220.0),

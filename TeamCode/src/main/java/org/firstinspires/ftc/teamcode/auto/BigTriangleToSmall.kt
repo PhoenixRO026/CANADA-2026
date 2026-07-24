@@ -5,40 +5,28 @@ import com.pedropathing.geometry.BezierLine
 import com.pedropathing.geometry.Pose
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
-import com.pedropathing.ivy.groups.Groups
+import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups.parallel
+import com.pedropathing.ivy.groups.Groups.race
 import com.pedropathing.ivy.groups.Groups.sequential
-import com.pedropathing.ivy.pedro.PedroCommands
 import com.pedropathing.ivy.pedro.PedroCommands.follow
 import com.pedropathing.paths.PathChain
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.robot.Robot
-import com.pedropathing.ivy.groups.Groups.race
 
 @Autonomous
-class BigTriangleBlueDuo : LinearOpMode() {
-    private val startPose = Pose(18.0, 118.0, Math.toRadians(144.0))
+class BigTriangleToSmall : LinearOpMode() {
+    private val startPose = Pose(18.8, 119.0, Math.toRadians(144.0))
     private val scorePreloadPose = Pose(40.0, 95.0, Math.toRadians(180.0))
     private val intakeClosePose = Pose(20.0, 84.0, Math.toRadians(180.0))
     private val closeShootPose = Pose(44.5, 83.0, Math.toRadians(180.0))
-    private val intakeMiddlePose = Pose(15.0, 59.0, Math.toRadians(180.0))
-    private val gateApproachPose = Pose(19.5, 66.0, Math.toRadians(180.0))
-
-    // UPDATED: Shifted X coordinates out to 15.0 to align with the expanded wall clearance layout
-    private val gateRamPose = Pose(15.0, 46.0, Math.toRadians(150.0))
-    private val gateTurnPose = Pose(15.0, 45.7, Math.toRadians(180.0))
-    private val middleShootPose = Pose(49.5, 77.5, Math.toRadians(180.0))
-    private val gateShootPose = Pose(49.5, 77.5, Math.toRadians(180.0))
-
-    // First Cycle Paths (from middle shoot)
-    private lateinit var intakeGateFirstApproach: PathChain
-    private lateinit var intakeGateFirstRam: PathChain
-
-    // Subsequent Cycle Paths (from gate shoot)
-    private lateinit var intakeGateSubsequentApproach: PathChain
-    private lateinit var intakeGateSubsequentRam: PathChain
+    private val intakeMiddlePose = Pose(23.0, 59.5, Math.toRadians(180.0))
+    private val intakeFarPose = Pose(15.0, 35.0, Math.toRadians(180.0))
+    private val bigTriangleShootPose = Pose(49.5, 77.5, Math.toRadians(180.0))
+    private val intakeHumanPose = Pose(9.0, 8.0, Math.toRadians(180.0))
+    private val openGatePose = Pose(16.3, 67.7, Math.toRadians(180.0))
 
     private lateinit var robot : Robot
     private lateinit var scorePreload: PathChain
@@ -46,8 +34,12 @@ class BigTriangleBlueDuo : LinearOpMode() {
     private lateinit var shootClose: PathChain
     private lateinit var shootMiddle: PathChain
     private lateinit var intakeMiddle: PathChain
-    private lateinit var gateTurn: PathChain
-    private lateinit var shootGate: PathChain
+    private lateinit var intakeFar: PathChain
+    private lateinit var  shootFar: PathChain
+    private lateinit var intakeHuman: PathChain
+    private lateinit var  shootHuman: PathChain
+    private lateinit var  openGate: PathChain
+
 
     private fun buildPaths() {
         scorePreload = robot.follower.pathBuilder()
@@ -66,56 +58,51 @@ class BigTriangleBlueDuo : LinearOpMode() {
             .build()
 
         intakeMiddle = robot.follower.pathBuilder()
-            .addPath(BezierCurve(closeShootPose, Pose(48.0, 53.0), intakeMiddlePose))
+            .addPath(BezierCurve(closeShootPose, Pose(55.0, 56.0), intakeMiddlePose))
+            .setConstantHeadingInterpolation(Math.PI)
+            .build()
+
+        openGate = robot.follower.pathBuilder()
+            .addPath(BezierLine(intakeMiddlePose, openGatePose))
             .setConstantHeadingInterpolation(Math.PI)
             .build()
 
         shootMiddle = robot.follower.pathBuilder()
-            .addPath(BezierCurve(intakeMiddlePose, Pose(35.0, 60.0), middleShootPose))
+            .addPath(BezierCurve(openGatePose, Pose(39.0, 69.0), bigTriangleShootPose))
             .setConstantHeadingInterpolation(Math.PI)
             .build()
 
-        // --- FIRST CYCLE TO GATE ---
-        intakeGateFirstApproach = robot.follower.pathBuilder()
-            .addPath(BezierCurve(middleShootPose, Pose(35.0, 65.0), gateApproachPose))
+        intakeFar = robot.follower.pathBuilder()
+            .addPath(BezierCurve(bigTriangleShootPose, Pose(54.5, 27.0), intakeFarPose))
             .setConstantHeadingInterpolation(Math.PI)
-            .addPath(BezierCurve(gateApproachPose, Pose(30.0, 48.0), Pose(13.0, 62.0), gateRamPose))
-            .setLinearHeadingInterpolation(gateApproachPose.heading, gateRamPose.heading)
             .build()
 
-        // --- SUBSEQUENT CYCLE TO GATE ---
-        intakeGateSubsequentApproach = robot.follower.pathBuilder()
-            .addPath(BezierCurve(gateShootPose, Pose(35.0, 65.0), gateApproachPose))
+        shootFar = robot.follower.pathBuilder()
+            .addPath(BezierLine(intakeFarPose, bigTriangleShootPose))
             .setConstantHeadingInterpolation(Math.PI)
-            .addPath(BezierCurve(gateApproachPose, Pose(30.0, 48.0), Pose(13.0, 62.0), gateRamPose))
-            .setLinearHeadingInterpolation(gateApproachPose.heading, gateRamPose.heading)
             .build()
 
-
-
-
-        gateTurn = robot.follower.pathBuilder()
-            .addPath(BezierLine(gateRamPose, gateTurnPose))
-
-            .setLinearHeadingInterpolation(gateRamPose.heading, gateTurnPose.heading)
+        intakeHuman = robot.follower.pathBuilder()
+            .addPath(BezierCurve(bigTriangleShootPose, Pose(23.0, 48.0), Pose(39.0, 7.5), intakeHumanPose))
+            .setConstantHeadingInterpolation(Math.PI)
             .build()
 
-        shootGate = robot.follower.pathBuilder()
-            .addPath(BezierCurve(gateTurnPose, Pose(47.0, 47.0), gateShootPose))
+        shootHuman = robot.follower.pathBuilder()
+            .addPath(BezierLine(intakeHumanPose, bigTriangleShootPose))
             .setConstantHeadingInterpolation(Math.PI)
             .build()
     }
 
     fun autoRoutine() : Command = sequential (
         // Preload
-        parallel(
+        parallel (
             robot.shooter.goToRpmCommand(robot.shooter.neededRpm(125.0)),
-            PedroCommands.follow(robot.follower, scorePreload)
+            follow(robot.follower, scorePreload)
         ),
         robot.shootBallsAuto(),
 
         // Close Line
-       parallel(
+        parallel(
             follow(robot.follower, intakeClose),
             robot.intakeBalls()
         ),
@@ -128,7 +115,7 @@ class BigTriangleBlueDuo : LinearOpMode() {
 
         // Middle Line
         parallel(
-            PedroCommands.follow(robot.follower, intakeMiddle),
+            follow(robot.follower, intakeMiddle),
             robot.intakeBalls()
         ),
         parallel(
@@ -138,32 +125,34 @@ class BigTriangleBlueDuo : LinearOpMode() {
         ),
         robot.shootBallsAuto(),
 
+        //Far Line
         parallel(
-            follow(robot.follower, intakeGateFirstApproach),
+            follow(robot.follower, intakeFar),
             robot.intakeBalls()
         ),
-        follow(robot.follower, gateTurn),
         parallel(
-            follow(robot.follower, shootGate),
+            follow(robot.follower, shootFar),
             robot.allStopCommand(),
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
         robot.shootBallsAuto(),
 
-        parallel(
-            follow(robot.follower, intakeGateSubsequentApproach),
-            robot.intakeBalls()
+        //Human Line
+        race(
+            parallel(
+                follow(robot.follower, intakeHuman),
+                robot.intakeBalls()
+            ),
+            waitMs(3500.0)
         ),
-        follow(robot.follower, gateTurn),
+        robot.allStopCommand(),
         parallel(
-            follow(robot.follower, shootGate),
+            follow(robot.follower, shootHuman),
             robot.allStopCommand(),
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
         robot.shootBallsAuto(),
-
     )
-
 
     override fun runOpMode() {
         robot = Robot(hardwareMap, startPose)
@@ -174,9 +163,6 @@ class BigTriangleBlueDuo : LinearOpMode() {
 
         waitForStart()
 
-        robot.shooter.closeFinger()
-        robot.shooter.turretGoToAngle(0.0)
-
         Scheduler.schedule(autoRoutine())
 
         while (opModeIsActive()) {
@@ -185,7 +171,7 @@ class BigTriangleBlueDuo : LinearOpMode() {
 
             val goalDist = robot.distanceFromGoal(Robot.Side.BLUE)
             val autoRpm = robot.shooter.neededRpm(goalDist)
-            val autoAngle = robot.shooter.neededAngle(robot.shooter.neededAngle(goalDist))
+            val autoAngle = robot.shooter.neededAngle(robot.limelight.aprilTagDistance)
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
             robot.updateHeading(Robot.Side.BLUE)
@@ -193,5 +179,4 @@ class BigTriangleBlueDuo : LinearOpMode() {
             Scheduler.execute()
         }
     }
-
 }

@@ -27,7 +27,7 @@ class Transfer(
     }
 
     fun isBallPresent(): Boolean {
-        return distance in 0.0 .. 40.0
+        return distance in 0.0 .. 60.0
     }
 
     var power

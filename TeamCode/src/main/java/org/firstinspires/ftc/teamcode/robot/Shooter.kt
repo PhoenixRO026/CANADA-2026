@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.library.controller.PIDController
 import kotlin.math.abs
+import kotlin.math.ln
 import kotlin.math.pow
 import kotlin.math.sin
 
@@ -38,8 +39,8 @@ class Shooter(
             kI = 0.0012,
             stabilityThreshold = 50.0
         )
-        @JvmField var kS = 1.4
-        @JvmField var kV = 0.002
+        @JvmField var kS = 1.125
+        @JvmField var kV = 0.002065
         @JvmField var servoRange = 360.0
         @JvmField var gearRatio = 9.0 / 10.0
         @JvmField var maxFinalDegrees = servoRange * gearRatio // 324
@@ -53,7 +54,7 @@ class Shooter(
 
         @JvmField var rpmFar = 5000.0
         @JvmField var rpmNear = 3000.0
-        @JvmField var rpmRest = 0.0
+        @JvmField var rpmRest = 2000.0
     }
 
     fun servoToDeg(servoPos: Double): Double {
@@ -116,6 +117,8 @@ class Shooter(
     fun openFingerCommand() : Command = instant { openFinger() }
     fun closeFingerCommand() : Command = instant { closeFinger() }
 
+    fun turretToPosition(pos : Double) : Command = instant { turretPosition = pos }
+
     fun openFinger() { fingerPosition = ShooterConfig.fingerOpen }
     fun closeFinger() { fingerPosition = ShooterConfig.fingerClose }
 
@@ -163,30 +166,44 @@ class Shooter(
     fun neededRpm(distance: Double) : Double {
         if (distance < 270) {
             autoRpm = MathFunctions.clamp(
-                0.0522296 * distance.pow(2) - 12.01592 * distance + 3939.40639,
+                -0.0208476 * distance.pow(2) +
+                        11.85304 * distance +
+                        2053.49282,
                 0.0, 6000.0
             )
         }
         else {
-            autoRpm = MathFunctions.clamp(
-                0.0622614 * distance.pow(2) - 35.77519 * distance + 10383.1872,
-                0.0, 6000.0
-            )
+            autoRpm = when (distance) {
+                in 270.0 .. 305.0 -> 4100.0
+                in 305.0 .. 325.0 -> 4200.0
+                in 325.0 .. 335.0 -> 4300.0
+                in 335.0 .. 365.0 -> 4600.0
+                in 365.0 .. 380.0 -> 4800.0
+                else -> 4900.0
+            }
         }
         return autoRpm
     }
 
     fun neededAngle(distance: Double) : Double {
-        if (distance < 270) {
+        if (0.0 < distance && distance < 270.0) {
             autoAngle = MathFunctions.clamp(
-                -0.00000878411 * distance.pow(2) + 0.00397688 * distance + 0.100881,
+                5.39259e-9 * distance.pow(4) -
+                        0.00000365985 * distance.pow(3) +
+                        0.000850636 * distance.pow(2) -
+                        0.0769662 * distance +
+                        2.66891,
                 0.3, 0.83
             )
 
         }
         else {
             autoAngle = MathFunctions.clamp(
-                0.120601 * sin(0.10933 * distance - 2.55739) + 0.49653,
+                -(8.537296e-8) * distance.pow(4) +
+                        0.0001097378 * distance.pow(3) -
+                        0.05267555 * distance.pow(2) +
+                        11.19153 * distance -
+                        887.55273,
                 0.0, 1.0
             )
         }

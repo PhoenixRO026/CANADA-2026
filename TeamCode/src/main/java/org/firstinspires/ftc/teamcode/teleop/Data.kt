@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop
 import com.bylazar.configurables.annotations.Configurable
 import com.bylazar.telemetry.PanelsTelemetry
 import com.pedropathing.follower.Follower
+import com.pedropathing.geometry.Pose
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
 import com.pedropathing.ivy.commands.Commands.waitMs
@@ -30,14 +31,15 @@ open class Data : LinearOpMode() {
 
     override fun runOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
-        val robot = Robot(hardwareMap)
+        val robot = Robot(hardwareMap, Pose(39.0, 56.0, Math.PI/2))
         Scheduler.reset()
 
         robot.limelight.setPipeline(pipeline)
         val intakeBalls = ButtonReader { gamepad1.dpad_right }
         val stopIntake = ButtonReader { gamepad1.dpad_down }
         val shootBalls = ButtonReader { gamepad1.dpad_up }
-        val buttons = listOf(intakeBalls, stopIntake, shootBalls)
+        val stopBalls = ButtonReader { gamepad1.dpad_left }
+        val buttons = listOf(intakeBalls, stopIntake, shootBalls, stopBalls)
         val timeKeep = TimeKeep()
 
         waitForStart()
@@ -53,8 +55,6 @@ open class Data : LinearOpMode() {
             timeKeep.resetDeltaTime()
 
             robot.follower.update()
-            robot.limelight.updateHeadingError()
-            robot.limelight.updateDistance()
 
             if (gamepad1.left_trigger >= 0.2) {
                 robot.drive.isSlowMode = true
@@ -79,6 +79,10 @@ open class Data : LinearOpMode() {
                 robot.shooter.turretPosition -= 0.1 * timeKeep.deltaTime.asS
             }
 
+            if (stopBalls.wasJustPressed()) {
+                robot.shooter.goToRpmCommand(0.0)
+            }
+
             if (intakeBalls.wasJustPressed()) {
                 robot.intakeBalls().schedule()
             }
@@ -97,7 +101,7 @@ open class Data : LinearOpMode() {
             panelsTelemetry.addData("hood angle", robot.shooter.hoodPosition)
             panelsTelemetry.addData("turret heading error", robot.limelight.headingErrorDeg)
             panelsTelemetry.addData("turret position", robot.shooter.servo1.position)
-            panelsTelemetry.addData("distance", robot.limelight.aprilTagDistance)
+            panelsTelemetry.addData("distance", robot.distanceFromGoal(Robot.Side.BLUE))
             panelsTelemetry.update(telemetry)
         }
     }

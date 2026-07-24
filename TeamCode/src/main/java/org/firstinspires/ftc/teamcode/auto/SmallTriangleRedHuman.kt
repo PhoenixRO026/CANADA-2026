@@ -26,12 +26,12 @@ import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 @Autonomous
 class SmallTriangleRedHuman : LoggedOpMode() {
     // Mirrored field poses for Red Alliance
-    private val startPose = Pose(89.0, 135.0, Math.toRadians(270.0))
-    private val scorePreloadPose = Pose(89.0, 132.0, Math.toRadians(270.0))
-    private val intakeFarPose = Pose(132.0, 109.0, Math.toRadians(0.0))
-    private val intakeHumanPose = Pose(132.0, 134.5, Math.toRadians(350.0))
-    private val kindaBetweenPose = Pose(132.0, 120.0, Math.toRadians(0.0))
-    private val smallTriangleShootPose = Pose(102.0, 134.5, Math.toRadians(0.0))
+    private val startPose = Pose(89.0, 9.0, Math.toRadians(270.0))
+    private val scorePreloadPose = Pose(89.0, 12.0, Math.toRadians(270.0))
+    private val intakeFarPose = Pose(131.0, 35.0, Math.toRadians(0.0))
+    private val intakeHumanPose = Pose(132.0, 9.5, Math.toRadians(350.0))
+    private val kindaBetweenPose = Pose(132.0, 24.0, Math.toRadians(0.0))
+    private val smallTriangleShootPose = Pose(102.0, 9.5, Math.toRadians(0.0))
 
     private lateinit var robot : Robot
 

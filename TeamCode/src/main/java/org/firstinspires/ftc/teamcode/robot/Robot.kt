@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
+import org.firstinspires.ftc.teamcode.auto.AutoMemory
 import org.firstinspires.ftc.teamcode.library.limelightToRobotPos
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants
 import org.firstinspires.ftc.teamcode.pedroPathing.DrawingClone
@@ -56,6 +57,10 @@ class Robot(
         val llResult = limelight.getNewPose() ?: return
 
         fusionLocalizer.addMeasurement(llResult.pose, llResult.timestamp)
+    }
+
+    fun rememberPose() {
+        AutoMemory.lastAutoPose = follower.pose
     }
 
     init {
@@ -232,7 +237,7 @@ class Robot(
             transfer.slowTransferCommand(),
     )
 
-    fun intakeBallsAuto(time: Double = 1500.0): Command = parallel(
+    fun intakeBallsAuto(time: Double = 3000.0): Command = parallel(
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest),
         sequential (
             parallel(
@@ -294,15 +299,16 @@ class Robot(
         parallel(
             shooter.openFingerCommand(),
             shooter.goToRpmCommand(rpm),
-            resetRobotPoseCommand()
+//            resetRobotPoseCommand()
         ),
         allStartCommand(),
-        waitMs(220.0),
+        waitMs(350.0),
         intake.stopIntakeCommand(),
-        waitMs(200.0),
+        waitMs(300.0),
         parallel(
             transfer.stopTransferCommand(),
-            shooter.closeFingerCommand()
+            shooter.closeFingerCommand(),
+            shooter.goToRpmCommand(0.0)
         )
     )
 

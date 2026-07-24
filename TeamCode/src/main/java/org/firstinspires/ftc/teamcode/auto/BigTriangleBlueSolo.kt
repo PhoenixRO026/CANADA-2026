@@ -22,7 +22,7 @@ import org.psilynx.psikit.ftc.wrappers.MotorWrapper
 import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 
 @Autonomous
-class BigTriangleBlueSolo : LoggedOpMode() {
+class BigTriangleBlueSolo : LinearOpMode() {
     private val startPose = Pose(18.0, 118.0, Math.toRadians(144.0))
     // FIXED: Preload now goes to (59.5, 68)
     private val scorePreloadPose = Pose(59.5, 68.0, Math.toRadians(180.0))
@@ -32,7 +32,7 @@ class BigTriangleBlueSolo : LoggedOpMode() {
     private val shootMiddlePose = Pose(59.5, 68.0, Math.toRadians(180.0))
 
     // Gate Poses
-    private val gateApproachPose = Pose(18.0, 65.0, Math.toRadians(180.0))
+    private val gateApproachPose = Pose(18.5, 65.0, Math.toRadians(180.0))
     private val gateRamPose = Pose(14.0, 48.0, Math.toRadians(150.0))
     private val turnToWall = Pose(13.0, 55.0, Math.toRadians(180.0))
     private val bigTriangleShootPose = Pose(59.5, 68.0, Math.toRadians(180.0))
@@ -266,5 +266,6 @@ class BigTriangleBlueSolo : LoggedOpMode() {
             panelsTelemetry.addData("robotPose", robot.follower.pose)
             panelsTelemetry.update(telemetry)
         }
+        robot.rememberPose()
     }
 }

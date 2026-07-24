@@ -25,13 +25,12 @@ import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 
 @Autonomous
 class SmallTriangleRedHuman : LoggedOpMode() {
-    // Mirrored field poses for Red Alliance
-    private val startPose = Pose(89.0, 135.0, Math.toRadians(270.0))
-    private val scorePreloadPose = Pose(89.0, 132.0, Math.toRadians(270.0))
-    private val intakeFarPose = Pose(132.0, 109.0, Math.toRadians(0.0))
-    private val intakeHumanPose = Pose(132.0, 134.5, Math.toRadians(350.0))
-    private val kindaBetweenPose = Pose(132.0, 120.0, Math.toRadians(0.0))
-    private val smallTriangleShootPose = Pose(102.0, 134.5, Math.toRadians(0.0))
+    private val startPose = Pose(85.5, 9.0, Math.toRadians(90.0))
+    private val scorePreloadPose = Pose(85.5, 12.0, Math.toRadians(90.0))
+    private val intakeFarPose = Pose(130.0, 35.0, Math.toRadians(0.0))
+    private val intakeHumanPose = Pose(132.5, 9.5, Math.toRadians(350.0))
+    private val kindaBetweenPose = Pose(132.5, 24.0, Math.toRadians(0.0))
+    private val smallTriangleShootPose = Pose(99.5, 9.5, Math.toRadians(0.0))
 
     private lateinit var robot : Robot
 
@@ -49,28 +48,28 @@ class SmallTriangleRedHuman : LoggedOpMode() {
             .build()
 
         intakeFar = robot.follower.pathBuilder()
-            .addPath(BezierCurve(scorePreloadPose, Pose(99.0, 114.0), intakeFarPose))
+            .addPath(BezierCurve(scorePreloadPose, Pose(88.0, 36.0), intakeFarPose))
             .setLinearHeadingInterpolation(scorePreloadPose.heading, intakeFarPose.heading)
             .build()
 
         shootFar = robot.follower.pathBuilder()
             .addPath(BezierLine(intakeFarPose, smallTriangleShootPose))
-            .setConstantHeadingInterpolation(0.0)
+            .setConstantHeadingInterpolation(Math.PI)
             .build()
 
         intakeHuman = robot.follower.pathBuilder()
             .addPath(BezierLine(smallTriangleShootPose, intakeHumanPose))
-            .setConstantHeadingInterpolation(0.0)
+            .setConstantHeadingInterpolation(Math.PI)
             .build()
 
         // Shuffles from human intake pose to the next coordinate
         kindaBetween = robot.follower.pathBuilder()
-            .addPath(BezierCurve(intakeHumanPose, Pose(124.0, 129.0), kindaBetweenPose))
+            .addPath(BezierCurve(intakeHumanPose, Pose(101.0, 26.5), kindaBetweenPose))
             .setLinearHeadingInterpolation(intakeHumanPose.heading, kindaBetweenPose.heading)
             .build()
 
         shootHuman = robot.follower.pathBuilder()
-            .addPath(BezierCurve(kindaBetweenPose, Pose(124.0, 129.0), smallTriangleShootPose))
+            .addPath(BezierCurve(kindaBetweenPose, Pose(122.0, 14.0), smallTriangleShootPose))
             .setConstantHeadingInterpolation(0.0)
             .build()
     }
@@ -80,7 +79,7 @@ class SmallTriangleRedHuman : LoggedOpMode() {
         parallel(
             follow(robot.follower, scorePreload),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.38)
+            robot.shooter.turretToPosition(0.62)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -93,7 +92,7 @@ class SmallTriangleRedHuman : LoggedOpMode() {
             follow(robot.follower, shootFar),
             robot.allStopCommand(),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.75)
+            robot.shooter.turretToPosition(0.35)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -110,7 +109,7 @@ class SmallTriangleRedHuman : LoggedOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.75)
+            robot.shooter.turretToPosition(0.35)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -127,7 +126,7 @@ class SmallTriangleRedHuman : LoggedOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.75)
+            robot.shooter.turretToPosition(0.35)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -144,7 +143,7 @@ class SmallTriangleRedHuman : LoggedOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.75)
+            robot.shooter.turretToPosition(0.35)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -161,7 +160,7 @@ class SmallTriangleRedHuman : LoggedOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.75)
+            robot.shooter.turretToPosition(0.35)
         ),
         robot.shootBallsFar(4300.0, 0.46)
     )
@@ -177,7 +176,7 @@ class SmallTriangleRedHuman : LoggedOpMode() {
         waitForStart()
         robot.shooter.openFinger()
         Scheduler.schedule(autoRoutine())
-        robot.shooter.turretPosition = 0.43
+        robot.shooter.turretPosition = 0.57
 
         val localizer = robot.follower.poseTracker.localizer as? PinpointLocalizer
         val wrapper = localizer?.pinpoint as? PinpointWrapper
@@ -205,5 +204,6 @@ class SmallTriangleRedHuman : LoggedOpMode() {
             panelsTelemetry.addData("delta time", timeKeep.deltaTime)
             panelsTelemetry.update(telemetry)
         }
+        robot.rememberPose()
     }
 }

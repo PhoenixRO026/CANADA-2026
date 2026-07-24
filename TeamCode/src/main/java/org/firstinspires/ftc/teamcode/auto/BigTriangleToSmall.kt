@@ -12,10 +12,12 @@ import com.pedropathing.ivy.groups.Groups.sequential
 import com.pedropathing.ivy.pedro.PedroCommands.follow
 import com.pedropathing.paths.PathChain
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.robot.Robot
 
+@Disabled
 @Autonomous
 class BigTriangleToSmall : LinearOpMode() {
     private val startPose = Pose(18.8, 119.0, Math.toRadians(144.0))
@@ -178,5 +180,6 @@ class BigTriangleToSmall : LinearOpMode() {
 
             Scheduler.execute()
         }
+        robot.rememberPose()
     }
 }

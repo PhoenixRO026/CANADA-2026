@@ -205,6 +205,6 @@ class SmallTriangleRedHuman : LoggedOpMode() {
             panelsTelemetry.addData("delta time", timeKeep.deltaTime)
             panelsTelemetry.update(telemetry)
         }
-        robot.resetRobotPose()
+        robot.rememberPose()
     }
 }

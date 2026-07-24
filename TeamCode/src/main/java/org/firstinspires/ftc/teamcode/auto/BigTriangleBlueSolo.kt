@@ -22,7 +22,7 @@ import org.psilynx.psikit.ftc.wrappers.MotorWrapper
 import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 
 @Autonomous
-class BigTriangleBlueSolo : LoggedOpMode() {
+class BigTriangleBlueSolo : LinearOpMode() {
     private val startPose = Pose(18.0, 118.0, Math.toRadians(144.0))
     // FIXED: Preload now goes to (59.5, 68)
     private val scorePreloadPose = Pose(59.5, 68.0, Math.toRadians(180.0))

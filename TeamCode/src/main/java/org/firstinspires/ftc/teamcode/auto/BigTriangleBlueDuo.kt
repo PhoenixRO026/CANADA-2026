@@ -16,7 +16,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.robot.Robot
 import com.pedropathing.ivy.groups.Groups.race
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 
+@Disabled
 @Autonomous
 class BigTriangleBlueDuo : LinearOpMode() {
     private val startPose = Pose(18.0, 118.0, Math.toRadians(144.0))

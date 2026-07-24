@@ -22,10 +22,12 @@ import org.firstinspires.ftc.teamcode.library.buttons.ToggleButtonReader
 @TeleOp
 open class SummerDriveDuo : LinearOpMode() {
     open val pipeline : Int = 1
+    open val startPose : Pose = Pose(39.0, 56.0, Math.PI/2)
+    open val side : Robot.Side = Robot.Side.BLUE
 
     override fun runOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
-        val robot = Robot(hardwareMap, Pose(39.0, 56.0, Math.PI/2))
+        val robot = Robot(hardwareMap, startPose)
         Scheduler.reset()
 
         robot.limelight.setPipeline(pipeline)
@@ -57,8 +59,9 @@ open class SummerDriveDuo : LinearOpMode() {
             robot.limelight.updateHeadingError()
             robot.limelight.updateDistance()
 
-            val targetRpm = robot.shooter.neededRpm(robot.distanceFromGoal(Robot.Side.BLUE))
+            val targetRpm = robot.shooter.neededRpm(robot.distanceFromGoal(side))
             val targetAngle = robot.shooter.neededAngle(robot.limelight.aprilTagDistance)
+            robot.shooter.hoodToPosition(targetAngle)
 
             if (gamepad1.left_trigger >= 0.2) {
                 robot.drive.isSlowMode = true
@@ -84,7 +87,7 @@ open class SummerDriveDuo : LinearOpMode() {
             }
 
             if (shootBalls.wasJustPressed()) {
-                robot.shootBalls(targetRpm, targetAngle).schedule()
+                robot.shootBalls(targetRpm).schedule()
             }
 
             if (ejectBalls.wasJustPressed()) {
@@ -105,7 +108,7 @@ open class SummerDriveDuo : LinearOpMode() {
                 robot.shooter.turretPosition -= 0.1 * timeKeep.deltaTime.asS
             }
             else {
-                robot.updateHeading(Robot.Side.BLUE)
+                robot.updateHeading(side)
             }
 
             if (resetOdo.wasJustPressed()) {

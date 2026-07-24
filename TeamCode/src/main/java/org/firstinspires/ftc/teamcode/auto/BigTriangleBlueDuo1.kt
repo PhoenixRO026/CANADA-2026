@@ -13,10 +13,12 @@ import com.pedropathing.ivy.pedro.PedroCommands
 import com.pedropathing.ivy.pedro.PedroCommands.follow
 import com.pedropathing.paths.PathChain
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.robot.Robot
 
+@Disabled
 @Autonomous
 class BigTriangleBlueDuo1 : LinearOpMode() {
     private val startPose = Pose(18.0, 118.0, Math.toRadians(144.0))

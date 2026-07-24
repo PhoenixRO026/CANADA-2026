@@ -180,5 +180,6 @@ class BigTriangleToSmall : LinearOpMode() {
 
             Scheduler.execute()
         }
+        robot.resetRobotPose()
     }
 }

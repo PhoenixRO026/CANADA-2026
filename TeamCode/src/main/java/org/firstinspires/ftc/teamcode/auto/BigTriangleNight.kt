@@ -154,5 +154,6 @@ class BigTriangleNight : LinearOpMode() {
 
             Scheduler.execute()
         }
+        robot.resetRobotPose()
     }
 }

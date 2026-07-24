@@ -6,6 +6,7 @@ import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.teamcode.auto.AutoMemory
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.library.buttons.ButtonReader
 import org.firstinspires.ftc.teamcode.pedroPathing.DrawingClone
@@ -17,7 +18,10 @@ open class SummerDrive : LinearOpMode() {
 
     override fun runOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
-        val robot = Robot(hardwareMap, Pose(39.0, 56.0, Math.PI/2))
+        val robot = Robot(
+            hardwareMap,
+            AutoMemory.lastAutoPose ?: Pose(39.0, 56.0, Math.PI/2)
+        )
         Scheduler.reset()
 
         robot.limelight.setPipeline(pipeline)

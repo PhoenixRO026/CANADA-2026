@@ -205,5 +205,6 @@ class SmallTriangleBlueHuman : LinearOpMode() {
             panelsTelemetry.addData("delta time", timeKeep.deltaTime)
             panelsTelemetry.update(telemetry)
         }
+        robot.resetRobotPose()
     }
 }

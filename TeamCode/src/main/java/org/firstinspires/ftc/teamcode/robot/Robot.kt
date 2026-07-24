@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
+import org.firstinspires.ftc.teamcode.auto.AutoMemory
 import org.firstinspires.ftc.teamcode.library.limelightToRobotPos
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants
 import org.firstinspires.ftc.teamcode.pedroPathing.DrawingClone
@@ -56,6 +57,10 @@ class Robot(
         val llResult = limelight.getNewPose() ?: return
 
         fusionLocalizer.addMeasurement(llResult.pose, llResult.timestamp)
+    }
+
+    fun rememberPose() {
+        AutoMemory.lastAutoPose = follower.pose
     }
 
     init {

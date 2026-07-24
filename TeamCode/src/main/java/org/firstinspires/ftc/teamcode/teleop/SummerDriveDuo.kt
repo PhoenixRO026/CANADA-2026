@@ -11,6 +11,7 @@ import com.pedropathing.ivy.commands.Commands.waitUntil
 import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.teamcode.auto.AutoMemory
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants
 import org.firstinspires.ftc.teamcode.robot.Robot
@@ -22,7 +23,7 @@ import org.firstinspires.ftc.teamcode.library.buttons.ToggleButtonReader
 @TeleOp
 open class SummerDriveDuo : LinearOpMode() {
     open val pipeline : Int = 1
-    open val startPose : Pose = Pose(39.0, 56.0, Math.PI/2)
+    open val startPose : Pose = AutoMemory.lastAutoPose ?: Pose(39.0, 56.0, Math.PI/2)
     open val side : Robot.Side = Robot.Side.BLUE
 
     override fun runOpMode() {

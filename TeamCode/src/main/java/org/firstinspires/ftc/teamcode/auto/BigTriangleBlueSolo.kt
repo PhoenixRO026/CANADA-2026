@@ -266,5 +266,6 @@ class BigTriangleBlueSolo : LinearOpMode() {
             panelsTelemetry.addData("robotPose", robot.follower.pose)
             panelsTelemetry.update(telemetry)
         }
+        robot.resetRobotPose()
     }
 }

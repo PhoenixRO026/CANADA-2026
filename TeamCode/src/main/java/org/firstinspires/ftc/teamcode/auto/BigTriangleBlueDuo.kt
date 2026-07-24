@@ -194,6 +194,7 @@ class BigTriangleBlueDuo : LinearOpMode() {
 
             Scheduler.execute()
         }
+        robot.resetRobotPose()
     }
 
 }

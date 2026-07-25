@@ -29,7 +29,6 @@ class BigTriangleBlueSolo : LinearOpMode() {
 
     // Middle Poses
     private val intakeMiddlePose = Pose(19.0, 59.0, Math.toRadians(180.0))
-    private val shootMiddlePose = Pose(59.5, 68.0, Math.toRadians(180.0))
 
     // Gate Poses
     private val gateApproachPose = Pose(18.5, 65.0, Math.toRadians(180.0))
@@ -266,6 +265,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             panelsTelemetry.addData("robotPose", robot.follower.pose)
             panelsTelemetry.update(telemetry)
         }
+
         robot.rememberPose()
     }
 }

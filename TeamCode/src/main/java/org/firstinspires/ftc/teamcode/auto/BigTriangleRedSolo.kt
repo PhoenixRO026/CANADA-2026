@@ -9,10 +9,13 @@ import com.pedropathing.geometry.Pose
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
 import com.pedropathing.ivy.commands.Commands.waitMs
+import com.pedropathing.ivy.commands.Commands
+import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups
 import com.pedropathing.ivy.pedro.PedroCommands
 import com.pedropathing.paths.PathChain
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.LoggedOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.robot.Robot
@@ -21,7 +24,7 @@ import org.psilynx.psikit.ftc.wrappers.MotorWrapper
 import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 
 @Autonomous
-class BigTriangleRedSolo : LoggedOpMode() {
+class BigTriangleRedSolo : LinearOpMode() {
     // Mirrored start and scoring poses for Red Alliance
     private val startPose = Pose(123.0, 118.0, Math.toRadians(36.0))
     private val scorePreloadPose = Pose(82.5, 77.0, Math.toRadians(0.0))
@@ -31,9 +34,9 @@ class BigTriangleRedSolo : LoggedOpMode() {
     private val shootMiddlePose = Pose(82.0, 68.0, Math.toRadians(0.0))
 
     // Gate Poses (Mirrored)
-    private val gateApproachPose = Pose(122.0, 65.0, Math.toRadians(0.0))
-    private val gateRamPose = Pose(127.5, 48.0, Math.toRadians(30.0))
-    private val turnToWall = Pose(128.5, 55.0, Math.toRadians(0.0))
+    private val gateApproachPose = Pose(120.0, 65.0, Math.toRadians(0.0))
+    private val gateRamPose = Pose(128.0, 59.0, Math.toRadians(50.0))
+    private val turnToWall = Pose(127.0, 55.0, Math.toRadians(0.0))
     private val bigTriangleShootPose = Pose(82.5, 80.0, Math.toRadians(0.0))
 
     // Close Poses (Mirrored)
@@ -54,43 +57,62 @@ class BigTriangleRedSolo : LoggedOpMode() {
 
     private fun buildPaths() {
         scorePreload = robot.follower.pathBuilder()
-            .addPath(BezierLine(startPose, scorePreloadPose))
-            .setLinearHeadingInterpolation(startPose.heading, scorePreloadPose.heading)
+            .addPath(BezierLine(startPose, bigTriangleShootPose))
+            .setLinearHeadingInterpolation(startPose.heading, bigTriangleShootPose.heading)
             .setTranslationalConstraint(0.07)
             .build()
 
         intakeMiddle = robot.follower.pathBuilder()
-            .addPath(BezierCurve(scorePreloadPose, Pose(83.5, 58.0), intakeMiddlePose))
+            .addPath(BezierCurve(bigTriangleShootPose, Pose(83.5, 58.0), intakeMiddlePose))
             .setConstantHeadingInterpolation(0.0)
             .build()
 
         shootMiddle = robot.follower.pathBuilder()
-            .addPath(BezierCurve(intakeMiddlePose, Pose(106.5, 60.0), shootMiddlePose))
+            .addPath(BezierCurve(intakeMiddlePose, Pose(106.5, 60.0), bigTriangleShootPose))
             .setConstantHeadingInterpolation(0.0)
             .setTranslationalConstraint(0.07)
             .build()
 
         openGate = robot.follower.pathBuilder()
-            .addPath(BezierCurve(shootMiddlePose, Pose(106.5, 65.0), gateApproachPose))
+            .addPath(BezierCurve(bigTriangleShootPose, Pose(106.5, 65.0), gateApproachPose))
             .setConstantHeadingInterpolation(0.0)
             .build()
 
         intakeGate = robot.follower.pathBuilder()
-            .addPath(BezierCurve(gateApproachPose, Pose(111.5, 53.0), Pose(126.5, 58.0), gateRamPose))
+            .addPath(
+                BezierLine(
+                    bigTriangleShootPose,
+                    gateRamPose
+                )
+            )
+            /*.addPath(
+                BezierCurve(
+                    gateApproachPose,
+                    Pose(116.0, 57.0), *//*Pose(126.5, 58.0),*//*
+                    gateRamPose
+                )
+            )*/
+            .setTValueConstraint(0.75)
+            .setTranslationalConstraint(2.0)
             .setLinearHeadingInterpolation(
-                gateApproachPose.heading,
+                bigTriangleShootPose.heading,
                 gateRamPose.heading
             )
-            .setTValueConstraint(0.90)
-            .setTimeoutConstraint(250.0)
             .build()
 
         turnGate = robot.follower.pathBuilder()
-            .addPath(BezierCurve(gateRamPose, Pose(123.5, 55.0), turnToWall))
+            .addPath(BezierCurve(gateRamPose, Pose(125.0, 53.0), turnToWall))
+            .setLinearHeadingInterpolation(gateRamPose.heading, turnToWall.heading)
+            .setNoDeceleration()
+//            .setConstantHeadingInterpolation(gateRamPose.heading)
+            /*.addPath(BezierCurve(gateRamPose, Pose(123.5, 55.0), turnToWall))
+            .setTValueConstraint(0.75)
+            .setTranslationalConstraint(2.0)
+            .setTimeoutConstraint(2.0)
             .setLinearHeadingInterpolation(
                 gateRamPose.heading,
                 turnToWall.heading
-            )
+            )*/
             .build()
 
         shootGate = robot.follower.pathBuilder()
@@ -105,13 +127,13 @@ class BigTriangleRedSolo : LoggedOpMode() {
             .build()
 
         shootClose = robot.follower.pathBuilder()
-            .addPath(BezierLine(intakeClosePose, shootClosePose))
+            .addPath(BezierLine(intakeClosePose, bigTriangleShootPose))
             .setConstantHeadingInterpolation(0.0)
             .setTranslationalConstraint(0.07)
             .build()
     }
 
-    fun autoRoutine() : Command = Groups.sequential(
+    fun autoRoutine(): Command = Groups.sequential(
         // Preload
         Groups.parallel(
             robot.shooter.goToRpmCommand(robot.shooter.neededRpm(125.0)),
@@ -120,7 +142,7 @@ class BigTriangleRedSolo : LoggedOpMode() {
         robot.shootBallsAuto(3500.0),
 
         // 1. Middle Line
-        Groups.parallel(
+        Groups.deadline(
             PedroCommands.follow(robot.follower, intakeMiddle),
             robot.intakeBallsAuto()
         ),
@@ -133,15 +155,21 @@ class BigTriangleRedSolo : LoggedOpMode() {
         robot.allStartCommand(),
 
         // Gate Cycles (1)
-        PedroCommands.follow(
+        /*PedroCommands.follow(
             robot.follower,
             openGate
-        ),
+        ),*/
         waitMs(200.0),
-        Groups.race(
+        Groups.deadline(
             Groups.sequential(
-                PedroCommands.follow(robot.follower, intakeGate),
-                PedroCommands.follow(robot.follower, turnGate),
+                Groups.deadline(
+                    waitMs(3000.0),
+                    PedroCommands.follow(robot.follower, intakeGate),
+                ),
+                /*Groups.race(
+                    PedroCommands.follow(robot.follower, turnGate),
+                    waitMs(1250.0)
+                )*/
             ),
             robot.intakeBallsAuto()
         ),
@@ -154,15 +182,21 @@ class BigTriangleRedSolo : LoggedOpMode() {
         robot.allStartCommand(),
 
         // Gate Cycles (2)
-        PedroCommands.follow(
+        /*PedroCommands.follow(
             robot.follower,
             openGate
         ),
-        waitMs(100.0),
-        Groups.race(
+        waitMs(100.0),*/
+        Groups.deadline(
             Groups.sequential(
-                PedroCommands.follow(robot.follower, intakeGate),
-                PedroCommands.follow(robot.follower, turnGate),
+                Groups.deadline(
+                    waitMs(3000.0),
+                    PedroCommands.follow(robot.follower, intakeGate),
+                ),
+                /*Groups.race(
+                    PedroCommands.follow(robot.follower, turnGate),
+                    waitMs(1250.0)
+                )*/
             ),
             robot.intakeBallsAuto()
         ),
@@ -174,13 +208,13 @@ class BigTriangleRedSolo : LoggedOpMode() {
         robot.shootBallsAuto(3600.0),
         robot.allStartCommand(),
 
-        // Gate Cycles (3)
+        /*// Gate Cycles (3)
         PedroCommands.follow(
             robot.follower,
             openGate
         ),
         waitMs(100.0),
-        Groups.race(
+        Groups.deadline(
             Groups.sequential(
                 PedroCommands.follow(robot.follower, intakeGate),
                 PedroCommands.follow(robot.follower, turnGate),
@@ -193,21 +227,22 @@ class BigTriangleRedSolo : LoggedOpMode() {
             robot.shooter.goToRpmCommand(3600.0)
         ),
         robot.shootBallsAuto(3600.0),
-        robot.allStartCommand(),
+        robot.allStartCommand(),*/
 
         // Close Line
         robot.allStartCommand(),
 
-        Groups.parallel(
+        Groups.deadline(
             PedroCommands.follow(robot.follower, intakeClose),
             robot.intakeBallsAuto()
         ),
         Groups.parallel(
-            PedroCommands.follow(robot.follower, shootClose),
+            PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
-            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.RED))
+            robot.shooter.goToRpmCommand(3600.0)
         ),
-        robot.shootBallsAuto(3600.0)
+        robot.shootBallsAuto(3600.0),
+        robot.allStartCommand(),
     )
 
     override fun runOpMode() {
@@ -215,6 +250,8 @@ class BigTriangleRedSolo : LoggedOpMode() {
         robot = Robot(hardwareMap, startPose)
 
         robot.limelight.setPipeline(1)
+
+        robot.limelight.setPipeline(2)
 
         Scheduler.reset()
         buildPaths()
@@ -259,6 +296,7 @@ class BigTriangleRedSolo : LoggedOpMode() {
             panelsTelemetry.addData("robotPose", robot.follower.pose)
             panelsTelemetry.update(telemetry)
         }
+
         robot.rememberPose()
     }
 }

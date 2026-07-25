@@ -60,7 +60,10 @@ class Robot(
     }
 
     fun rememberPose() {
-        AutoMemory.lastAutoPose = follower.pose
+        if (follower.pose == null)
+            AutoMemory.lastAutoPose = Pose(39.0, 56.0, Math.PI/2)
+        else
+            AutoMemory.lastAutoPose = follower.pose
     }
 
     init {
@@ -127,7 +130,7 @@ class Robot(
     enum class Side { RED, BLUE}
 
     var BlueGoal = Pose(10.0, 135.0)
-    var RedGoal = Pose(136.5, 135.0)
+    var RedGoal = Pose(134.0, 135.0)
 
     fun distanceFromGoal(side : Side) : Double {
         val goal : Pose
@@ -299,7 +302,7 @@ class Robot(
         parallel(
             shooter.openFingerCommand(),
             shooter.goToRpmCommand(rpm),
-//            resetRobotPoseCommand()
+            resetRobotPoseCommand()
         ),
         allStartCommand(),
         waitMs(350.0),

@@ -3,5 +3,5 @@ package org.firstinspires.ftc.teamcode.auto
 import com.pedropathing.geometry.Pose
 
 object AutoMemory {
-    var lastAutoPose : Pose? = null
+    var lastAutoPose: Pose = Pose(39.0, 56.0, Math.PI/2)
 }

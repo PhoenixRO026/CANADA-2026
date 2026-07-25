@@ -8,6 +8,7 @@ import com.pedropathing.geometry.BezierLine
 import com.pedropathing.geometry.Pose
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
+import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.commands.Commands
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups
@@ -43,7 +44,7 @@ class BigTriangleRedSolo : LinearOpMode() {
     private val shootClosePose = Pose(82.5, 77.0, Math.toRadians(0.0))
 
     private val hoodFar = 0.6
-    private lateinit var robot: Robot
+    private lateinit var robot : Robot
     private lateinit var scorePreload: PathChain
     private lateinit var intakeClose: PathChain
     private lateinit var shootClose: PathChain
@@ -113,7 +114,6 @@ class BigTriangleRedSolo : LinearOpMode() {
                 turnToWall.heading
             )*/
             .build()
-
 
         shootGate = robot.follower.pathBuilder()
             .addPath(BezierCurve(turnToWall, Pose(104.5, 50.0), bigTriangleShootPose))
@@ -237,11 +237,12 @@ class BigTriangleRedSolo : LinearOpMode() {
             robot.intakeBallsAuto()
         ),
         Groups.parallel(
-            PedroCommands.follow(robot.follower, shootClose),
+            PedroCommands.follow(robot.follower, shootGate),
             robot.allStopCommand(),
-            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.RED))
+            robot.shooter.goToRpmCommand(3600.0)
         ),
-        robot.shootBallsAuto(3600.0)
+        robot.shootBallsAuto(3600.0),
+        robot.allStartCommand(),
     )
 
     override fun runOpMode() {
@@ -249,6 +250,8 @@ class BigTriangleRedSolo : LinearOpMode() {
         robot = Robot(hardwareMap, startPose)
 
         robot.limelight.setPipeline(1)
+
+        robot.limelight.setPipeline(2)
 
         Scheduler.reset()
         buildPaths()
@@ -293,6 +296,7 @@ class BigTriangleRedSolo : LinearOpMode() {
             panelsTelemetry.addData("robotPose", robot.follower.pose)
             panelsTelemetry.update(telemetry)
         }
+
         robot.rememberPose()
     }
 }

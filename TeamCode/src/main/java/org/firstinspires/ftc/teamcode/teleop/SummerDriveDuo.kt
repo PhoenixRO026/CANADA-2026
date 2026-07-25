@@ -19,17 +19,17 @@ import kotlin.compareTo
 import kotlin.text.toDouble
 import org.firstinspires.ftc.teamcode.library.buttons.ButtonReader
 import org.firstinspires.ftc.teamcode.library.buttons.ToggleButtonReader
-import org.firstinspires.ftc.teamcode.pedroPathing.DrawingClone
+import org.opencv.core.Mat
 
 @TeleOp
 open class SummerDriveDuo : LinearOpMode() {
     open val pipeline : Int = 1
-    open val startPose : Pose = AutoMemory.lastAutoPose ?: Pose(39.0, 56.0, Math.PI/2)
+    open val goalPose : Pose = Pose(55.0, 135.0, Math.toRadians(90.0))
     open val side : Robot.Side = Robot.Side.BLUE
 
     override fun runOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
-        val robot = Robot(hardwareMap, startPose)
+        val robot = Robot(hardwareMap, AutoMemory.lastAutoPose)
         Scheduler.reset()
 
         robot.limelight.setPipeline(pipeline)
@@ -104,12 +104,12 @@ open class SummerDriveDuo : LinearOpMode() {
             }
 
             if (gamepad2.right_trigger > 0) {
-                robot.shooter.turretPosition += 0.1 * timeKeep.deltaTime.asS
+                robot.shooter.turretPosition += 0.2 * timeKeep.deltaTime.asS
             }
             if (gamepad2.left_trigger > 0) {
-                robot.shooter.turretPosition -= 0.1 * timeKeep.deltaTime.asS
+                robot.shooter.turretPosition -= 0.2 * timeKeep.deltaTime.asS
             }
-            else {
+            if (gamepad2.right_trigger < 0.1 || gamepad2.left_trigger < 0.1) {
                 robot.updateHeading(side)
             }
 
@@ -129,7 +129,7 @@ open class SummerDriveDuo : LinearOpMode() {
             panelsTelemetry.addData("turret heading error", robot.limelight.headingErrorDeg)
             panelsTelemetry.addData("robot heading", Math.toDegrees(robot.follower.pose.heading))
             panelsTelemetry.addData("turret heading", robot.shooter.turretAngle)
-            panelsTelemetry.addData("needed angle", robot.neededTurretAngle(Robot.Side.RED))
+            panelsTelemetry.addData("needed angle", robot.neededTurretAngle(side))
             panelsTelemetry.addData("turret position", robot.shooter.servo1.position)
             panelsTelemetry.addData("power intake", robot.intake.power)
             panelsTelemetry.addData("power transfer", robot.transfer.power)
@@ -137,7 +137,7 @@ open class SummerDriveDuo : LinearOpMode() {
             panelsTelemetry.addData("calculated rpm", targetRpm)
             panelsTelemetry.addData("calculated angle", targetAngle)
             panelsTelemetry.addData("distance camera", robot.limelight.aprilTagDistance)
-            panelsTelemetry.addData("distance odometry", robot.distanceFromGoal(Robot.Side.BLUE))
+            panelsTelemetry.addData("distance odometry", robot.distanceFromGoal(side))
             panelsTelemetry.update(telemetry)
         }
     }

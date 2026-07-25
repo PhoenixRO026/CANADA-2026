@@ -60,10 +60,7 @@ class Robot(
     }
 
     fun rememberPose() {
-        if (follower.pose == null)
-            AutoMemory.lastAutoPose = Pose(39.0, 56.0, Math.PI/2)
-        else
-            AutoMemory.lastAutoPose = follower.pose
+        AutoMemory.lastAutoPose = follower.pose
     }
 
     init {

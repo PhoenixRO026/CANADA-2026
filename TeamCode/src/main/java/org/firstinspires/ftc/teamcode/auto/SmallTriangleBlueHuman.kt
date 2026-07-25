@@ -26,11 +26,11 @@ import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 @Autonomous
 class SmallTriangleBlueHuman : LinearOpMode() {
     private val startPose = Pose(55.0, 9.0, Math.toRadians(90.0))
-    private val scorePreloadPose = Pose(55.0, 12.0, Math.toRadians(90.0))
+    private val scorePreloadPose = Pose(55.0, 14.0, Math.toRadians(90.0))
     private val intakeFarPose = Pose(12.0, 35.0, Math.toRadians(180.0))
-    private val intakeHumanPose = Pose(12.0, 9.5, Math.toRadians(170.0))
+    private val intakeHumanPose = Pose(12.0, 10.0, Math.toRadians(170.0))
     private val kindaBetweenPose = Pose(12.0, 24.0, Math.toRadians(180.0))
-    private val smallTriangleShootPose = Pose(42.0, 9.5, Math.toRadians(180.0))
+    private val smallTriangleShootPose = Pose(46.0, 10.3, Math.toRadians(180.0))
 
     private lateinit var robot : Robot
 
@@ -79,7 +79,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, scorePreload),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.38)
+            robot.shooter.turretToPosition(0.385)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -92,7 +92,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
             follow(robot.follower, shootFar),
             robot.allStopCommand(),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.75)
+            robot.shooter.turretToPosition(0.752)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -109,7 +109,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.75)
+            robot.shooter.turretToPosition(0.752)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -126,7 +126,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.75)
+            robot.shooter.turretToPosition(0.752)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -143,7 +143,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.75)
+            robot.shooter.turretToPosition(0.752)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -160,7 +160,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.75)
+            robot.shooter.turretToPosition(0.751)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -177,7 +177,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
         waitForStart()
         robot.shooter.openFinger()
         Scheduler.schedule(autoRoutine())
-        robot.shooter.turretPosition = 0.43
+        robot.shooter.turretPosition = 0.425
 
         val localizer = robot.follower.poseTracker.localizer as? PinpointLocalizer
         val wrapper = localizer?.pinpoint as? PinpointWrapper

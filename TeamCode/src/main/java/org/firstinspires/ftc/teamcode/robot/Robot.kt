@@ -237,7 +237,7 @@ class Robot(
             transfer.slowTransferCommand(),
     )
 
-    fun intakeBallsAuto(time: Double = 3000.0): Command = parallel(
+    fun intakeBallsAuto(time: Double = 1500.0): Command = parallel(
         shooter.goToRpmCommand(Shooter.ShooterConfig.rpmRest),
         sequential (
             parallel(

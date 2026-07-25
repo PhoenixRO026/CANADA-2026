@@ -79,7 +79,7 @@ class SmallTriangleRedHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, scorePreload),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.615)
+            robot.shooter.turretToPosition(0.629)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -92,7 +92,7 @@ class SmallTriangleRedHuman : LinearOpMode() {
             follow(robot.follower, shootFar),
             robot.allStopCommand(),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.248)
+            robot.shooter.turretToPosition(0.24)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -109,7 +109,7 @@ class SmallTriangleRedHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.248)
+            robot.shooter.turretToPosition(0.24)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -126,7 +126,7 @@ class SmallTriangleRedHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.248)
+            robot.shooter.turretToPosition(0.24)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -143,7 +143,7 @@ class SmallTriangleRedHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.248)
+            robot.shooter.turretToPosition(0.24)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -160,7 +160,7 @@ class SmallTriangleRedHuman : LinearOpMode() {
         parallel(
             follow(robot.follower, shootHuman),
             robot.rpmAndAngleTo(4300.0, 0.46),
-            robot.shooter.turretToPosition(0.249)
+            robot.shooter.turretToPosition(0.24)
         ),
         robot.shootBallsFar(4300.0, 0.46),
 
@@ -205,5 +205,6 @@ class SmallTriangleRedHuman : LinearOpMode() {
             panelsTelemetry.addData("delta time", timeKeep.deltaTime)
             panelsTelemetry.update(telemetry)
         }
+        robot.rememberPose()
     }
 }

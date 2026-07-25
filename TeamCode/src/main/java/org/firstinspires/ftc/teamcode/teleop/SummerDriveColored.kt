@@ -15,6 +15,6 @@ class SummerDriveBlue : SummerDriveDuo() {
 class SummerDriveRed : SummerDriveDuo() {
     override val pipeline = 2
     override val goalPose = Pose(136.5, 135.0, Math.toRadians(90.0))
-    override val side = Robot.Side.BLUE
+    override val side = Robot.Side.RED
 }
 

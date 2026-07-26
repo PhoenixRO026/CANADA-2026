@@ -8,7 +8,6 @@ import com.pedropathing.geometry.BezierLine
 import com.pedropathing.geometry.Pose
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
-import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.commands.Commands
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups
@@ -18,6 +17,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.LoggedOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
+import org.firstinspires.ftc.teamcode.pedroPathing.DrawingClone
 import org.firstinspires.ftc.teamcode.robot.Robot
 import org.psilynx.psikit.ftc.wrappers.Limelight3AWrapper
 import org.psilynx.psikit.ftc.wrappers.MotorWrapper
@@ -27,15 +27,15 @@ import org.psilynx.psikit.ftc.wrappers.PinpointWrapper
 class BigTriangleRedSolo : LinearOpMode() {
     // Mirrored start and scoring poses for Red Alliance
     private val startPose = Pose(123.0, 118.0, Math.toRadians(36.0))
-    private val scorePreloadPose = Pose(82.5, 77.0, Math.toRadians(0.0))
+    private val scorePreloadPose = Pose(144 - 82.5, 77.0, Math.toRadians(0.0))
 
     // Middle Poses (Mirrored)
-    private val intakeMiddlePose = Pose(122.5, 59.0, Math.toRadians(0.0))
+    private val intakeMiddlePose = Pose(126.0, 54.5, Math.toRadians(0.0))
     private val shootMiddlePose = Pose(82.0, 68.0, Math.toRadians(0.0))
 
     // Gate Poses (Mirrored)
     private val gateApproachPose = Pose(120.0, 65.0, Math.toRadians(0.0))
-    private val gateRamPose = Pose(128.0, 59.0, Math.toRadians(50.0))
+    private val gateRamPose = Pose(126.0, 55.0, Math.toRadians(20.0))
     private val turnToWall = Pose(127.0, 55.0, Math.toRadians(0.0))
     private val bigTriangleShootPose = Pose(82.5, 80.0, Math.toRadians(0.0))
 
@@ -43,8 +43,8 @@ class BigTriangleRedSolo : LinearOpMode() {
     private val intakeClosePose = Pose(119.5, 84.0, Math.toRadians(0.0))
     private val shootClosePose = Pose(82.5, 77.0, Math.toRadians(0.0))
 
-    private val hoodFar = 0.6
-    private lateinit var robot : Robot
+    private val hoodFar = 0.2
+    private lateinit var robot: Robot
     private lateinit var scorePreload: PathChain
     private lateinit var intakeClose: PathChain
     private lateinit var shootClose: PathChain
@@ -64,18 +64,18 @@ class BigTriangleRedSolo : LinearOpMode() {
 
         intakeMiddle = robot.follower.pathBuilder()
             .addPath(BezierCurve(bigTriangleShootPose, Pose(83.5, 58.0), intakeMiddlePose))
-            .setConstantHeadingInterpolation(0.0)
+            .setConstantHeadingInterpolation(Math.toRadians(0.0))
             .build()
 
         shootMiddle = robot.follower.pathBuilder()
             .addPath(BezierCurve(intakeMiddlePose, Pose(106.5, 60.0), bigTriangleShootPose))
-            .setConstantHeadingInterpolation(0.0)
+            .setConstantHeadingInterpolation(Math.toRadians(0.0))
             .setTranslationalConstraint(0.07)
             .build()
 
         openGate = robot.follower.pathBuilder()
             .addPath(BezierCurve(bigTriangleShootPose, Pose(106.5, 65.0), gateApproachPose))
-            .setConstantHeadingInterpolation(0.0)
+            .setConstantHeadingInterpolation(Math.toRadians(0.0))
             .build()
 
         intakeGate = robot.follower.pathBuilder()
@@ -92,8 +92,8 @@ class BigTriangleRedSolo : LinearOpMode() {
                     gateRamPose
                 )
             )*/
-            .setTValueConstraint(0.75)
-            .setTranslationalConstraint(2.0)
+//            .setTValueConstraint(0.75)
+//            .setTranslationalConstraint(2.0)
             .setLinearHeadingInterpolation(
                 bigTriangleShootPose.heading,
                 gateRamPose.heading
@@ -115,20 +115,21 @@ class BigTriangleRedSolo : LinearOpMode() {
             )*/
             .build()
 
+
         shootGate = robot.follower.pathBuilder()
             .addPath(BezierCurve(turnToWall, Pose(104.5, 50.0), bigTriangleShootPose))
-            .setConstantHeadingInterpolation(0.0)
+            .setConstantHeadingInterpolation(Math.toRadians(0.0))
             .setTranslationalConstraint(0.07)
             .build()
 
         intakeClose = robot.follower.pathBuilder()
             .addPath(BezierCurve(bigTriangleShootPose, Pose(91.5, 83.0), intakeClosePose))
-            .setConstantHeadingInterpolation(0.0)
+            .setConstantHeadingInterpolation(Math.toRadians(0.0))
             .build()
 
         shootClose = robot.follower.pathBuilder()
             .addPath(BezierLine(intakeClosePose, bigTriangleShootPose))
-            .setConstantHeadingInterpolation(0.0)
+            .setConstantHeadingInterpolation(Math.toRadians(0.0))
             .setTranslationalConstraint(0.07)
             .build()
     }
@@ -237,19 +238,16 @@ class BigTriangleRedSolo : LinearOpMode() {
             robot.intakeBallsAuto()
         ),
         Groups.parallel(
-            PedroCommands.follow(robot.follower, shootGate),
+            PedroCommands.follow(robot.follower, shootClose),
             robot.allStopCommand(),
-            robot.shooter.goToRpmCommand(3600.0)
+            robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.RED))
         ),
-        robot.shootBallsAuto(3600.0),
-        robot.allStartCommand(),
+        robot.shootBallsAuto(3600.0)
     )
 
     override fun runOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
         robot = Robot(hardwareMap, startPose)
-
-        robot.limelight.setPipeline(1)
 
         robot.limelight.setPipeline(2)
 
@@ -261,7 +259,7 @@ class BigTriangleRedSolo : LinearOpMode() {
 
         robot.shooter.openFinger()
         Scheduler.schedule(autoRoutine())
-        robot.shooter.turretPosition = 0.2
+        robot.shooter.turretPosition = 0.67
         robot.shooter.hoodToPosition(hoodFar)
 
         val localizer = robot.follower.poseTracker.localizer as? PinpointLocalizer
@@ -285,7 +283,10 @@ class BigTriangleRedSolo : LinearOpMode() {
             robot.updateHeading(Robot.Side.RED)
             robot.shooter.hoodToPosition(robot.shooter.neededAngle(robot.distanceFromGoal(Robot.Side.RED)))
 
+
             Scheduler.execute()
+
+            DrawingClone.drawDebug(robot.follower)
 
             panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
             panelsTelemetry.addData("distance from goal", goalDist)
@@ -296,7 +297,6 @@ class BigTriangleRedSolo : LinearOpMode() {
             panelsTelemetry.addData("robotPose", robot.follower.pose)
             panelsTelemetry.update(telemetry)
         }
-
         robot.rememberPose()
     }
 }

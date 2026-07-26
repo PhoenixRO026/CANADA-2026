@@ -302,9 +302,9 @@ class Robot(
 //            resetRobotPoseCommand()
         ),
         allStartCommand(),
-        waitMs(350.0),
+        waitMs(250.0),
         intake.stopIntakeCommand(),
-        waitMs(300.0),
+        waitMs(200.0),
         parallel(
             transfer.stopTransferCommand(),
             shooter.closeFingerCommand(),

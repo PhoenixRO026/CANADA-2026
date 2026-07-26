@@ -30,18 +30,18 @@ class BigTriangleBlueSolo : LinearOpMode() {
     private val scorePreloadPose = Pose(144 - 82.5, 77.0, Math.toRadians(180.0 - 0.0))
 
     // Middle Poses (Mirrored)
-    private val intakeMiddlePose = Pose(18.0, 54.5, Math.toRadians(180.0 - 0.0))
+    private val intakeMiddlePose = Pose(22.0, 54.5, Math.toRadians(180.0 - 0.0))
     private val shootMiddlePose = Pose(144 - 82.0, 68.0, Math.toRadians(180.0 - 0.0))
 
     // Gate Poses (Mirrored)
     private val gateApproachPose = Pose(144 - 120.0, 65.0, Math.toRadians(180.0 - 0.0))
-    private val gateRamPose = Pose(144 - 127.0, 55.5, Math.toRadians(180.0 - 30.0))
+    private val gateRamPose = Pose(144 - 126.5, 57.5, Math.toRadians(180.0 - 25.0))
     private val turnToWall = Pose(144 - 127.0, 55.0, Math.toRadians(180.0 - 0.0))
     private val bigTriangleShootPose = Pose(144 - 82.5, 80.0, Math.toRadians(180.0 - 0.0))
 
     // Close Poses (Mirrored)
-    private val intakeClosePose = Pose(144 - 119.5, 84.0, Math.toRadians(180.0 - 0.0))
-    private val shootClosePose = Pose(144 - 82.5, 77.0, Math.toRadians(180.0 - 0.0))
+    private val intakeClosePose = Pose(25.0, 84.0, Math.toRadians(180.0 - 0.0))
+    private val shootClosePose = Pose(57.0, 80.0, Math.toRadians(180.0 - 0.0))
 
     private val leavePose = Pose(144 - 106.0, 78.0, Math.toRadians(180 - 0.0))
 
@@ -131,7 +131,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             .build()
 
         shootClose = robot.follower.pathBuilder()
-            .addPath(BezierLine(intakeClosePose, bigTriangleShootPose))
+            .addPath(BezierLine(intakeClosePose, shootClosePose))
             .setConstantHeadingInterpolation(Math.toRadians(180.0 - 0.0))
             .setTranslationalConstraint(0.07)
             .build()
@@ -216,7 +216,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
         robot.allStartCommand(),
 
         // Gate Cycles (3)
-        PedroCommands.follow(
+       /* PedroCommands.follow(
             robot.follower,
             openGate
         ),
@@ -225,6 +225,27 @@ class BigTriangleBlueSolo : LinearOpMode() {
             Groups.sequential(
                 PedroCommands.follow(robot.follower, intakeGate),
                 PedroCommands.follow(robot.follower, turnGate),
+            ),
+            robot.intakeBallsAuto()
+        ),
+        Groups.parallel(
+            PedroCommands.follow(robot.follower, shootGate),
+            robot.allStopCommand(),
+            robot.shooter.goToRpmCommand(3600.0)
+        ),
+        robot.shootBallsAuto(3600.0),
+        robot.allStartCommand(),*/
+
+        Groups.deadline(
+            Groups.sequential(
+                Groups.deadline(
+                    waitMs(3000.0),
+                    PedroCommands.follow(robot.follower, intakeGate),
+                ),
+                /*Groups.race(
+                    PedroCommands.follow(robot.follower, turnGate),
+                    waitMs(1250.0)
+                )*/
             ),
             robot.intakeBallsAuto()
         ),

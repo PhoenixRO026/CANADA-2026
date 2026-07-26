@@ -35,7 +35,7 @@ class BigTriangleRedSolo : LinearOpMode() {
 
     // Gate Poses (Mirrored)
     private val gateApproachPose = Pose(120.0, 65.0, Math.toRadians(0.0))
-    private val gateRamPose = Pose(126.0, 55.0, Math.toRadians(20.0))
+    private val gateRamPose = Pose(126.0, 54.5, Math.toRadians(25.0))
     private val turnToWall = Pose(127.0, 55.0, Math.toRadians(0.0))
     private val bigTriangleShootPose = Pose(82.5, 80.0, Math.toRadians(0.0))
 

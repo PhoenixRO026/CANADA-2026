@@ -35,13 +35,15 @@ class BigTriangleRedSolo : LinearOpMode() {
 
     // Gate Poses (Mirrored)
     private val gateApproachPose = Pose(120.0, 65.0, Math.toRadians(0.0))
-    private val gateRamPose = Pose(126.0, 54.5, Math.toRadians(25.0))
+    private val gateRamPose = Pose(126.0, 55.5, Math.toRadians(25.0))
     private val turnToWall = Pose(127.0, 55.0, Math.toRadians(0.0))
     private val bigTriangleShootPose = Pose(82.5, 80.0, Math.toRadians(0.0))
 
     // Close Poses (Mirrored)
     private val intakeClosePose = Pose(119.5, 84.0, Math.toRadians(0.0))
     private val shootClosePose = Pose(82.5, 77.0, Math.toRadians(0.0))
+
+    private val leavePose = Pose(106.0, 78.0, Math.toRadians(0.0))
 
     private val hoodFar = 0.2
     private lateinit var robot: Robot
@@ -54,6 +56,7 @@ class BigTriangleRedSolo : LinearOpMode() {
     private lateinit var intakeGate: PathChain
     private lateinit var turnGate: PathChain
     private lateinit var shootGate: PathChain
+    private lateinit var leave: PathChain
 
     private fun buildPaths() {
         scorePreload = robot.follower.pathBuilder()
@@ -131,6 +134,10 @@ class BigTriangleRedSolo : LinearOpMode() {
             .addPath(BezierLine(intakeClosePose, bigTriangleShootPose))
             .setConstantHeadingInterpolation(Math.toRadians(0.0))
             .setTranslationalConstraint(0.07)
+            .build()
+
+        leave = robot.follower.pathBuilder()
+            .addPath(BezierLine(bigTriangleShootPose, leavePose))
             .build()
     }
 
@@ -242,7 +249,8 @@ class BigTriangleRedSolo : LinearOpMode() {
             robot.allStopCommand(),
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.RED))
         ),
-        robot.shootBallsAuto(3600.0)
+        robot.shootBallsAuto(3600.0),
+        PedroCommands.follow(robot.follower, leave)
     )
 
     override fun runOpMode() {
@@ -262,16 +270,16 @@ class BigTriangleRedSolo : LinearOpMode() {
         robot.shooter.turretPosition = 0.67
         robot.shooter.hoodToPosition(hoodFar)
 
-        val localizer = robot.follower.poseTracker.localizer as? PinpointLocalizer
-        val wrapper = localizer?.pinpoint as? PinpointWrapper
-        val drivetrain = robot.follower.drivetrain as? Mecanum
-        val motors = drivetrain?.motors?.map { it as? MotorWrapper }
-        val limelight = robot.limelight.camera as? Limelight3AWrapper
+//        val localizer = robot.follower.poseTracker.localizer as? PinpointLocalizer
+//        val wrapper = localizer?.pinpoint as? PinpointWrapper
+//        val drivetrain = robot.follower.drivetrain as? Mecanum
+//        val motors = drivetrain?.motors?.map { it as? MotorWrapper }
+//        val limelight = robot.limelight.camera as? Limelight3AWrapper
 
         while (opModeIsActive()) {
-            wrapper?.cacheResets?.forEach { it() }
-            motors?.forEach { it?.cacheResets?.forEach { it() } }
-            limelight?.cacheResets?.forEach { it() }
+//            wrapper?.cacheResets?.forEach { it() }
+//            motors?.forEach { it?.cacheResets?.forEach { it() } }
+//            limelight?.cacheResets?.forEach { it() }
 
             robot.follower.update()
             robot.limelight.updateDistance()

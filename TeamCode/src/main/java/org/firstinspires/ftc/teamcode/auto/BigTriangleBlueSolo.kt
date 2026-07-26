@@ -43,6 +43,8 @@ class BigTriangleBlueSolo : LinearOpMode() {
     private val intakeClosePose = Pose(144 - 119.5, 84.0, Math.toRadians(180.0 - 0.0))
     private val shootClosePose = Pose(144 - 82.5, 77.0, Math.toRadians(180.0 - 0.0))
 
+    private val leavePose = Pose(144 - 106.0, 78.0, Math.toRadians(180 - 0.0))
+
     private val hoodFar = 0.2
     private lateinit var robot: Robot
     private lateinit var scorePreload: PathChain
@@ -54,6 +56,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
     private lateinit var intakeGate: PathChain
     private lateinit var turnGate: PathChain
     private lateinit var shootGate: PathChain
+    private lateinit var leave: PathChain
 
     private fun buildPaths() {
         scorePreload = robot.follower.pathBuilder()
@@ -131,6 +134,9 @@ class BigTriangleBlueSolo : LinearOpMode() {
             .addPath(BezierLine(intakeClosePose, bigTriangleShootPose))
             .setConstantHeadingInterpolation(Math.toRadians(180.0 - 0.0))
             .setTranslationalConstraint(0.07)
+            .build()
+        leave = robot.follower.pathBuilder()
+            .addPath(BezierLine(bigTriangleShootPose, leavePose))
             .build()
     }
 
@@ -242,7 +248,8 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.allStopCommand(),
             robot.goToRpmAndAngleCommand(robot.distanceFromGoal(Robot.Side.BLUE))
         ),
-        robot.shootBallsAuto(3600.0)
+        robot.shootBallsAuto(3600.0),
+        PedroCommands.follow(robot.follower, leave)
     )
 
     override fun runOpMode() {

@@ -1,26 +1,16 @@
 package org.firstinspires.ftc.teamcode.teleop
 
 import com.bylazar.telemetry.PanelsTelemetry
-import com.commonlibs.units.deg
-import com.pedropathing.follower.Follower
 import com.pedropathing.geometry.Pose
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
-import com.pedropathing.ivy.commands.Commands.waitMs
-import com.pedropathing.ivy.commands.Commands.waitUntil
-import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.auto.AutoMemory
 import org.firstinspires.ftc.teamcode.library.TimeKeep
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants
-import org.firstinspires.ftc.teamcode.robot.Robot
-import kotlin.compareTo
-import kotlin.text.toDouble
 import org.firstinspires.ftc.teamcode.library.buttons.ButtonReader
-import org.firstinspires.ftc.teamcode.library.buttons.ToggleButtonReader
-import org.opencv.core.Mat
 import org.firstinspires.ftc.teamcode.pedroPathing.DrawingClone
+import org.firstinspires.ftc.teamcode.robot.Robot
 
 @TeleOp
 open class SummerDriveDuo : LinearOpMode() {

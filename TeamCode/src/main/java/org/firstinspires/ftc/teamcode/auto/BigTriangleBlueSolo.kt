@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.LoggedOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
+import org.firstinspires.ftc.teamcode.pedroPathing.DrawingClone
 import org.firstinspires.ftc.teamcode.robot.Robot
 import org.psilynx.psikit.ftc.wrappers.Limelight3AWrapper
 import org.psilynx.psikit.ftc.wrappers.MotorWrapper
@@ -29,12 +30,12 @@ class BigTriangleBlueSolo : LinearOpMode() {
     private val scorePreloadPose = Pose(144 - 82.5, 77.0, Math.toRadians(180.0 - 0.0))
 
     // Middle Poses (Mirrored)
-    private val intakeMiddlePose = Pose(18.0, 59.0, Math.toRadians(180.0 - 0.0))
+    private val intakeMiddlePose = Pose(18.0, 54.5, Math.toRadians(180.0 - 0.0))
     private val shootMiddlePose = Pose(144 - 82.0, 68.0, Math.toRadians(180.0 - 0.0))
 
     // Gate Poses (Mirrored)
     private val gateApproachPose = Pose(144 - 120.0, 65.0, Math.toRadians(180.0 - 0.0))
-    private val gateRamPose = Pose(144 - 128.0, 59.0, Math.toRadians(180.0 - 50.0))
+    private val gateRamPose = Pose(144 - 127.0, 59.5, Math.toRadians(180.0 - 30.0))
     private val turnToWall = Pose(144 - 127.0, 55.0, Math.toRadians(180.0 - 0.0))
     private val bigTriangleShootPose = Pose(144 - 82.5, 80.0, Math.toRadians(180.0 - 0.0))
 
@@ -91,8 +92,8 @@ class BigTriangleBlueSolo : LinearOpMode() {
                     gateRamPose
                 )
             )*/
-            .setTValueConstraint(0.75)
-            .setTranslationalConstraint(2.0)
+//            .setTValueConstraint(0.75)
+//            .setTranslationalConstraint(2.0)
             .setLinearHeadingInterpolation(
                 bigTriangleShootPose.heading,
                 gateRamPose.heading
@@ -283,6 +284,8 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.shooter.hoodToPosition(robot.shooter.neededAngle(robot.distanceFromGoal(Robot.Side.BLUE)))
 
             Scheduler.execute()
+
+            DrawingClone.drawDebug(robot.follower)
 
             panelsTelemetry.addData("rpm", robot.shooter.currentRpm)
             panelsTelemetry.addData("distance from goal", goalDist)

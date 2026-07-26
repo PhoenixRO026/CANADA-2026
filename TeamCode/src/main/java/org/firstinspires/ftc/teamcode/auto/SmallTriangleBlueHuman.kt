@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.LoggedOpMode
 import org.firstinspires.ftc.teamcode.library.TimeKeep
+import org.firstinspires.ftc.teamcode.pedroPathing.DrawingClone
 import org.firstinspires.ftc.teamcode.robot.Robot
 import org.psilynx.psikit.ftc.HardwareMapWrapper
 import org.psilynx.psikit.ftc.wrappers.MotorWrapper
@@ -44,7 +45,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
     private fun buildPaths() {
         scorePreload = robot.follower.pathBuilder()
             .addPath(BezierLine(startPose, scorePreloadPose))
-            .setLinearHeadingInterpolation(startPose.heading, scorePreloadPose.heading)
+            .setConstantHeadingInterpolation(Math.toRadians(90.0))
             .build()
 
         intakeFar = robot.follower.pathBuilder()
@@ -188,6 +189,7 @@ class SmallTriangleBlueHuman : LinearOpMode() {
             wrapper?.cacheResets?.forEach { it() }
             motors?.forEach { it?.cacheResets?.forEach { it() } }
 
+
             robot.follower.update()
             timeKeep.resetDeltaTime()
 
@@ -196,6 +198,8 @@ class SmallTriangleBlueHuman : LinearOpMode() {
             robot.shooter.updateRpm(timeKeep.deltaTime)
 
             Scheduler.execute()
+
+            DrawingClone.drawDebug(robot.follower)
 
             panelsTelemetry.addData("pos", robot.follower.pose)
             panelsTelemetry.addData("rpm", robot.shooter.currentRpm)

@@ -216,7 +216,7 @@ class BigTriangleRedSolo : LinearOpMode() {
         robot.shootBallsAuto(3600.0),
         robot.allStartCommand(),
 
-        /*// Gate Cycles (3)
+        // Gate Cycles (3)
         Groups.deadline(
             Groups.sequential(
                 Groups.deadline(
@@ -236,7 +236,7 @@ class BigTriangleRedSolo : LinearOpMode() {
             robot.shooter.goToRpmCommand(3600.0)
         ),
         robot.shootBallsAuto(3600.0),
-        robot.allStartCommand(),*/
+        robot.allStartCommand(),
 
         // Close Line
         robot.allStartCommand(),

@@ -215,7 +215,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
         robot.shootBallsAuto(3600.0),
         robot.allStartCommand(),
 
-        /*// Gate Cycles (3)
+        // Gate Cycles (3)
         PedroCommands.follow(
             robot.follower,
             openGate
@@ -234,7 +234,7 @@ class BigTriangleBlueSolo : LinearOpMode() {
             robot.shooter.goToRpmCommand(3600.0)
         ),
         robot.shootBallsAuto(3600.0),
-        robot.allStartCommand(),*/
+        robot.allStartCommand(),
 
         // Close Line
         robot.allStartCommand(),

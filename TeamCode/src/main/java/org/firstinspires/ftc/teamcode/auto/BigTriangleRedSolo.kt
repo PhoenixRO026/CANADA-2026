@@ -30,7 +30,7 @@ class BigTriangleRedSolo : LinearOpMode() {
     private val scorePreloadPose = Pose(144 - 82.5, 77.0, Math.toRadians(0.0))
 
     // Middle Poses (Mirrored)
-    private val intakeMiddlePose = Pose(126.0, 54.5, Math.toRadians(0.0))
+    private val intakeMiddlePose = Pose(123.0, 54.5, Math.toRadians(0.0))
     private val shootMiddlePose = Pose(82.0, 68.0, Math.toRadians(0.0))
 
     // Gate Poses (Mirrored)
@@ -217,15 +217,16 @@ class BigTriangleRedSolo : LinearOpMode() {
         robot.allStartCommand(),
 
         /*// Gate Cycles (3)
-        PedroCommands.follow(
-            robot.follower,
-            openGate
-        ),
-        waitMs(100.0),
         Groups.deadline(
             Groups.sequential(
-                PedroCommands.follow(robot.follower, intakeGate),
-                PedroCommands.follow(robot.follower, turnGate),
+                Groups.deadline(
+                    waitMs(3000.0),
+                    PedroCommands.follow(robot.follower, intakeGate),
+                ),
+                /*Groups.race(
+                    PedroCommands.follow(robot.follower, turnGate),
+                    waitMs(1250.0)
+                )*/
             ),
             robot.intakeBallsAuto()
         ),

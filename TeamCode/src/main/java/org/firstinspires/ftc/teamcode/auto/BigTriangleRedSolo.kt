@@ -30,12 +30,12 @@ class BigTriangleRedSolo : LinearOpMode() {
     private val scorePreloadPose = Pose(144 - 82.5, 77.0, Math.toRadians(0.0))
 
     // Middle Poses (Mirrored)
-    private val intakeMiddlePose = Pose(122.0, 54.5, Math.toRadians(0.0))
+    private val intakeMiddlePose = Pose(123.0, 54.5, Math.toRadians(0.0))
     private val shootMiddlePose = Pose(82.0, 68.0, Math.toRadians(0.0))
 
     // Gate Poses (Mirrored)
     private val gateApproachPose = Pose(120.0, 65.0, Math.toRadians(0.0))
-    private val gateRamPose = Pose(126.0, 57.5, Math.toRadians(25.0))
+    private val gateRamPose = Pose(126.5, 56.0, Math.toRadians(24.0))
     private val turnToWall = Pose(127.0, 55.0, Math.toRadians(0.0))
     private val bigTriangleShootPose = Pose(82.5, 80.0, Math.toRadians(0.0))
 
@@ -43,9 +43,9 @@ class BigTriangleRedSolo : LinearOpMode() {
     private val intakeClosePose = Pose(119.0, 84.0, Math.toRadians(0.0))
     private val shootClosePose = Pose(87.0, 80.0, Math.toRadians(0.0))
 
-    private val leavePose = Pose(106.0, 78.0, Math.toRadians(0.0))
+    private val leavePose = Pose(87.0, 70.0, Math.toRadians(0.0))
 
-    private val hoodFar = 0.2
+    private val hoodFar = 0.3
     private lateinit var robot: Robot
     private lateinit var scorePreload: PathChain
     private lateinit var intakeClose: PathChain
@@ -131,7 +131,7 @@ class BigTriangleRedSolo : LinearOpMode() {
             .build()
 
         shootClose = robot.follower.pathBuilder()
-            .addPath(BezierLine(intakeClosePose, bigTriangleShootPose))
+            .addPath(BezierLine(intakeClosePose, shootClosePose))
             .setConstantHeadingInterpolation(Math.toRadians(0.0))
             .setTranslationalConstraint(0.07)
             .build()
